@@ -1,0 +1,182 @@
+<div class="related-products">
+  <h4>Pairs well with</h4>
+  <div class="related-products-list swiper-wrapper">
+    {% for block in section.blocks %}
+      {% assign product = all_products[block.settings.crproduct] %}
+      {% assign first_variant_id = product.variants.first.id %}
+      {% if product.featured_image != blank %}
+      <div class="related-product-item swiper-slide">
+        <a href="{{ product.url }}">
+          <div class="image-block">
+            <img
+              src="{{ product.featured_image | img_url: '' }}"
+              alt="{{ product.title }}"
+            >
+            <a
+              href="{{ pr_url }}"
+              class="t4s-pr-item-btn mobile t4s-pr-addtocart"
+              data-variant-id="{{ first_variant_id }}"
+              data-action-atc
+              rel="nofollow"
+              ><span class="t4s-svg-pr-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
+                </svg></span
+            ></a>
+          </div>
+          <div class="product-details">
+            <h3>{{ product.title }}</h3>
+            <p>{{ product.price | money }}</p>
+          </div>
+        </a>
+      </div>
+{% endif %}
+
+    {% endfor %}
+
+    <style>
+      .related-products {
+        overflow: hidden;
+        position: relative;
+      }
+
+      .related-products .image-block {
+        position: relative;
+        display: inline-flex;
+        width: 100%;
+      }
+
+      .related-products .image-block a.t4s-pr-item-btn.mobile.t4s-pr-addtocart {
+        width: 25px;
+        height: 25px;
+        position: absolute;
+        z-index: 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        border-radius: 50%;
+        right: 10px;
+        bottom: 10px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      }
+
+      .related-products .image-block a.t4s-pr-item-btn.mobile.t4s-pr-addtocart span.t4s-svg-pr-icon svg {
+        width: 13px;
+      }
+
+      .related-products .image-block a.t4s-pr-item-btn.mobile.t4s-pr-addtocart span.t4s-svg-pr-icon {
+        display: flex;
+      }
+
+      .related-products h4 {
+        font-size: 15px;
+        margin: 0 0 15px;
+      }
+
+      .related-products .product-details {
+        padding: 10px 0 0;
+      }
+
+      .related-products .product-details h3 {
+        font-size: 14px;
+      }
+
+      .related-products .swiper-button-prev,
+      .related-products .swiper-button-next {
+        position: absolute;
+        top: 0;
+        margin: 0;
+        background-image: unset;
+        width: 20px;
+        height: 20px;
+      }
+
+      .related-products .swiper-button-prev {
+        right: 27px;
+        left: auto;
+        transform: scaleX(-1);
+      }
+
+      .related-products-list .related-product-item img {
+        aspect-ratio: 4/4;
+      }
+
+      .related-products p {
+          margin: 0;
+      }
+    </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Swiper: Slider
+        new Swiper('.related-products', {
+          loop: false,
+          nextButton: '.swiper-button-next',
+          prevButton: '.swiper-button-prev',
+          slidesPerView: 3,
+          paginationClickable: true,
+          spaceBetween: 20,
+          breakpoints: {
+            1920: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            1028: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+            },
+          },
+        });
+      });
+    </script>
+  </div>
+
+  <!-- If we need navigation buttons -->
+  <div class="swiper-button-prev">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+      <path d="m13.172 12-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414 4.95-4.95Z"></path>
+    </svg>
+  </div>
+  <div class="swiper-button-next">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+      <path d="m13.172 12-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414 4.95-4.95Z"></path>
+    </svg>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Complimentary Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "left_heading",
+      "label": "Left Heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Complimentary",
+      "name": "Complimentary",
+      "settings": [
+        {
+          "type": "product",
+          "id": "crproduct",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Complimentary Products",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
