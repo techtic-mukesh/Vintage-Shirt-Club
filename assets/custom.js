@@ -486,44 +486,44 @@ function watchDOMChanges() {
 }
 
 // Listen for Shopify/Kalles specific events
-// function listenForThemeEvents() {
-//   // Common Shopify theme events
-//   document.addEventListener('shopify:section:load', () => {
-//     setTimeout(() => {
-//       monitorPaginationWrapper();
-//       checkInfiniteScrollEnd();
-//     }, 300);
-//   });
+function listenForThemeEvents() {
+  // Common Shopify theme events
+  document.addEventListener('shopify:section:load', () => {
+    setTimeout(() => {
+      monitorPaginationWrapper();
+      checkInfiniteScrollEnd();
+    }, 300);
+  });
   
-//   // Kalles theme custom events
-//   document.addEventListener('kalles:collection:loaded', () => {
-//     setTimeout(checkInfiniteScrollEnd, 300);
-//   });
+  // Kalles theme custom events
+  document.addEventListener('kalles:collection:loaded', () => {
+    setTimeout(checkInfiniteScrollEnd, 300);
+  });
   
-//   // Listen for collection updates
-//   document.addEventListener('collection:updated', () => {
-//     setTimeout(checkInfiniteScrollEnd, 300);
-//   });
-// }
+  // Listen for collection updates
+  document.addEventListener('collection:updated', () => {
+    setTimeout(checkInfiniteScrollEnd, 300);
+  });
+}
 
-// // Initialize everything
-// function init() {
-//   checkInfiniteScrollEnd();
-//   monitorPaginationWrapper();
-//   monitorAjaxRequests();
-//   watchDOMChanges();
-//   listenForThemeEvents();
-// }
+// Initialize everything
+function init() {
+  checkInfiniteScrollEnd();
+  monitorPaginationWrapper();
+  monitorAjaxRequests();
+  watchDOMChanges();
+  listenForThemeEvents();
+}
 
-// // Start when DOM is ready
-// if (document.readyState === 'loading') {
-//   document.addEventListener('DOMContentLoaded', init);
-// } else {
-//   init();
-// }
+// Start when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
-// // Also check periodically as fallback
-// setInterval(checkInfiniteScrollEnd, 2000);
+// Also check periodically as fallback
+setInterval(checkInfiniteScrollEnd, 2000);
 
 
 

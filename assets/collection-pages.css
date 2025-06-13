@@ -3,6 +3,15 @@
     margin-top: 50px;
 }
 
+.cloud-search-page-controls .cloud-search-filter__name {
+    width: 100%;
+    justify-content: space-between;
+    background-color: #f6f6f8;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
 body.template-collection.Mystery.Box .t4s-sidebar, body.template-collection.Mystery.Box .collectionname {
     display: none;
 }
@@ -992,7 +1001,7 @@ body.template-search .t4s_box_pr_grid .t4s_ratio:before {
 
     .cloud-search-page-controls .cloud-search-page-controls__filters>div {
         margin: 0;
-        width: calc(100% / 6 - 12px);
+        width: calc(100% / 5 - 12px);
     }
 
     .cloud-search-page-controls__filters-container>div {
