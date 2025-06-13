@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "slideshow_t7d6Ny": {
@@ -6,9 +15,11 @@
         "image_parent_pzUx87": {
           "type": "image_parent",
           "settings": {
+            "image": "shopify://shop_images/Untitled_60.png",
+            "image_mb": "shopify://shop_images/Untitled_61.png",
             "image_position": "8",
             "cl_img": "",
-            "link_img1": "shopify:\/\/collections\/vintage-new-collection",
+            "link_img1": "shopify://collections/vintage-new-collection",
             "open_link": "_self",
             "animate_slide": "none",
             "text_align": "start",
@@ -95,7 +106,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/vintage-new-collection",
+        "head_btn_url": "shopify://collections/vintage-new-collection",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -190,7 +201,7 @@
           "disabled": true,
           "settings": {
             "button_text": "Men",
-            "button_link": "shopify:\/\/collections",
+            "button_link": "shopify://collections",
             "target_link": "_blank",
             "fontf": "inherit",
             "button_icon_w": 0,
@@ -222,7 +233,7 @@
           "disabled": true,
           "settings": {
             "button_text": "Women",
-            "button_link": "shopify:\/\/collections",
+            "button_link": "shopify://collections",
             "target_link": "_blank",
             "fontf": "inherit",
             "button_icon_w": 0,
@@ -255,7 +266,6 @@
         "16474136413c50eba8-2",
         "49166308-df3d-4155-bc65-1eaa91a197ed"
       ],
-      "name": "JERSEYS",
       "settings": {
         "show_section_mobile": false,
         "se_height": "t4s_ratio_cuspx",
@@ -265,9 +275,10 @@
         "height_tb": 500,
         "custom_mb": false,
         "height_mb": 400,
+        "image": "shopify://shop_images/Untitled_62.png",
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/retro-football-shirts",
+        "link_img1": "shopify://collections/retro-football-shirts",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -308,7 +319,6 @@
     },
     "featured_collection_WdTPAD": {
       "type": "featured-collection",
-      "name": "nascar",
       "settings": {
         "design_heading": "1",
         "heading_align": "t4s-text-center",
@@ -317,7 +327,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/retro-football-shirts",
+        "head_btn_url": "shopify://collections/retro-football-shirts",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -480,7 +490,7 @@
         "height_mb": 250,
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/new-collection",
+        "link_img1": "shopify://collections/new-collection",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -619,7 +629,7 @@
         "height_mb": 250,
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/new-collection",
+        "link_img1": "shopify://collections/new-collection",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -668,7 +678,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/new-collection",
+        "head_btn_url": "shopify://collections/new-collection",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -820,7 +830,6 @@
         "custom_text_phTLkn",
         "custom_button_xBCpnL"
       ],
-      "name": "posters",
       "settings": {
         "show_section_mobile": false,
         "se_height": "t4s_ratioadapt",
@@ -832,7 +841,7 @@
         "height_mb": 250,
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/posters",
+        "link_img1": "shopify://collections/posters",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -881,7 +890,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/posters",
+        "head_btn_url": "shopify://collections/posters",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -1183,7 +1192,7 @@
         "height_mb": 250,
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/accessory",
+        "link_img1": "shopify://collections/accessory",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -1232,7 +1241,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/accessory",
+        "head_btn_url": "shopify://collections/accessory",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -1384,7 +1393,6 @@
         "custom_text_D9DLym",
         "custom_button_AEWJ6x"
       ],
-      "name": "nascar",
       "settings": {
         "show_section_mobile": false,
         "se_height": "t4s_ratioadapt",
@@ -1396,7 +1404,7 @@
         "height_mb": 250,
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify:\/\/collections\/racingjacket",
+        "link_img1": "shopify://collections/racingjacket",
         "open_link": "_blank",
         "text_align": "center",
         "text_align_mb": "center",
@@ -1437,7 +1445,6 @@
     },
     "featured_collection_PkfKVa": {
       "type": "featured-collection",
-      "name": "nascar",
       "settings": {
         "design_heading": "1",
         "heading_align": "t4s-text-center",
@@ -1446,7 +1453,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify:\/\/collections\/racingjacket",
+        "head_btn_url": "shopify://collections/racingjacket",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -1518,7 +1525,7 @@
             "icon_themes": "truck",
             "icon": "tractor",
             "title": "",
-            "text": "<p><strong>FREE SHIPPING<\/strong> ALL ORDER OVER $100<\/p>",
+            "text": "<p><strong>FREE SHIPPING</strong> ALL ORDER OVER $100</p>",
             "html": ""
           }
         },
@@ -1528,7 +1535,7 @@
             "icon_themes": "help",
             "icon": "life-ring",
             "title": "",
-            "text": "<p>SUMMER <strong>SALE OFF<\/strong> TO <strong>50%<\/strong><\/p>",
+            "text": "<p>SUMMER <strong>SALE OFF</strong> TO <strong>50%</strong></p>",
             "html": ""
           }
         },
@@ -1538,7 +1545,7 @@
             "icon_themes": "refesh",
             "icon": "undo-alt",
             "title": "",
-            "text": "<p>WE SUPPORT <strong>24 HOURS<\/strong> A DAY<\/p>",
+            "text": "<p>WE SUPPORT <strong>24 HOURS</strong> A DAY</p>",
             "html": ""
           }
         }
@@ -1602,7 +1609,7 @@
           "settings": {
             "collection": "racingjacket",
             "collection_title": "Racing Jacket",
-            "collection_link": "shopify:\/\/collections\/racingjacket"
+            "collection_link": "shopify://collections/racingjacket"
           }
         },
         "1647415086bad34ffd-1": {
@@ -1610,7 +1617,7 @@
           "settings": {
             "collection": "vintage-tees",
             "collection_title": "Vintage Tees",
-            "collection_link": "shopify:\/\/collections\/vintage-tees"
+            "collection_link": "shopify://collections/vintage-tees"
           }
         },
         "1647415086bad34ffd-2": {
@@ -1618,7 +1625,7 @@
           "settings": {
             "collection": "rework",
             "collection_title": "REWORK",
-            "collection_link": "shopify:\/\/collections\/rework"
+            "collection_link": "shopify://collections/rework"
           }
         },
         "869e62fb-63f1-4931-af83-f09ff6e4c0c6": {
@@ -1626,7 +1633,7 @@
           "settings": {
             "collection": "rewrok-x-wavy",
             "collection_title": "Wavy Rework",
-            "collection_link": "shopify:\/\/collections\/rewrok-x-wavy"
+            "collection_link": "shopify://collections/rewrok-x-wavy"
           }
         },
         "18de129f-0a34-4931-a30e-89980b15cd51": {
@@ -1634,7 +1641,7 @@
           "settings": {
             "collection": "mens-ralph-lauren-1-4-zip-jumper",
             "collection_title": "Ralph Lauren",
-            "collection_link": "shopify:\/\/collections\/ralph-lauren"
+            "collection_link": "shopify://collections/ralph-lauren"
           }
         }
       },
@@ -1694,7 +1701,7 @@
         "top_subheading": "OVER 100,000 SOLD",
         "tophead_mb": 30,
         "head_btn_label": "",
-        "head_btn_url": "shopify:\/\/collections\/vintage-new-collection",
+        "head_btn_url": "shopify://collections/vintage-new-collection",
         "head_btn_icon": false,
         "head_btn_style": "default",
         "head_btn_size": "medium",
@@ -2236,7 +2243,7 @@
             "height_tb": 400,
             "custom_mb": true,
             "height_mb": 300,
-            "b_link": "shopify:\/\/collections\/rework",
+            "b_link": "shopify://collections/rework",
             "open_link": "_self",
             "img_effect": "zoom",
             "b_effect": "none",
@@ -2325,7 +2332,7 @@
             "height_tb": 400,
             "custom_mb": true,
             "height_mb": 300,
-            "b_link": "shopify:\/\/collections\/vintage-new-collection",
+            "b_link": "shopify://collections/vintage-new-collection",
             "open_link": "_self",
             "img_effect": "zoom",
             "b_effect": "none",
