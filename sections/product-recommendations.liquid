@@ -1114,16 +1114,13 @@
 
               // Check if span exists
               if (span) {
-                console.log('Span text:', span.innerText);
 
                 // Compare span text with main variant value
                 if (span.innerText.trim() === mainVariantValue) {
                   product.classList.add('piyush'); // Add class if they match
-                  console.log('Class "piyush" added to product:', product);
                 } else {
                   // Remove the product if it doesn't match
                   product.remove();
-                  console.log('Product removed:', product);
                 }
               } else {
                 console.log('Span not found in product:', product);
@@ -1152,16 +1149,16 @@
             productsALL.forEach(function (product) {
               var span = product.querySelector('#belowe-product-varriant');
               if (span) {
-                console.log('Span text:', span.innerText);
+                // console.log('Span text:', span.innerText);
 
                 // Compare span text with main variant value
                 if (span.innerText.trim() === mainVariantValue) {
                   product.classList.add('piyush'); // Add class if they match
-                  console.log('Class "piyush" added to product:', product);
+                  // console.log('Class "piyush" added to product:', product);
                 } else {
                   // Remove the product if it doesn't match
                   product.remove();
-                  console.log('Product removed:', product);
+                  // console.log('Product removed:', product);
                 }
               }
             });
