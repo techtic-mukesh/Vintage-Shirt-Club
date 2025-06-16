@@ -169,51 +169,77 @@ Look for the section that renders 'frm_properties' and add this after it
   {%- comment -%} Custom Name/Number Printing Option {%- endcomment -%}
   <div class="t4s-custom-options-wrapper">
     
-    {%- comment -%} Name/Number Printing Option {%- endcomment -%}
+    {%- comment -%} Name/Number Printing Option - Radio Buttons {%- endcomment -%}
     <div class="t4s-custom-option-group">
-      <label for="name-printing-{{ product.id }}" class="t4s-custom-option-label">
-        Name/Number Printing? <span class="required">*</span>
+      <label class="t4s-custom-option-label">
+        Name/Number Printing?
       </label>
-      <div class="t4s-custom-select-wrapper">
-        <select id="name-printing-{{ product.id }}" name="properties[Printing]" class="t4s-custom-select" required>
-          <option value="">Select an option</option>
-          <option value="Yes Please!">Yes Please!</option>
-          <option value="No Thanks">No Thanks</option>
-        </select>
-        <svg class="t4s-custom-select-arrow" role="presentation" viewBox="0 0 19 12">
-          <path d="M2 2l7.5 7L17 2" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+      <div class="t4s-radio-group">
+        <label class="t4s-radio-option">
+          <input type="radio" name="properties[Printing]" value="Yes Please!" class="t4s-radio-input">
+          <span class="t4s-radio-custom"></span>
+          <span class="t4s-radio-text">Yes (+£3)</span>
+        </label>
+        <label class="t4s-radio-option active">
+          <input type="radio" name="properties[Printing]" value="No Thanks" class="t4s-radio-input" checked>
+          <span class="t4s-radio-custom"></span>
+          <span class="t4s-radio-text">No</span>
+        </label>
       </div>
     </div>
 
-    {%- comment -%} Sleeve Patch Option with Separate Product Addition {%- endcomment -%}
+    {%- comment -%} Sleeve Patch Option - Radio Buttons {%- endcomment -%}
     <div class="t4s-custom-option-group">
-      <label for="sleeve-patch-{{ product.id }}" class="t4s-custom-option-label">
-        Sleeve Patch? <span class="required">*</span>
+      <label class="t4s-custom-option-label">
+        Sleeve Patch?
       </label>
-      <div class="t4s-custom-select-wrapper">
-        <select 
-          id="sleeve-patch-{{ product.id }}" 
-          name="properties[Sleeve Patch]" 
-          class="t4s-custom-select t4s-patch-selector" 
-          required 
-          data-base-price="{{ current_variant.price }}"
-          data-product-id="{{ product.id }}"
-          data-patch-product-id="15157668413818">
-          <option value="" data-patch-variant="" data-price="0">Select an option</option>
-          <option value="CL (+£4.99)" data-patch-variant="55518491443578" data-price="499">CL (+£4.99)</option>
-          <option value="Premier League (+£6.99)" data-patch-variant="55518491476346" data-price="699">Premier League (+£6.99)</option>
-          <option value="No Patch" data-patch-variant="" data-price="0">No Patch</option>
-        </select>
-        <svg class="t4s-custom-select-arrow" role="presentation" viewBox="0 0 19 12">
-          <path d="M2 2l7.5 7L17 2" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        </div>
-        <div class="price-addon-display"></div>
+      <div class="t4s-radio-group">
+        <label class="t4s-radio-option">
+          <input type="radio" 
+                 name="properties[Sleeve Patch]" 
+                 value="Yes (+£3)" 
+                 class="t4s-radio-input t4s-patch-selector" 
+                 data-base-price="{{ current_variant.price }}"
+                 data-product-id="{{ product.id }}"
+                 data-patch-product-id="15157668413818"
+                 data-patch-variant="55518491443578" 
+                 data-price="300">
+          <span class="t4s-radio-custom"></span>
+          <span class="t4s-radio-text">Yes (+£3)</span>
+        </label>
+        {% comment %} <label class="t4s-radio-option">
+          <input type="radio" 
+                 name="properties[Sleeve Patch]" 
+                 value="Premier League (+£6.99)" 
+                 class="t4s-radio-input t4s-patch-selector" 
+                 data-base-price="{{ current_variant.price }}"
+                 data-product-id="{{ product.id }}"
+                 data-patch-product-id="15157668413818"
+                 data-patch-variant="55518491476346" 
+                 data-price="699">
+          <span class="t4s-radio-custom"></span>
+          <span class="t4s-radio-text">Premier League (+£6.99)</span>
+        </label> {% endcomment %}
+        <label class="t4s-radio-option active">
+          <input type="radio" 
+                 name="properties[Sleeve Patch]" 
+                 value="No Patch" 
+                 class="t4s-radio-input t4s-patch-selector" 
+                 data-base-price="{{ current_variant.price }}"
+                 data-product-id="{{ product.id }}"
+                 data-patch-product-id="15157668413818"
+                 data-patch-variant="" 
+                 data-price="0"
+                 checked>
+          <span class="t4s-radio-custom"></span>
+          <span class="t4s-radio-text">No Patch</span>
+        </label>
+      </div>
+      <div class="price-addon-display"></div>
     </div>
 
-    {%- comment -%} Optional Text Area {%- endcomment -%}
-    <div class="t4s-custom-option-group">
+    {%- comment -%} Optional Text Area - Hidden by default {%- endcomment -%}
+    <div class="t4s-custom-option-group t4s-text-area-group" style="display: none;">
       <label for="custom-text-{{ product.id }}" class="t4s-custom-option-label">
         Type Name & Number here.. (optional)
       </label>
@@ -244,7 +270,7 @@ Look for the section that renders 'frm_properties' and add this after it
   {%- comment -%} Enhanced CSS Styles {%- endcomment -%}
   <style>
     .t4s-custom-options-wrapper {
-      margin: 20px 0;
+      margin: 20px 0 0;
       padding: 20px 0;
       border-top: 1px solid #e0e0e0;
     }
@@ -256,51 +282,82 @@ Look for the section that renders 'frm_properties' and add this after it
     .t4s-custom-option-label {
       display: block;
       font-weight: 500;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       color: #333;
       font-size: 14px;
     }
 
-    .t4s-custom-option-label .required {
-      color: #e74c3c;
+    .t4s-radio-group {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
     }
 
-    .t4s-custom-select-wrapper {
-      position: relative;
-      display: block;
-    }
-
-    .t4s-custom-select {
-      width: 100%;
-      border: 2px solid #ddd;
-      border-radius: 4px;
-      background-color: #fff;
-      font-size: 14px;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
+    .t4s-radio-option {
+      display: flex;
+      align-items: center;
       cursor: pointer;
-      transition: border-color 0.3s ease;
-      background-image: url();
+      padding: 10px 20px;
+      border: 1px solid #d3d1d1;
+      transition: all 0.2s ease;
     }
 
-    .t4s-custom-select:focus {
-      outline: none;
+    .t4s-radio-option:hover {
+      background-color: #f8f9fa;
       border-color: #007bff;
+    }
+
+    .t4s-radio-option.active {
+        background-color: #f0f0f0;
+    border-color: #222;
+    }
+
+    .t4s-radio-option.active:after {
+    content: '';
+}
+
+    .t4s-radio-input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .t4s-radio-custom {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      margin-right: 10px;
+      transition: all 0.3s ease;
+      background-color: #fff;
+    }
+
+    .t4s-radio-input:checked + .t4s-radio-custom {
+        border-color: #265d04;
+    background-color: #265d04;
+    }
+
+    .t4s-radio-input:checked + .t4s-radio-custom::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: white;
+    }
+
+    .t4s-radio-input:focus + .t4s-radio-custom {
       box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     }
 
-   
-
-    .t4s-custom-select-arrow {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 12px;
-      height: 8px;
-      pointer-events: none;
-      color: #666;
+    .t4s-radio-text {
+      font-size: 14px;
+      color: #333;
+      user-select: none;
     }
 
     .price-addon-display {
@@ -312,8 +369,8 @@ Look for the section that renders 'frm_properties' and add this after it
     }
 
     .price-addon-display:empty {
-    display: none;
-}
+      display: none;
+    }
 
     .t4s-price-summary {
       background: #f8f9fa;
@@ -377,6 +434,10 @@ Look for the section that renders 'frm_properties' and add this after it
       font-weight: 500;
     }
 
+    .t4s-text-area-group {
+      transition: all 0.3s ease;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .t4s-custom-options-wrapper {
@@ -388,14 +449,17 @@ Look for the section that renders 'frm_properties' and add this after it
         margin-bottom: 15px;
       }
 
-      .t4s-custom-select,
       .t4s-custom-textarea {
         padding: 10px 12px;
         font-size: 16px; /* Prevents zoom on iOS */
       }
 
-      .t4s-custom-select {
-        padding-right: 36px;
+      .t4s-radio-group {
+        gap: 8px;
+      }
+
+      .t4s-radio-option {
+        padding: 8px 12px;
       }
     }
   </style>
@@ -526,7 +590,31 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   const patchSelectors = document.querySelectorAll('.t4s-patch-selector');
+  const printingSelectors = document.querySelectorAll('input[name="properties[Printing]"]');
   const textareas = document.querySelectorAll('.t4s-custom-textarea');
+  const textAreaGroup = document.querySelector('.t4s-text-area-group');
+  
+  // Function to handle active class for radio buttons
+  function handleActiveClass(radioGroup) {
+    const radios = radioGroup.querySelectorAll('input[type="radio"]');
+    
+    radios.forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        // Remove active class from all labels in this group
+        radioGroup.querySelectorAll('.t4s-radio-option').forEach(function(label) {
+          label.classList.remove('active');
+        });
+        
+        // Add active class to the selected label
+        if (this.checked) {
+          this.closest('.t4s-radio-option').classList.add('active');
+        }
+      });
+    });
+  }
+  
+  // Apply active class handling to all radio groups
+  document.querySelectorAll('.t4s-radio-group').forEach(handleActiveClass);
   
   // Character counter for textarea
   textareas.forEach(function(textarea) {
@@ -539,23 +627,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Handle patch selection with variant ID mapping
-  patchSelectors.forEach(function(select) {
-    const basePrice = parseInt(select.dataset.basePrice) || 0;
+  // Handle patch selection with variant ID mapping and show/hide text area
+  patchSelectors.forEach(function(radio) {
+    const basePrice = parseInt(radio.dataset.basePrice) || 0;
     
-    select.addEventListener('change', function() {
-      const selectedOption = this.options[this.selectedIndex];
-      const addonPrice = parseInt(selectedOption.dataset.price) || 0;
-      const patchVariantId = selectedOption.dataset.patchVariant;
-      
-      console.log('Patch selection changed:', {
-        value: selectedOption.value,
-        variantId: patchVariantId,
-        price: addonPrice
-      });
-      
-      updatePriceDisplay(basePrice, addonPrice);
-      storePatchSelection(patchVariantId, selectedOption.value, addonPrice);
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        const addonPrice = parseInt(this.dataset.price) || 0;
+        const patchVariantId = this.dataset.patchVariant;
+        
+        console.log('Patch selection changed:', {
+          value: this.value,
+          variantId: patchVariantId,
+          price: addonPrice
+        });
+        
+        updatePriceDisplay(basePrice, addonPrice);
+        storePatchSelection(patchVariantId, this.value, addonPrice);
+        
+        // Show/hide text area based on patch selection
+        if (this.value !== 'No Patch' && textAreaGroup) {
+          textAreaGroup.style.display = 'block';
+        } else if (textAreaGroup) {
+          textAreaGroup.style.display = 'none';
+          // Clear textarea when hiding
+          const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
+          if (textarea) {
+            textarea.value = '';
+            const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
+            if (charCurrent) charCurrent.textContent = '0';
+          }
+        }
+      }
+    });
+  });
+  
+  // Handle printing selection
+  printingSelectors.forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        console.log('Printing selection changed:', this.value);
+        
+        // Show/hide text area based on printing selection
+        if (this.value === 'Yes Please!' && textAreaGroup) {
+          textAreaGroup.style.display = 'block';
+        } else if (this.value === 'No Thanks' && textAreaGroup) {
+          // Only hide if patch is also "No Patch"
+          const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
+          if (selectedPatch && selectedPatch.value === 'No Patch') {
+            textAreaGroup.style.display = 'none';
+            // Clear textarea when hiding
+            const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
+            if (textarea) {
+              textarea.value = '';
+              const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
+              if (charCurrent) charCurrent.textContent = '0';
+            }
+          }
+        }
+      }
     });
   });
   
@@ -582,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (addonPrice > 0) {
         addonPriceDiv.style.display = 'flex';
         addonAmount.textContent = formatPrice(addonPrice);
-        priceSummary.style.display = 'block';
+        // priceSummary.style.display = 'block';
       } else {
         addonPriceDiv.style.display = 'none';
         priceSummary.style.display = 'none';
@@ -644,6 +774,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+  // Initialize default selections and store them
+  const defaultPatchSelector = document.querySelector('input[name="properties[Sleeve Patch]"][value="No Patch"]');
+  if (defaultPatchSelector) {
+    const basePrice = parseInt(defaultPatchSelector.dataset.basePrice) || 0;
+    storePatchSelection('', 'No Patch', 0);
+    updatePriceDisplay(basePrice, 0);
+  }
 
   // Utility function to get selected patch info
   window.getSelectedPatchInfo = function() {
@@ -656,20 +793,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Utility function to validate patch selection
   window.validatePatchSelection = function() {
-    const patchSelector = document.querySelector('.t4s-patch-selector');
-    if (!patchSelector) return true; // No patch selector means no validation needed
-    
-    const selectedValue = patchSelector.value;
-    return selectedValue !== ''; // Must have a selection (including "No Patch")
+    const patchSelector = document.querySelector('.t4s-patch-selector:checked');
+    return true; // Since both options are now optional, always return true
   };
   
 });
 
-
   </script>
-
-{%- endif -%}
-
+   {%- endif -%}
             {%- endif -%}
 
           {%- endfor -%}
