@@ -3153,3 +3153,11 @@ body.template-collection.priority-product.infinite_ended .t4s-product:nth-child(
    display: block !important;
 } */
 
+p.afterpay-paragraph {
+    display: none;
+}
+
+.t4s-pr_trust_seal img.t4s-img-tr__svg[alt="clearpay"] {
+    display: none;
+}
+

@@ -164,7 +164,7 @@
 Add this code right after the existing properties section in your product form
 Look for the section that renders 'frm_properties' and add this after it
 {%- endcomment -%}
-
+{% if product.type == 'Retro Football Shirt' %}
 {%- if isProductAvailable -%}
   {%- comment -%} Custom Name/Number Printing Option {%- endcomment -%}
   <div class="t4s-custom-options-wrapper">
@@ -178,7 +178,7 @@ Look for the section that renders 'frm_properties' and add this after it
         <label class="t4s-radio-option">
           <input type="radio" name="properties[Printing]" value="Yes Please!" class="t4s-radio-input">
           <span class="t4s-radio-custom"></span>
-          <span class="t4s-radio-text">Yes (+£3)</span>
+          <span class="t4s-radio-text">Yes</span>
         </label>
         <label class="t4s-radio-option active">
           <input type="radio" name="properties[Printing]" value="No Thanks" class="t4s-radio-input" checked>
@@ -436,6 +436,7 @@ Look for the section that renders 'frm_properties' and add this after it
 
     .t4s-text-area-group {
       transition: all 0.3s ease;
+      margin-bottom: 0;
     }
 
     /* Responsive adjustments */
@@ -465,9 +466,10 @@ Look for the section that renders 'frm_properties' and add this after it
   </style>
 
   {%- comment -%} JavaScript for Handling Both Products {%- endcomment -%}
-  <script>
+  <script> 
 document.addEventListener('DOMContentLoaded', function() {
 
+  // Enhanced function to add selected patch to cart
   function addSelectedPatchToCart() {
     console.log('Starting addSelectedPatchToCart function');
     
@@ -483,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Only proceed if a patch variant is selected (not "No Patch" or empty)
-    if (!selectedVariantId || selectedVariantId === '') {
+    if (!selectedVariantId || selectedVariantId === '' || selectedVariantId === 'undefined') {
       console.log('No patch selected, skipping patch addition');
       return Promise.resolve();
     }
@@ -496,8 +498,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if this specific patch variant is already in cart
         const patchInCart = cart.items.some(item => item.variant_id == selectedVariantId);
 
-          var qtyInput = document.querySelector('.t4s-quantity-input');
-          var currentQty = qtyInput.getAttribute('data-current-qty');
+        var qtyInput = document.querySelector('.t4s-quantity-input');
+        var currentQty = qtyInput ? parseInt(qtyInput.getAttribute('data-current-qty')) || 1 : 1;
         
         if (patchInCart) {
           console.log('Selected patch already in cart, skipping addition');
@@ -509,16 +511,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return fetch('/cart/add.js', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ 
             items: [{ 
-              id: selectedVariantId, 
-              quantity:currentQty,
+              id: parseInt(selectedVariantId), 
+              quantity: currentQty
             }] 
           })
         })
         .then(response => {
-          if (!response.ok) throw new Error(`Failed to add patch to cart: ${response.status}`);
+          if (!response.ok) {
+            return response.text().then(text => {
+              console.error('Patch add error response:', text);
+              throw new Error(`Failed to add patch to cart: ${response.status} - ${text}`);
+            });
+          }
           return response.json();
         })
         .then(addResult => {
@@ -541,6 +551,126 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(error => {
         console.error('Error adding selected patch:', error);
         throw error;
+      });
+  }
+
+  // Enhanced function to add main product and patch together
+  function addMainProductWithPatch() {
+    console.log('Starting addMainProductWithPatch function');
+    
+    // Get main product form data
+    const productForm = document.querySelector('.t4s-product-form, .product-form, form[action*="/cart/add"]');
+    if (!productForm) {
+      console.error('Product form not found');
+      return Promise.reject('Product form not found');
+    }
+    
+    const formData = new FormData(productForm);
+    const mainVariantId = formData.get('id');
+    const quantity = parseInt(formData.get('quantity')) || 1;
+    
+    if (!mainVariantId) {
+      console.error('Main product variant ID not found');
+      return Promise.reject('Main product variant ID not found');
+    }
+    
+    console.log('Main product details:', {
+      variantId: mainVariantId,
+      quantity: quantity
+    });
+    
+    // Get properties
+    const properties = {};
+    if (formData.get('properties[Printing]')) {
+      properties['Printing'] = formData.get('properties[Printing]');
+    }
+    if (formData.get('properties[Sleeve Patch]')) {
+      properties['Sleeve Patch'] = formData.get('properties[Sleeve Patch]');
+    }
+    if (formData.get('properties[Custom Text]')) {
+      properties['Custom Text'] = formData.get('properties[Custom Text]');
+    }
+    
+    // Prepare items array - always include main product
+    const itemsToAdd = [{
+      id: mainVariantId,
+      quantity: quantity,
+      properties: properties
+    }];
+    
+    // Add patch if selected and validate it exists
+    const selectedVariantId = window.selectedPatchVariant;
+    if (selectedVariantId && selectedVariantId !== '' && selectedVariantId !== 'undefined') {
+      console.log(`Adding patch variant ID: ${selectedVariantId} with quantity: ${quantity}`);
+      itemsToAdd.push({
+        id: parseInt(selectedVariantId), // Ensure it's a number
+        quantity: quantity
+      });
+    } else {
+      console.log('No patch selected or invalid patch variant ID');
+    }
+    
+    console.log('Final items to add:', itemsToAdd);
+    
+    return fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ items: itemsToAdd })
+    })
+    .then(response => {
+      console.log('Cart add response status:', response.status);
+      if (!response.ok) {
+        return response.text().then(text => {
+          console.error('Cart add error response:', text);
+          throw new Error(`Failed to add items to cart: ${response.status} - ${text}`);
+        });
+      }
+      return response.json();
+    })
+    .then(addResult => {
+      console.log('Items added successfully:', addResult);
+      
+      // Enhanced cart refresh
+      return new Promise((resolve) => {
+        if (typeof jQuery !== 'undefined') {
+          jQuery.getJSON('/cart.js', function (updatedCart) {
+            console.log('Updated cart after addition:', updatedCart);
+            
+            document.dispatchEvent(new CustomEvent('cart:build', { bubbles: true }));
+            document.dispatchEvent(new CustomEvent('cart:refresh', {
+              bubbles: true,
+              detail: updatedCart.items
+            }));
+            
+            // Small delay to ensure cart is updated
+            setTimeout(() => resolve(addResult), 100);
+          });
+        } else {
+          resolve(addResult);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error in addMainProductWithPatch:', error);
+      throw error;
+    });
+  }
+
+  // Function to verify patch is in cart
+  function verifyPatchInCart(patchVariantId) {
+    return fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        const patchInCart = cart.items.some(item => item.variant_id == patchVariantId);
+        console.log(`Patch verification: ${patchInCart ? 'Found' : 'Not found'} in cart`);
+        return patchInCart;
+      })
+      .catch(error => {
+        console.error('Error verifying patch in cart:', error);
+        return false;
       });
   }
 
@@ -627,54 +757,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Handle patch selection with variant ID mapping and show/hide text area
-  patchSelectors.forEach(function(radio) {
-    const basePrice = parseInt(radio.dataset.basePrice) || 0;
-    
-    radio.addEventListener('change', function() {
-      if (this.checked) {
-        const addonPrice = parseInt(this.dataset.price) || 0;
-        const patchVariantId = this.dataset.patchVariant;
-        
-        console.log('Patch selection changed:', {
-          value: this.value,
-          variantId: patchVariantId,
-          price: addonPrice
-        });
-        
-        updatePriceDisplay(basePrice, addonPrice);
-        storePatchSelection(patchVariantId, this.value, addonPrice);
-        
-        // Show/hide text area based on patch selection
-        if (this.value !== 'No Patch' && textAreaGroup) {
-          textAreaGroup.style.display = 'block';
-        } else if (textAreaGroup) {
-          textAreaGroup.style.display = 'none';
-          // Clear textarea when hiding
-          const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
-          if (textarea) {
-            textarea.value = '';
-            const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
-            if (charCurrent) charCurrent.textContent = '0';
+  // Enhanced patch selection handler
+  function handlePatchSelection() {
+    patchSelectors.forEach(function(radio) {
+      const basePrice = parseInt(radio.dataset.basePrice) || 0;
+      
+      radio.addEventListener('change', function() {
+        if (this.checked) {
+          const addonPrice = parseInt(this.dataset.price) || 0;
+          const patchVariantId = this.dataset.patchVariant;
+          
+          console.log('Patch selection changed:', {
+            value: this.value,
+            variantId: patchVariantId,
+            price: addonPrice,
+            element: this
+          });
+          
+          // Validate patch variant ID
+          if (this.value !== 'No Patch' && (!patchVariantId || patchVariantId === 'undefined')) {
+            console.error('Invalid patch variant ID for:', this.value);
+            alert('There was an error with this patch selection. Please try again or contact support.');
+            return;
           }
-        }
-      }
-    });
-  });
-  
-  // Handle printing selection
-  printingSelectors.forEach(function(radio) {
-    radio.addEventListener('change', function() {
-      if (this.checked) {
-        console.log('Printing selection changed:', this.value);
-        
-        // Show/hide text area based on printing selection
-        if (this.value === 'Yes Please!' && textAreaGroup) {
-          textAreaGroup.style.display = 'block';
-        } else if (this.value === 'No Thanks' && textAreaGroup) {
-          // Only hide if patch is also "No Patch"
-          const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
-          if (selectedPatch && selectedPatch.value === 'No Patch') {
+          
+          updatePriceDisplay(basePrice, addonPrice);
+          storePatchSelection(patchVariantId, this.value, addonPrice);
+          
+          // Show/hide text area based on patch selection
+          if (this.value !== 'No Patch' && textAreaGroup) {
+            textAreaGroup.style.display = 'block';
+          } else if (textAreaGroup) {
             textAreaGroup.style.display = 'none';
             // Clear textarea when hiding
             const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
@@ -685,9 +798,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
           }
         }
-      }
+      });
     });
+  }
+  
+  // Initialize patch selection handler
+  handlePatchSelection();
+  
+  // Handle printing selection
+// Handle printing selection with product addition
+printingSelectors.forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    if (this.checked) {
+      console.log('Printing selection changed:', this.value);
+      
+      // Show/hide text area and add product based on printing selection
+      if (this.value === 'Yes Please!' && textAreaGroup) {
+        textAreaGroup.style.display = 'block';
+        
+        // Add popup product to cart when "Yes Please!" is selected
+        console.log('Adding popup product due to "Yes Please!" selection');
+        addPopupProductToCart()
+          .then(() => {
+            console.log('Popup product added successfully for printing selection');
+          })
+          .catch(error => {
+            console.error('Error adding popup product for printing:', error);
+            // Optionally show user feedback
+            // alert('There was an issue adding the printing option. Please try again.');
+          });
+          
+      } else if (this.value === 'No Thanks' && textAreaGroup) {
+        // Only hide if patch is also "No Patch"
+        const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
+        if (selectedPatch && selectedPatch.value === 'No Patch') {
+          textAreaGroup.style.display = 'none';
+          // Clear textarea when hiding
+          const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
+          if (textarea) {
+            textarea.value = '';
+            const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
+            if (charCurrent) charCurrent.textContent = '0';
+          }
+        }
+        
+        // Optionally, you might want to remove the popup product when "No Thanks" is selected
+        // This would require a removePopupProductFromCart function
+        console.log('User selected "No Thanks" for printing');
+      }
+    }
   });
+});
   
   function updatePriceDisplay(basePrice, addonPrice) {
     const totalPrice = basePrice + addonPrice;
@@ -720,66 +881,138 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // Enhanced patch selection storage
   function storePatchSelection(variantId, patchType, price) {
+    // Validate and clean the variant ID
+    let cleanVariantId = '';
+    if (variantId && variantId !== 'undefined' && variantId !== 'null') {
+      cleanVariantId = variantId.toString();
+    }
+    
     // Store selected patch variant ID and details globally
-    window.selectedPatchVariant = variantId;
+    window.selectedPatchVariant = cleanVariantId;
     window.selectedPatchType = patchType;
     window.selectedPatchPrice = price;
     
     console.log('Stored patch selection:', {
-      variantId: variantId,
+      variantId: cleanVariantId,
       type: patchType,
       price: price
     });
+    
+    // Also store in sessionStorage as backup
+    try {
+      sessionStorage.setItem('selectedPatchVariant', cleanVariantId);
+      sessionStorage.setItem('selectedPatchType', patchType);
+      sessionStorage.setItem('selectedPatchPrice', price.toString());
+    } catch (e) {
+      console.warn('Could not store patch selection in sessionStorage:', e);
+    }
   }
   
   function formatPrice(priceInPence) {
     return '£' + (priceInPence / 100).toFixed(2);
   }
 
-  // Enhanced submit button handler
- $(document).on('click', '.t4s-product-form__buttons .t4s-product-form__submit', function(e) {
-  e.preventDefault();
-  console.log('Submit button clicked');
+  // Enhanced submit button handler with better error handling
+  $(document).on('click', '.t4s-product-form__buttons .t4s-product-form__submit', function(e) {
+    e.preventDefault();
+    console.log('Submit button clicked');
 
-  // Only add the selected patch to cart
-  addSelectedPatchToCart()
-    .then(() => {
-      console.log('Patch product added successfully');
+    // Show loading state
+    const submitButton = $(this);
+    const originalText = submitButton.text();
+    submitButton.prop('disabled', true).text('Adding...');
 
-      // Handle checkout button logic
-      const checkoutButton = document.querySelector('button[name="checkout"]');
-      if (checkoutButton) {
-        checkoutButton.removeAttribute('handpick-terms');
-
-        const checkbox = document.getElementById('tcs_checkbox');
-        if (checkbox) {
-          checkbox.checked = true;
-          checkbox.dispatchEvent(new Event('change'));
-        }
-
-        checkoutButton.addEventListener("click", function (e) {
-          if (checkoutButton.getAttribute("handpick-terms") === "false") {
-            e.preventDefault();
-            if (typeof showFirstPopup === 'function') {
-              showFirstPopup();
-            }
-          }
-        });
-      }
-    })
-    .catch(error => {
-      console.error('Error during patch addition process:', error);
-      // Handle error appropriately - maybe show user message
+    // Validate patch selection first
+    const selectedPatchVariant = window.selectedPatchVariant;
+    const selectedPatchType = window.selectedPatchType;
+    
+    console.log('Current patch selection:', {
+      variantId: selectedPatchVariant,
+      type: selectedPatchType
     });
-});
 
+    // Add main product with patch together
+    addMainProductWithPatch()
+      .then(() => {
+        console.log('Products added successfully');
+        
+        // Additional verification - check if patch was actually added
+        if (selectedPatchVariant && selectedPatchVariant !== '') {
+          return verifyPatchInCart(selectedPatchVariant);
+        }
+        return Promise.resolve(true);
+      })
+      .then((patchVerified) => {
+        if (!patchVerified && selectedPatchVariant && selectedPatchVariant !== '') {
+          console.warn('Patch not found in cart, attempting to add separately');
+          return addSelectedPatchToCart();
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
+        console.log('All products confirmed in cart');
+        // Restore button state
+        submitButton.prop('disabled', false).text(originalText);
+        
+        // Redirect to cart or show success message
+        // window.location.href = '/cart'; // Uncomment if you want to redirect to cart
+        
+        // Or show success message
+        // alert('Products added to cart successfully!');
+      })
+      .catch(error => {
+        console.error('Error during product addition process:', error);
+        
+        // Restore button state
+        submitButton.prop('disabled', false).text(originalText);
+        
+        // Show error message to user
+        alert('There was an error adding the product to cart. Please try again.');
+      });
+  });
+  
   // Initialize default selections and store them
   const defaultPatchSelector = document.querySelector('input[name="properties[Sleeve Patch]"][value="No Patch"]');
   if (defaultPatchSelector) {
     const basePrice = parseInt(defaultPatchSelector.dataset.basePrice) || 0;
     storePatchSelection('', 'No Patch', 0);
     updatePriceDisplay(basePrice, 0);
+  }
+
+  // Debug function to check all patch variant IDs
+  function debugPatchVariants() {
+    console.log('=== PATCH VARIANT DEBUG ===');
+    
+    const patchSelectors = document.querySelectorAll('.t4s-patch-selector');
+    patchSelectors.forEach((selector, index) => {
+      console.log(`Patch ${index + 1}:`, {
+        value: selector.value,
+        variantId: selector.dataset.patchVariant,
+        price: selector.dataset.price,
+        element: selector
+      });
+    });
+    
+    console.log('Currently selected:', {
+      variantId: window.selectedPatchVariant,
+      type: window.selectedPatchType,
+      price: window.selectedPatchPrice
+    });
+    
+    // Try to get from sessionStorage
+    try {
+      console.log('SessionStorage backup:', {
+        variantId: sessionStorage.getItem('selectedPatchVariant'),
+        type: sessionStorage.getItem('selectedPatchType'),
+        price: sessionStorage.getItem('selectedPatchPrice')
+      });
+    } catch (e) {
+      console.log('SessionStorage not available');
+    }
+    
+    console.log('=== END DEBUG ===');
   }
 
   // Utility function to get selected patch info
@@ -796,12 +1029,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const patchSelector = document.querySelector('.t4s-patch-selector:checked');
     return true; // Since both options are now optional, always return true
   };
+
+  // Add debug function to window for manual testing
+  window.debugPatchVariants = debugPatchVariants;
+
+  // Function to restore patch selection from sessionStorage on page load
+  function restorePatchSelection() {
+    try {
+      const savedVariantId = sessionStorage.getItem('selectedPatchVariant');
+      const savedPatchType = sessionStorage.getItem('selectedPatchType');
+      const savedPatchPrice = sessionStorage.getItem('selectedPatchPrice');
+      
+      if (savedVariantId !== null) {
+        window.selectedPatchVariant = savedVariantId;
+        window.selectedPatchType = savedPatchType;
+        window.selectedPatchPrice = parseInt(savedPatchPrice) || 0;
+        
+        console.log('Restored patch selection from sessionStorage:', {
+          variantId: savedVariantId,
+          type: savedPatchType,
+          price: savedPatchPrice
+        });
+      }
+    } catch (e) {
+      console.log('Could not restore patch selection from sessionStorage:', e);
+    }
+  }
+
+  // Restore patch selection on page load
+  restorePatchSelection();
+  
+  // IMPORTANT: Define your patch variant IDs here
+  window.allPatchVariantIds = [
+    // Add all your patch product variant IDs here
+    // Example: 12345678901234, 12345678901235, etc.
+  ];
   
 });
 
   </script>
    {%- endif -%}
             {%- endif -%}
+             {%- endif -%}
 
           {%- endfor -%}
         </div>

@@ -71,8 +71,8 @@ function initializeTypeWriterEffect() {
   
   if (inputs.length === 0) return; // No valid inputs found
   
-  const baseText = 'Search for: ';
- const textList = ['Mystery Box', 'Nascar Jacket', 'T-shirt', 'Jeans'];
+ const baseText = 'Search for: ';
+ const textList = ['Best Sellers', 'Shop by Country', 'Shop by Club', 'Mystery Box'];
   
   // Setup each input element
   inputs.forEach(input => {
@@ -527,218 +527,64 @@ setInterval(checkInfiniteScrollEnd, 2000);
 
 
 
-function addPopupProductToCart() {
-  console.log('Starting addPopupProductToCart function');
 
 
-  
-  const checkoutButton = document.querySelector('button[name="checkout"]');
-          
 
-  fetch('/products/sleeve-patch.js') // Fetch popup product details
+
+
+
+
+document.addEventListener('cart:updated', function () {
+  fetch('/cart.js')
     .then(response => response.json())
-    .then(product => {
-      console.log('Popup product fetched:', product);
-      const variantId = product.variants.length > 0 ? product.variants[0].id : null;
+    .then(cart => {
+      let chargeItem = null;
+      let otherQuantityTotal = 0;
 
-      if (!variantId) {
-        console.error('No available variants for this product.');
+      cart.items.forEach(item => {
+        if (item.product_id === 15157668413818) {
+          chargeItem = item;
+        } else {
+          otherQuantityTotal += item.quantity;
+        }
+      });
+
+      // If only charge item is in cart, remove it
+      if (chargeItem && cart.items.length === 1) {
+        const removeBtn = document.querySelector(`a[data-id="${chargeItem.key}"]`);
+        if (removeBtn) {
+          removeBtn.click();
+        } else {
+          console.warn('Remove button not found for key:', chargeItem.key);
+        }
         return;
       }
 
-      fetch('/cart.js')
-  .then(response => response.json())
-  .then(cart => {
-    console.log('Cart fetched:', cart);
-
-    // Exit early if popup product is already in the cart
-    const popupInCart = cart.items.some(item => item.variant_id == variantId);
-    if (popupInCart) {
-      console.log('Popup product already in cart, skipping logic');
-      hideLoader();
-      const checkoutButton = document.querySelector('button[name="checkout"]');
-      // if (checkoutButton) {
-      //        checkoutButton.click();
-      //     }
-    
-    
-    //   checkoutButton.setAttribute('handpick-terms', 'false');
-
-    //   checkoutButton.addEventListener("click", function (e) {
-    //         if (checkoutButton.getAttribute("handpick-terms") === "false") {
-    //             e.preventDefault(); // Prevent form submission
-    //             showFirstPopup();
-    //         }
-    //     });
-
-    // showFirstPopup();
-
-    checkoutButton.removeAttribute('handpick-terms');
-
-     
-
-    const checkbox = document.getElementById('tcs_checkbox');
-            if (checkbox) {
-                checkbox.checked = true;
-                checkbox.dispatchEvent(new Event('change')); // if needed
-            }
-
-            checkoutButton.addEventListener("click", function (e) {
-              if (checkoutButton.getAttribute("handpick-terms") === "false") {
-                  e.preventDefault(); // Prevent form submission
-                  // document.getElementById('tcs_checkbox').click();
-                  showFirstPopup();
-              }
-          });
-
-      return;
-    }
-
-    const itemPromises = cart.items.map(item => {
-      console.log('Processing cart item:', item);
-
-      
-
-      return fetch(`/products/${item.handle}.js`)
-        .then(res => {
-          if (!res.ok) throw new Error(`Failed to fetch product data for ${item.handle}`);
-          return res.json();
+      // If charge item is present but quantity mismatch, update it
+      if (chargeItem && chargeItem.quantity !== otherQuantityTotal) {
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: chargeItem.key,
+            quantity: otherQuantityTotal
+          })
         })
-        .then(productData => {
-          const isBale = typeof productData.type === 'string' &&
-                         productData.type.toLowerCase() === 'bale';
-                         
-          const isResellerBundle = typeof productData.type === 'string' &&
-                         productData.type.toLowerCase() === 'reseller bundle';
-
-          const isHandpick = Array.isArray(productData.tags) &&
-                             productData.tags.some(tag => 
-                               typeof tag === 'string' && tag.toLowerCase() === 'handpick'
-                             );
-
-          // Extract the number from the product title using a regular expression
-          const titleNumber = productData.title.match(/\d+/);
-          const extractedNumber = titleNumber ? parseInt(titleNumber[0]) : 0; // Convert to integer
-
-          return {
-            item: item,
-            productData: productData,
-            isHandpick: isHandpick,
-            isBale: isBale,
-            isResellerBundle: isResellerBundle,
-            extractedNumber: extractedNumber // Use this for both Bale and Reseller Bundle
-          };
+        .then(response => response.json())
+        .then(data => {
+          console.log('Charge item quantity updated:', data);
         })
         .catch(error => {
-          console.error(`Error fetching product data for ${item.handle}:`, error);
-          return {
-            item: item,
-            productData: null,
-            isHandpick: false,
-            isBale: false,
-            isResellerBundle: false,
-            extractedNumber: 0
-          };
+          console.error('Error updating charge item quantity:', error);
         });
-    });
-
-    Promise.all(itemPromises)
-      .then(itemsWithData => {
-        let regularItemsQuantity = 0;
-        let quantityFromNumberedTypes = 0;
-
-        itemsWithData.forEach(data => {
-          if (data.isBale || data.isResellerBundle) {
-            // Handle both Bale and Reseller Bundle the same way
-            const contribution = data.item.quantity * data.extractedNumber;
-            quantityFromNumberedTypes += contribution;
-            console.log(`${data.isBale ? 'Bale' : 'Reseller Bundle'} item: ${data.item.title}, quantity: ${data.item.quantity}, number from title: ${data.extractedNumber}, contribution: ${contribution}`);
-          } else if (data.isHandpick) {
-            regularItemsQuantity += data.item.quantity;
-            console.log(`Handpick item: ${data.item.title}, quantity: ${data.item.quantity}`);
-          }
-        });
-
-        const totalQuantityToAdd = quantityFromNumberedTypes + regularItemsQuantity;
-        if (totalQuantityToAdd <= 0) {
-          console.log('No qualifying items found (handpick, bale, or reseller bundle), skipping popup addition');
-          return;
-        }
-
-        console.log(`Adding popup product (variant ID: ${variantId}), quantity: ${totalQuantityToAdd}`);
-
-       
-
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: [{ id: variantId, quantity: totalQuantityToAdd }] })
-        })
-        .then(response => {
-          if (!response.ok) throw new Error(`Failed to add item to cart: ${response.status}`);
-          return response.json();
-        })
-        .then(addResult => {
-          console.log('Popup product added successfully:', addResult);
-
-          const checkoutButton = document.querySelector('button[name="checkout"]');
-
-          // if (checkoutButton) {
-          //    checkoutButton.click();
-          // }
-
-          hideLoader();
-
-          // checkoutButton.setAttribute('handpick-terms', 'false');
-
-          checkoutButton.removeAttribute('handpick-terms');
-
-        //   checkoutButton.addEventListener("click", function (e) {
-        //     if (checkoutButton.getAttribute("handpick-terms") === "false") {
-        //         e.preventDefault(); // Prevent form submission
-        //         showFirstPopup();
-        //     }
-        // });
-
-        // showFirstPopup();
-
-        // checkoutButton.removeAttribute('handpick-terms');
-
-        const checkbox = document.getElementById('tcs_checkbox');
-            if (checkbox) {
-                checkbox.checked = true;
-                checkbox.dispatchEvent(new Event('change')); // if needed
-            }
-
-            checkoutButton.addEventListener("click", function (e) {
-              if (checkoutButton.getAttribute("handpick-terms") === "false") {
-                  e.preventDefault(); // Prevent form submission
-                  // document.getElementById('tcs_checkbox').click();
-                  showFirstPopup();
-              }
-          });
-
-
-         
-          jQuery.getJSON('/cart.js', function(updatedCart) {
-            document.dispatchEvent(new CustomEvent('cart:build', { bubbles: true }));
-            document.dispatchEvent(new CustomEvent('cart:refresh', {
-              bubbles: true,
-              detail: updatedCart.items
-            }));
-          });
-        })
-        .catch(error => console.error('Error adding popup product:', error));
-      });
-  })
-  .catch(error => console.error('Error fetching cart:', error));
-
+      }
     })
-    .catch(error => console.error('Error fetching popup product:', error));
-}
-
-
-
+    .catch(error => {
+      console.error('Error fetching cart:', error);
+    });
+});
 
 
 
