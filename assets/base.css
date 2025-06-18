@@ -3145,13 +3145,13 @@ body.template-collection.priority-product .t4s-product {
     /* Ensure proper counting for complex grid layouts */
 }
 
-/* body.template-collection.priority-product .t4s-product:nth-child(n+10):last-of-type {
+ body.template-collection.priority-product .t4s-product:nth-child(n+10):last-of-type {
     display: none;
 }
 
 body.template-collection.priority-product.infinite_ended .t4s-product:nth-child(n+10):last-of-type {
    display: block !important;
-} */
+}
 
 p.afterpay-paragraph {
     display: none;
