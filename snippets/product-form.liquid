@@ -178,7 +178,7 @@ Look for the section that renders 'frm_properties' and add this after it
         <label class="t4s-radio-option">
           <input type="radio" name="properties[Printing]" value="Yes Please!" class="t4s-radio-input">
           <span class="t4s-radio-custom"></span>
-          <span class="t4s-radio-text">Yes</span>
+          <span class="t4s-radio-text">Yes (+£3)</span>
         </label>
         <label class="t4s-radio-option active">
           <input type="radio" name="properties[Printing]" value="No Thanks" class="t4s-radio-input" checked>
@@ -579,6 +579,15 @@ document.addEventListener('DOMContentLoaded', function() {
       quantity: quantity
     });
     
+    // Get current selections
+    const printingSelection = formData.get('properties[Printing]');
+    const patchSelection = formData.get('properties[Sleeve Patch]');
+    
+    console.log('Current selections:', {
+      printing: printingSelection,
+      patch: patchSelection
+    });
+    
     // Get properties
     const properties = {};
     if (formData.get('properties[Printing]')) {
@@ -598,16 +607,54 @@ document.addEventListener('DOMContentLoaded', function() {
       properties: properties
     }];
     
-    // Add patch if selected and validate it exists
-    const selectedVariantId = window.selectedPatchVariant;
-    if (selectedVariantId && selectedVariantId !== '' && selectedVariantId !== 'undefined') {
-      console.log(`Adding patch variant ID: ${selectedVariantId} with quantity: ${quantity}`);
+    // NEW LOGIC: Handle conditions based on Printing and Patch selections
+    
+    // Special handling when Printing = "Yes Please!" (regardless of patch selection)
+    if (printingSelection === 'Yes Please!') {
+      console.log('Printing selected: Yes Please! - Adding printing product');
+      
+      // Determine which variant to add based on patch selection
+      let printingVariantId, printingPrice;
+      
+      if (patchSelection === 'No Patch') {
+        // Only printing selected - add £3 product
+        printingVariantId = '55518491443578'; // £3 variant ID
+        printingPrice = 300; // 300 pence = £3.00
+      } else {
+        // Both printing and patch selected - add £6 product
+        printingVariantId = '55518491476346'; // Existing £6 product
+        printingPrice = 600; // 600 pence = £6.00
+      }
+      
+      // Update price display
+      const basePrice = parseInt(document.querySelector('.t4s-patch-selector')?.dataset.basePrice) || 0;
+      updatePriceDisplay(basePrice, printingPrice);
+      
+      // Update global variables
+      window.selectedPatchVariant = printingVariantId;
+      window.selectedPatchType = patchSelection || 'No Patch';
+      window.selectedPatchPrice = printingPrice;
+      
+      // Add the printing variant
+      console.log(`Adding printing variant ID: ${printingVariantId} with quantity: ${quantity}`);
       itemsToAdd.push({
-        id: parseInt(selectedVariantId), // Ensure it's a number
+        id: parseInt(printingVariantId),
         quantity: quantity
       });
-    } else {
-      console.log('No patch selected or invalid patch variant ID');
+    }
+    
+    // Default case: Use original logic for other combinations
+    else {
+      const selectedVariantId = window.selectedPatchVariant;
+      if (selectedVariantId && selectedVariantId !== '' && selectedVariantId !== 'undefined') {
+        console.log(`Adding regular patch variant ID: ${selectedVariantId} with quantity: ${quantity}`);
+        itemsToAdd.push({
+          id: parseInt(selectedVariantId),
+          quantity: quantity
+        });
+      } else {
+        console.log('No patch selected or invalid patch variant ID');
+      }
     }
     
     console.log('Final items to add:', itemsToAdd);
@@ -781,8 +828,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
           }
           
-          updatePriceDisplay(basePrice, addonPrice);
-          storePatchSelection(patchVariantId, this.value, addonPrice);
+          // Check if printing is selected (use different pricing and variants)
+          const printingSelected = document.querySelector('input[name="properties[Printing]"]:checked');
+          if (printingSelected && printingSelected.value === 'Yes Please!') {
+            // When printing is selected, use different pricing based on patch selection
+            if (this.value === 'No Patch') {
+              // Only printing - £3
+              updatePriceDisplay(basePrice, 300);
+              storePatchSelection('55518491443578', this.value, 300);
+            } else {
+              // Printing + patch - £6
+              updatePriceDisplay(basePrice, 600);
+              storePatchSelection('55518491476346', this.value, 600);
+            }
+          } else {
+            // Normal pricing when printing is not selected
+            updatePriceDisplay(basePrice, addonPrice);
+            storePatchSelection(patchVariantId, this.value, addonPrice);
+          }
           
           // Show/hide text area based on patch selection
           if (this.value !== 'No Patch' && textAreaGroup) {
@@ -805,50 +868,61 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize patch selection handler
   handlePatchSelection();
   
-  // Handle printing selection
-// Handle printing selection with product addition
-printingSelectors.forEach(function(radio) {
-  radio.addEventListener('change', function() {
-    if (this.checked) {
-      console.log('Printing selection changed:', this.value);
-      
-      // Show/hide text area and add product based on printing selection
-      if (this.value === 'Yes Please!' && textAreaGroup) {
-        textAreaGroup.style.display = 'block';
+  // Enhanced printing selection handler
+  printingSelectors.forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        console.log('Printing selection changed:', this.value);
         
-        // Add popup product to cart when "Yes Please!" is selected
-        console.log('Adding popup product due to "Yes Please!" selection');
-        addPopupProductToCart()
-          .then(() => {
-            console.log('Popup product added successfully for printing selection');
-          })
-          .catch(error => {
-            console.error('Error adding popup product for printing:', error);
-            // Optionally show user feedback
-            // alert('There was an issue adding the printing option. Please try again.');
-          });
-          
-      } else if (this.value === 'No Thanks' && textAreaGroup) {
-        // Only hide if patch is also "No Patch"
+        // Check current patch selection
         const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
-        if (selectedPatch && selectedPatch.value === 'No Patch') {
-          textAreaGroup.style.display = 'none';
-          // Clear textarea when hiding
-          const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
-          if (textarea) {
-            textarea.value = '';
-            const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
-            if (charCurrent) charCurrent.textContent = '0';
-          }
-        }
         
-        // Optionally, you might want to remove the popup product when "No Thanks" is selected
-        // This would require a removePopupProductFromCart function
-        console.log('User selected "No Thanks" for printing');
+        // Show/hide text area based on printing selection
+        if (this.value === 'Yes Please!' && textAreaGroup) {
+          textAreaGroup.style.display = 'block';
+
+          // When printing is selected, use different pricing based on patch selection
+          const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
+          if (selectedPatch) {
+            const basePrice = parseInt(selectedPatch.dataset.basePrice) || 0;
+            if (selectedPatch.value === 'No Patch') {
+              // Only printing - £3
+              updatePriceDisplay(basePrice, 300);
+              storePatchSelection('55518491443578', selectedPatch.value, 300);
+            } else {
+              // Printing + patch - £6
+              updatePriceDisplay(basePrice, 600);
+              storePatchSelection('55518491476346', selectedPatch.value, 600);
+            }
+          }
+        } else if (this.value === 'No Thanks' && textAreaGroup) {
+          // Only hide if patch is also "No Patch"
+          const selectedPatch = document.querySelector('input[name="properties[Sleeve Patch]"]:checked');
+          if (selectedPatch && selectedPatch.value === 'No Patch') {
+            textAreaGroup.style.display = 'none';
+            
+            // Clear textarea when hiding
+            const textarea = textAreaGroup.querySelector('.t4s-custom-textarea');
+            if (textarea) {
+              textarea.value = '';
+              const charCurrent = textAreaGroup.querySelector('.t4s-char-current');
+              if (charCurrent) charCurrent.textContent = '0';
+            }
+          }
+
+          // Reset patch pricing to normal when printing is not selected
+          if (selectedPatch) {
+            const basePrice = parseInt(selectedPatch.dataset.basePrice) || 0;
+            const normalAddonPrice = parseInt(selectedPatch.dataset.price) || 0;
+            updatePriceDisplay(basePrice, normalAddonPrice);
+            storePatchSelection(selectedPatch.dataset.patchVariant, selectedPatch.value, normalAddonPrice);
+          }
+
+          console.log('User selected "No Thanks" for printing');
+        }
       }
-    }
+    });
   });
-});
   
   function updatePriceDisplay(basePrice, addonPrice) {
     const totalPrice = basePrice + addonPrice;
@@ -873,7 +947,6 @@ printingSelectors.forEach(function(radio) {
       if (addonPrice > 0) {
         addonPriceDiv.style.display = 'flex';
         addonAmount.textContent = formatPrice(addonPrice);
-        // priceSummary.style.display = 'block';
       } else {
         addonPriceDiv.style.display = 'none';
         priceSummary.style.display = 'none';
@@ -1061,12 +1134,12 @@ printingSelectors.forEach(function(radio) {
   
   // IMPORTANT: Define your patch variant IDs here
   window.allPatchVariantIds = [
-    // Add all your patch product variant IDs here
-    // Example: 12345678901234, 12345678901235, etc.
+    '55518491443578', // £3 printing-only variant
+    '55518491476346'  // £6 printing+patch variant
+    // Add any other patch variant IDs here
   ];
   
 });
-
   </script>
    {%- endif -%}
             {%- endif -%}
