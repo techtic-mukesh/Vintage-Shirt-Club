@@ -207,6 +207,16 @@
             "space_h_item_mb": "20",
             "space_v_item_mb": "4"
           }
+        },
+        "complimentary_products_kfQUQd": {
+          "type": "complimentary_products",
+          "disabled": true,
+          "settings": {
+            "text": "Pairs well with",
+            "product_1": "",
+            "product_2": "corinthians-110-year-anniversary-retro-special-edition-shirt-2023-24-football-shirt",
+            "product_3": "new-york-red-bulls-home-shirt-2010-2011-football-shirt"
+          }
         }
       },
       "block_order": [
@@ -224,7 +234,8 @@
         "95d4f334-8ea7-4cd2-b609-2373b1e848b8",
         "e36839f5-0847-44e2-97d3-2885597bd1ff",
         "754ad4a0-7308-4a3e-b325-e2f2c0b85d4c",
-        "94011ade-ec25-4d68-b37a-70660ede49dd"
+        "94011ade-ec25-4d68-b37a-70660ede49dd",
+        "complimentary_products_kfQUQd"
       ],
       "settings": {
         "buy_text": "3 FOR 2",
@@ -996,7 +1007,7 @@
         "show_vendor": false,
         "use_cdt": false,
         "limit": 500,
-        "display_type": "6",
+        "display_type": "4",
         "image_ratio": "ratio1_1",
         "image_size": "nt_cover",
         "image_position": "8",

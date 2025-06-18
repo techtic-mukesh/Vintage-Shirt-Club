@@ -62,11 +62,11 @@
       
         {% if product.type == 'Sunglasses' %}
         {% else %}
-          in Size
+          Shirts
         {% endif %}
 
         {% comment %} <span>Small</span> {% endcomment %}
-       
+{% comment %}        
          {% assign size_option_index = 0 %}
     {% for option in product.options_with_values %}
       {% if option.name == 'Size' %}
@@ -80,7 +80,7 @@
 
         {% break %}
       {% endif %}
-    {% endfor %}
+    {% endfor %} {% endcomment %}
 
      
       </h3>
