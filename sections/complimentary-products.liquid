@@ -1,253 +1,38 @@
 <div class="related-products">
   <h4>Pairs well with</h4>
-
   <div class="related-products-list swiper-wrapper">
-    {% assign target_vendor = product.vendor %}
-    {% assign target_country = product.metafields.custom.country.value %}
-    {% assign vendor_product_found = false %}
-    {% assign country_product_found = false %}
-    {% assign products_added = 0 %}
-    {% assign special_product_handle = "retro-mystery-football-shirt-box" %}
-
-    {% comment %} STEP 1: First product from the same vendor {% endcomment %}
-    {% for related_product in collections.all.products %}
-      {% if related_product.vendor == target_vendor and related_product.handle != product.handle and vendor_product_found == false %}
-        {% if related_product.featured_image != blank and related_product.available %}
-          {% assign first_variant_id = related_product.variants.first.id %}
-          <div class="related-product-item swiper-slide">
-            <a href="{{ related_product.url }}">
-              <div class="image-block">
-                <img
-                  src="{{ related_product.featured_image | image_url: width: 400 }}"
-                  alt="{{ related_product.title }}"
-                >
-                <a
-                  href="{{ related_product.url }}"
-                  class="t4s-pr-item-btn mobile t4s-pr-addtocart"
-                  data-variant-id="{{ first_variant_id }}"
-                  data-action-atc
-                  rel="nofollow"
-                >
-                  <span class="t4s-svg-pr-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                      <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
-                    </svg>
-                  </span>
-                </a>
-              </div>
-              <div class="product-details">
-                <h3>{{ related_product.title }}</h3>
-                <p>{{ related_product.price | money }}</p>
-              </div>
-            </a>
-          </div>
-          {% assign vendor_product_found = true %}
-          {% assign products_added = products_added | plus: 1 %}
-          {% break %}
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-
-    {% comment %} STEP 2: Add the special product in the middle {% endcomment %}
-    {% assign special_product = all_products[special_product_handle] %}
-    {% if special_product and special_product.available and special_product.handle != product.handle %}
-      {% assign first_variant_id = special_product.variants.first.id %}
+    {% for block in section.blocks %}
+      {% assign product = all_products[block.settings.crproduct] %}
+      {% assign first_variant_id = product.variants.first.id %}
+      {% if product.featured_image != blank %}
       <div class="related-product-item swiper-slide">
-        <a href="{{ special_product.url }}">
+        <a href="{{ product.url }}">
           <div class="image-block">
             <img
-              src="{{ special_product.featured_image | image_url: width: 400 }}"
-              alt="{{ special_product.title }}"
+              src="{{ product.featured_image | img_url: '' }}"
+              alt="{{ product.title }}"
             >
             <a
-              href="{{ special_product.url }}"
+              href="{{ pr_url }}"
               class="t4s-pr-item-btn mobile t4s-pr-addtocart"
               data-variant-id="{{ first_variant_id }}"
               data-action-atc
               rel="nofollow"
-            >
-              <span class="t4s-svg-pr-icon">
+              ><span class="t4s-svg-pr-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
-                </svg>
-              </span>
-            </a>
+                  <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
+                </svg></span
+            ></a>
           </div>
           <div class="product-details">
-            <h3>{{ special_product.title }}</h3>
-            <p>{{ special_product.price | money }}</p>
+            <h3>{{ product.title }}</h3>
+            <p>{{ product.price | money }}</p>
           </div>
         </a>
       </div>
-      {% assign products_added = products_added | plus: 1 %}
-    {% endif %}
+{% endif %}
 
-    {% comment %} STEP 3: Last product from the same country (but different vendor) {% endcomment %}
-    {% for related_product in collections.all.products %}
-      {% if related_product.metafields.custom.country.value == target_country and related_product.vendor != target_vendor and related_product.handle != product.handle and related_product.handle != special_product_handle and country_product_found == false %}
-        {% if related_product.featured_image != blank and related_product.available %}
-          {% assign first_variant_id = related_product.variants.first.id %}
-          <div class="related-product-item swiper-slide">
-            <a href="{{ related_product.url }}">
-              <div class="image-block">
-                <img
-                  src="{{ related_product.featured_image | image_url: width: 400 }}"
-                  alt="{{ related_product.title }}"
-                >
-                <a
-                  href="{{ related_product.url }}"
-                  class="t4s-pr-item-btn mobile t4s-pr-addtocart"
-                  data-variant-id="{{ first_variant_id }}"
-                  data-action-atc
-                  rel="nofollow"
-                >
-                  <span class="t4s-svg-pr-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                      <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
-                    </svg>
-                  </span>
-                </a>
-              </div>
-              <div class="product-details">
-                <h3>{{ related_product.title }}</h3>
-                <p>{{ related_product.price | money }}</p>
-              </div>
-            </a>
-          </div>
-          {% assign country_product_found = true %}
-          {% assign products_added = products_added | plus: 1 %}
-          {% break %}
-        {% endif %}
-      {% endif %}
     {% endfor %}
-
-    {% comment %} Fallback: If no country product found from different vendor, try same vendor {% endcomment %}
-    {% unless country_product_found %}
-      {% for related_product in collections.all.products %}
-        {% if related_product.metafields.custom.country.value == target_country and related_product.handle != product.handle and related_product.handle != special_product_handle %}
-          {% assign vendor_match = false %}
-          {% if vendor_product_found %}
-            {% for temp_product in collections.all.products %}
-              {% if temp_product.vendor == target_vendor and temp_product.handle != product.handle and temp_product.handle == related_product.handle %}
-                {% assign vendor_match = true %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-          
-          {% unless vendor_match %}
-            {% if related_product.featured_image != blank and related_product.available %}
-              {% assign first_variant_id = related_product.variants.first.id %}
-              <div class="related-product-item swiper-slide">
-                <a href="{{ related_product.url }}">
-                  <div class="image-block">
-                    <img
-                      src="{{ related_product.featured_image | image_url: width: 400 }}"
-                      alt="{{ related_product.title }}"
-                    >
-                    <a
-                      href="{{ related_product.url }}"
-                      class="t4s-pr-item-btn mobile t4s-pr-addtocart"
-                      data-variant-id="{{ first_variant_id }}"
-                      data-action-atc
-                      rel="nofollow"
-                    >
-                      <span class="t4s-svg-pr-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                          <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
-                        </svg>
-                      </span>
-                    </a>
-                  </div>
-                  <div class="product-details">
-                    <h3>{{ related_product.title }}</h3>
-                    <p>{{ related_product.price | money }}</p>
-                  </div>
-                </a>
-              </div>
-              {% assign country_product_found = true %}
-              {% assign products_added = products_added | plus: 1 %}
-              {% break %}
-            {% endif %}
-          {% endunless %}
-        {% endif %}
-      {% endfor %}
-    {% endunless %}
-
-    {% comment %} Show JavaScript fallback if no products found {% endcomment %}
-    {% if products_added == 0 %}
-      <div class="loading-spinner">Loading related products...</div>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const container = document.querySelector('.related-products-list');
-          const currentProductHandle = {{ product.handle | json }};
-          const targetVendor = {{ product.vendor | json }};
-
-          const fetchAllProducts = async (page = 1, collected = []) => {
-            const response = await fetch(`/products.json?limit=50&page=${page}`);
-            if (!response.ok) throw new Error("Failed to fetch products");
-            const data = await response.json();
-            const all = collected.concat(data.products);
-            if (data.products.length === 50) {
-              return fetchAllProducts(page + 1, all);
-            } else {
-              return all;
-            }
-          };
-
-          fetchAllProducts().then(products => {
-            const related = products.filter(p =>
-              p.vendor.trim().toLowerCase() === targetVendor.trim().toLowerCase() &&
-              p.handle !== currentProductHandle
-            ).slice(0, 3);
-
-            if (related.length === 0) {
-              container.innerHTML = `<p>No related products found.</p>`;
-              return;
-            }
-
-            container.innerHTML = '';
-
-            related.forEach(product => {
-              const v = product.variants[0];
-              const price = '$' + (v.price / 100).toFixed(2);
-              container.insertAdjacentHTML('beforeend', `
-                <div class="related-product-item swiper-slide">
-                  <a href="/products/${product.handle}">
-                    <div class="image-block">
-                      <img src="${product.images[0]?.src}&width=400" alt="${product.title}">
-                    </div>
-                    <div class="product-details">
-                      <h3>${product.title}</h3>
-                      <p>${price}</p>
-                    </div>
-                  </a>
-                </div>
-              `);
-            });
-
-            if (typeof Swiper !== 'undefined') {
-              new Swiper('.related-products', {
-                loop: false,
-                navigation: {
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev'
-                },
-                slidesPerView: 3,
-                spaceBetween: 20,
-                breakpoints: {
-                  1920: { slidesPerView: 3, spaceBetween: 20 },
-                  1028: { slidesPerView: 2, spaceBetween: 20 },
-                  480: { slidesPerView: 2, spaceBetween: 10 },
-                },
-              });
-            }
-          }).catch(err => console.error("Error:", err));
-        });
-      </script>
-    {% endif %}
-  </div>
-</div>
 
     <style>
       .related-products {
@@ -349,8 +134,20 @@
         });
       });
     </script>
- 
+  </div>
 
+  <!-- If we need navigation buttons -->
+  <div class="swiper-button-prev">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+      <path d="m13.172 12-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414 4.95-4.95Z"></path>
+    </svg>
+  </div>
+  <div class="swiper-button-next">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+      <path d="m13.172 12-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414 4.95-4.95Z"></path>
+    </svg>
+  </div>
+</div>
 
 {% schema %}
 {
