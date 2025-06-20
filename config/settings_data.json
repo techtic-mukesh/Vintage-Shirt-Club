@@ -440,7 +440,7 @@
             "type": "announcement",
             "settings": {
               "link": "shopify://collections/retro-football-shirt",
-              "content": "<p><strong>[countdown] - SALE ENDING</strong><br/><br/></p>",
+              "content": "<p><strong>[countdown] - SALE ENDING</strong><br/></p>",
               "adding_border": false,
               "countdown": "2022/09/19",
               "txt_day": "DAYS",
