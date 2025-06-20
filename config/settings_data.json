@@ -222,6 +222,7 @@
           },
           "footer-3": {
             "type": "cus_socials",
+            "disabled": true,
             "settings": {
               "title": "Follow Us",
               "social_mode": "1",
@@ -279,7 +280,7 @@
           "footer-8": {
             "type": "bl_col",
             "settings": {
-              "col_heading": "More From Vintage Club",
+              "col_heading": "More From Vintage Shirt Club",
               "menu": "",
               "menu_style": "1",
               "col_border": "none",
