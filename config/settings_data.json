@@ -2168,11 +2168,11 @@
             "type": "menu",
             "settings": {
               "title": "BEST SELLERS",
-              "url": "shopify://collections/mens-1",
+              "url": "shopify://collections/retro-football-shirt",
               "open_link": "_self",
               "menu": "",
-              "lb": "",
-              "lb_cl": "",
+              "lb": "SALE",
+              "lb_cl": "#ec0101",
               "icons_op": "0",
               "icon": "las la-chair"
             }
@@ -2194,10 +2194,10 @@
             "type": "menu",
             "settings": {
               "title": "SHOP BY CLUB",
-              "url": "shopify://collections/retro-football-shirts",
+              "url": "shopify://collections/retro-football-shirt",
               "open_link": "_self",
               "menu": "",
-              "lb": "NEW",
+              "lb": "",
               "lb_cl": "#338400",
               "icons_op": "0",
               "icon": ""
@@ -2207,11 +2207,11 @@
             "type": "menu",
             "settings": {
               "title": "MYSTERY BOX",
-              "url": "shopify://collections/vintage-new-collection",
+              "url": "shopify://products/retro-mystery-football-shirt-box",
               "open_link": "_self",
               "menu": "",
-              "lb": "SALE",
-              "lb_cl": "#ec0101",
+              "lb": "NEW",
+              "lb_cl": "#71ec01",
               "icons_op": "0",
               "icon": ""
             }
