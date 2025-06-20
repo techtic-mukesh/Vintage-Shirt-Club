@@ -176,7 +176,7 @@
   </div>
 {%- endif -%}
 
-<div id="progress-bar" style="display: none; width: 100%; position: relative; margin: 10px 0;">
+{% comment %} <div id="progress-bar" style="display: none; width: 100%; position: relative; margin: 10px 0;">
   <div class="bg_color_bar"><span>£50</span></div>
   <div id="progress" style="width: 0%; height: 5px; "></div>
   <div id="progress-message" style="text-align:center; display:none;"></div>
@@ -192,7 +192,7 @@
     <div class="bg_color_bar"><span>£100</span></div>
     <div id="progress-free-shipping" style="width: 0%; height: 5px; background-color: #2196F3;"></div>
   </div>
-</div>
+</div> {% endcomment %}
 
 <form action="{{ cart_url }}" method="post" novalidate class="t4s-drawer__wrap">
   <input type="hidden" data-cart-attr-rm name="attributes[collection_items_per_row]" value="">
