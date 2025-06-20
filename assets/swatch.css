@@ -47,7 +47,7 @@ t4s-selector-mode__circle  */
 }
 
 .t4s-swatch__list.size .t4s-swatch__item {
-    text-transform: capitalize;
+    text-transform: uppercase;
 }
 .t4s-swatch__list {
     margin: 10px -5px 0;
