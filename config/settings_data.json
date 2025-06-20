@@ -568,14 +568,27 @@
           "base_DaiWRE": {
             "type": "base",
             "settings": {
-              "title": "RETRO FOOTBALL SHIRTS",
-              "url": "shopify://collections/retro-football-shirts",
+              "title": "VINTAGE FOOTBALL CLOTHES",
+              "url": "shopify://collections/vintage-football-clothing",
               "open_link": "_self",
               "icon": "",
               "cus_cl": false,
               "cl": "#ec0101",
-              "lb": "SALE",
+              "lb": "",
               "lb_cl": "#ec0101"
+            }
+          },
+          "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1": {
+            "type": "base",
+            "settings": {
+              "title": "RETRO FOOTBALL SHIRTS",
+              "url": "shopify://collections/retro-football-shirt",
+              "open_link": "_self",
+              "icon": "",
+              "cus_cl": false,
+              "cl": "#ec0101",
+              "lb": "",
+              "lb_cl": ""
             }
           },
           "base_eGinw3": {
@@ -588,28 +601,15 @@
               "cus_cl": true,
               "cl": "#ec0101",
               "lb": "New",
-              "lb_cl": ""
-            }
-          },
-          "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1": {
-            "type": "base",
-            "settings": {
-              "title": "Buy Theme",
-              "url": "https://bit.ly/2yrciwf",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": ""
+              "lb_cl": "#ec0101"
             }
           }
         },
         "block_order": [
           "base_Xa39KG",
           "base_DaiWRE",
-          "base_eGinw3",
-          "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1"
+          "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1",
+          "base_eGinw3"
         ],
         "settings": {
           "layout": "logo_left",
