@@ -2181,7 +2181,7 @@
             "type": "menu",
             "settings": {
               "title": "SHOP BY COUNTRY",
-              "url": "shopify://collections/new-collection",
+              "url": "shopify://collections/retro-football-shirt",
               "open_link": "_self",
               "menu": "",
               "lb": "",
