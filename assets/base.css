@@ -3169,16 +3169,15 @@ p.afterpay-paragraph {
 span.recommended_size {
     display: inline-block;
     margin-left: auto;
-    position: absolute;
-    right: 0;
-    text-transform: capitalize;
+    text-transform: math-auto;
     color: red;
     font-weight: 400;
+    padding-left: 2px;
 }
 
 span.recommended_size a {
     color: red;
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 
 .t4s-swatch.t4s-color-size__large a.size-guide {
