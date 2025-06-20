@@ -42,7 +42,7 @@
     {% assign special_product = all_products[special_product_handle] %}
     {% if special_product and special_product.available and special_product.handle != product.handle %}
       {% assign first_variant_id = special_product.variants.first.id %}
-      <div class="related-product-item swiper-slide">
+      <div class="related-product-item swiper-slide mystery-product">
         <a href="{{ special_product.url }}">
           <div class="image-block">
             <img src="{{ special_product.featured_image | image_url: width: 400 }}" alt="{{ special_product.title }}">
@@ -97,120 +97,108 @@
     {%- comment -%} STEP 4: JS Fallback if vendor products < 2 {%- endcomment -%}
     {% if products_added < 3 %}
     <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.related-products-list');
-    const currentProductHandle = {{ product.handle | json }};
-    const targetVendor = {{ product.vendor | json }};
-    const existingHandles = [
-      {{ first_product_handle | json }},
-      {{ special_product_handle | json }}
-    ].filter(Boolean);
+ document.addEventListener('DOMContentLoaded', function () {
+  const container = document.querySelector('.related-products-list');
+  const currentProductHandle = {{ product.handle | json }};
+  const targetVendor = {{ product.vendor | json }};
+  const existingHandles = [
+    {{ first_product_handle | json }},
+    {{ special_product_handle | json }}
+  ].filter(Boolean);
 
-    console.log("🛠️ Related products fallback script loaded");
-    console.log("🔍 Current product handle:", currentProductHandle);
-    console.log("🏷️ Target vendor:", targetVendor);
-    console.log("🚫 Existing handles to exclude:", existingHandles);
+  const needed = 2;
+  const targetVendorLC = targetVendor.trim().toLowerCase();
+  const excludedHandles = [...existingHandles, currentProductHandle];
 
-    const fetchAllProducts = async (page = 1, collected = []) => {
+  async function fetchTwoVendorProducts(page = 1, collected = []) {
+    while (collected.length < needed) {
       console.log(`📦 Fetching page ${page}...`);
-      const response = await fetch(`/products.json?limit=250&page=${page}`);
-      if (!response.ok) {
-        console.error("❌ Failed to fetch products", response.status);
-        throw new Error("Failed to fetch products");
-      }
-      const data = await response.json();
-      console.log(`✅ Page ${page} fetched:`, data.products.length, "products");
-      const all = collected.concat(data.products);
-      if (data.products.length === 50) {
-        return fetchAllProducts(page + 1, all);
-      } else {
-        return all;
-      }
-    };
-
-    fetchAllProducts().then(products => {
-      console.log("📦 Total products fetched:", products.length);
-
-      const needed = 3 - {{ products_added }};
-      console.log("📊 Need to add this many products:", needed);
-
-      const additional = products.filter(p =>
-        p.vendor.trim().toLowerCase() === targetVendor.trim().toLowerCase() &&
-        p.handle !== currentProductHandle &&
-        !existingHandles.includes(p.handle)
-      ).slice(0, needed);
-
-      console.log("🔍 Filtered additional vendor products:", additional);
-
-      if (additional.length === 0) {
-        console.warn("⚠️ No additional products found.");
-        return;
+      const res = await fetch(`/products.json?limit=250&page=${page}`);
+      if (!res.ok) {
+        console.error("❌ Fetch failed:", res.status);
+        break;
       }
 
-      additional.forEach(product => {
-        const v = product.variants[0];
-     const price = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: '{{ shop.currency }}'
-}).format(parseFloat(v.price)); // ✅ No divide by 100
+      const data = await res.json();
+      if (!data.products.length) break;
 
+      for (const p of data.products) {
+        if (
+          p.vendor.trim().toLowerCase() === targetVendorLC &&
+          !excludedHandles.includes(p.handle) &&
+          !collected.find(prod => prod.handle === p.handle)
+        ) {
+          collected.push(p);
+          if (collected.length === needed) break;
+        }
+      }
 
-        const img = product.images[0]?.src + '&width=400';
+      if (data.products.length < 250) break;
+      page++;
+    }
 
-        console.log("🧩 Rendering product:", {
-          title: product.title,
-          price: price,
-          variantId: v.id,
-          image: img
-        });
+    return collected;
+  }
 
-        container.insertAdjacentHTML('beforeend', `
-          <div class="related-product-item swiper-slide">
-            <a href="/products/${product.handle}">
-              <div class="image-block">
-                <img src="${img}" alt="${product.title}">
-                  <a href="/products/${product.handle}" class="t4s-pr-item-btn mobile t4s-pr-addtocart" data-variant-id="${v.id}" data-action-atc rel="nofollow">
-              <span class="t4s-svg-pr-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v144H48c-17.7 0-32 14.3-32 32s14.3 32 32 32h144v144c0 17.7 14.3 32 32 32s32-14.3 32-32V288h144c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
-                </svg>
-              </span>
-            </a>
-              </div>
-            </a>
-          
-            <div class="product-details">
-              <h3>${product.title}</h3>
-              <p>${price}</p>
-              <p style="display: none;">${product.vendor}</p>
+  fetchTwoVendorProducts().then(products => {
+    if (!products.length) {
+      console.warn("⚠️ No matching products found.");
+      return;
+    }
+
+    products.forEach(product => {
+      const v = product.variants[0];
+      const price = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: '{{ shop.currency }}'
+      }).format(parseFloat(v.price));
+
+      const img = product.images[0]?.src + '&width=400';
+
+      container.insertAdjacentHTML('beforeend', `
+        <div class="related-product-item swiper-slide">
+          <a href="/products/${product.handle}">
+            <div class="image-block">
+              <img src="${img}" alt="${product.title}">
+              <a href="/products/${product.handle}" class="t4s-pr-item-btn mobile t4s-pr-addtocart" data-variant-id="${v.id}" data-action-atc rel="nofollow">
+                <span class="t4s-svg-pr-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v144H48c-17.7 0-32 14.3-32 32s14.3 32 32 32h144v144c0 17.7 14.3 32 32 32s32-14.3 32-32V288h144c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                  </svg>
+                </span>
+              </a>
             </div>
+          </a>
+          <div class="product-details">
+            <h3>${product.title}</h3>
+            <p>${price}</p>
+            <p style="display: none;">${product.vendor}</p>
           </div>
-        `);
-      });
-
-      if (typeof Swiper !== 'undefined') {
-        console.log("🎉 Initializing Swiper slider");
-        new Swiper('.related-products', {
-          loop: false,
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-          },
-          slidesPerView: 3,
-          spaceBetween: 20,
-          breakpoints: {
-            1920: { slidesPerView: 3, spaceBetween: 20 },
-            1028: { slidesPerView: 2, spaceBetween: 20 },
-            480: { slidesPerView: 2, spaceBetween: 10 },
-          },
-        });
-      } else {
-        console.warn("⚠️ Swiper is not loaded");
-      }
-    }).catch(err => {
-      console.error("❌ Error during related products fallback:", err);
+        </div>
+      `);
     });
+
+    if (typeof Swiper !== 'undefined') {
+      new Swiper('.related-products', {
+        loop: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        },
+        slidesPerView: 3,
+        spaceBetween: 20,
+        breakpoints: {
+          1920: { slidesPerView: 3, spaceBetween: 20 },
+          1028: { slidesPerView: 2, spaceBetween: 20 },
+          480: { slidesPerView: 2, spaceBetween: 10 },
+        },
+      });
+    }
+  }).catch(err => {
+    console.error("❌ Related products error:", err);
   });
+});
+
 </script>
 
     {% endif %}

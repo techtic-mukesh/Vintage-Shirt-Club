@@ -350,7 +350,6 @@
       -%}
       <div data-tab-mb-nav class="t4s-drawer__header t4s-mb-nav__tabs t4s-rows t4s-g-0 t4s-row-cols-2 t4s-text-center">
          <div data-tab-mb-item class="t4s-mb-tab__title t4s-col-item t4s-pr t4s-d-flex t4s-align-items-center t4s-justify-content-center {{ order_1 }} {{ nav_active }}" data-id="#shopify-mb_nav"><span class="t4s-d-block t4s-truncate">{{ 'general.mobile_menu.menu' | t }}</span></div>
-         <div data-tab-mb-item class="t4s-mb-tab__title t4s-col-item t4s-pr t4s-d-flex t4s-align-items-center t4s-justify-content-center {{ order_2 }} {{ cat_active }}" data-id="#shopify-mb_cat"><span class="t4s-d-block t4s-truncate">{{ 'general.mobile_menu.categories' | t }}</span></div>
       </div>
      {%- endif -%}
      <div data-tab-mb-content id="shopify-mb_nav" class="t4s-mb-tab__content {{ nav_active }}">{% unless is_page_index %}{%- section 'mb_nav' -%}{% endunless %}</div><div data-tab-mb-content id="shopify-mb_cat" class="t4s-mb-tab__content {{ cat_active }}">{% unless is_page_index %}{%- section 'mb_cat' -%}{% endunless %}</div>

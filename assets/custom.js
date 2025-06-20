@@ -587,5 +587,26 @@ document.addEventListener('cart:updated', function () {
 });
 
 
+ document.addEventListener("DOMContentLoaded", function () {
+  const sizeGuideLink = document.querySelector('.size-guide');
+  const sizeAccordionButton = document.getElementById('size-accodian');
+
+  if (sizeGuideLink && sizeAccordionButton) {
+    sizeGuideLink.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const isActive = sizeAccordionButton.classList.contains('active');
+
+      if (!isActive) {
+        sizeAccordionButton.click();
+      }
+
+      // Always scroll smoothly to the button
+      setTimeout(() => {
+        sizeAccordionButton.scrollIntoView({ behavior: 'smooth' });
+      }, 300); // Adjust delay if needed
+    });
+  }
+});
 
 

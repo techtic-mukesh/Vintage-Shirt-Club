@@ -766,6 +766,7 @@
         "logo_item_GtUgXf",
         "logo_item_JCqbNh"
       ],
+      "disabled": true,
       "settings": {
         "left_heading": "BRANDS TO FIND INSIDE YOUR BOX"
       }
@@ -809,7 +810,7 @@
         "top_heading": "FAQ's",
         "icon_heading": "las la-gem",
         "top_subheading": "",
-        "tophead_mb": 30,
+        "tophead_mb": 40,
         "accor_des": "1",
         "title_cl": "#222222",
         "bg_title_cl": "#f6f6f8",
@@ -824,7 +825,7 @@
         "cl_bg": "",
         "cl_bg_gradient": "",
         "mg": ",,50px,",
-        "pd": "",
+        "pd": "30px",
         "mg_tb": "",
         "pd_tb": "",
         "mg_mb": ",,30px,",
@@ -1358,6 +1359,7 @@
         "item_mPR8CN",
         "item_kbbLP7"
       ],
+      "disabled": true,
       "settings": {
         "design_heading": "2",
         "heading_align": "t4s-text-center",

@@ -43,9 +43,9 @@
       "home": "Home"
     },
     "mobile_menu": {
-      "menu": "Mens",
+      "menu": "Menu",
       "close": "Close menu, categories",
-      "categories": "Womens",
+      "categories": "",
       "wishlist": "Wishlist",
       "compare": "compare",
       "search": "Search",
@@ -176,7 +176,6 @@
       "sort_button": "Sort",
       "filter_button": "Filter"
     },
-    "filter": {},
     "pagination": {
       "view_all": "View All",
       "load_more": "Load More",
@@ -481,8 +480,7 @@
       "conditions": "You must agree with the terms and conditions to sign up.",
       "link_conditions_html": "I agree with the <a href=\"{{ link }}\" class=\"t4s-text__link\">terms and conditions<\/a>.",
       "link_conditions_emty": "I agree with the terms and conditions."
-    },
-    "footer": {}
+    }
   },
   "customer": {
     "form": {
