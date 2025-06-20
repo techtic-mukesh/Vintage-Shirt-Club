@@ -135,7 +135,14 @@
             {%- else -%}
 
               <div data-swatch-option data-id="{{ forloop.index0 }}" class="t4s-swatch__option is-t4s-name__{{ option_name | handle }}">
-                <h4 class="t4s-swatch__title"><span>{{ option_name }}: <span data-current-value class="t4s-dib t4s-swatch__current">{{ selected_value | default: choose_an_option }}</span></span>{% if name_sizeg == name_downcase %}{{ html_sizeg }}{% endif %}</h4>
+                <h4 class="t4s-swatch__title"><span>{{ option_name }}: <span data-current-value class="t4s-dib t4s-swatch__current">{{ selected_value | default: choose_an_option }}</span></span>{% if name_sizeg == name_downcase %}{{ html_sizeg }}{% endif %}
+                {% assign option_name_lower = option_name | downcase %}
+                  {% if option_name_lower == 'size' and product.type == 'Retro Football Shirt' %}
+                    <span class="recommended_size">Recommended to <a href="javascript:void(0)">SIZE UP +1</a></span>
+                  {% endif %}
+                  </h4>
+
+            
                 <div class="t4s-swatch__list">
                   {%- if selector_mode != 'dropdown' -%}
                     {%- for value in option.values -%}
@@ -158,6 +165,10 @@
                     </div>
                   {%- endif -%}
                 </div>
+
+                    {% if option_name_lower == 'size' and product.type == 'Retro Football Shirt' %}
+                    <a href="javascript:void(0)" class="size-guide">Size guide</a>
+                  {% endif %}
               </div>
 
               {%- comment -%}
