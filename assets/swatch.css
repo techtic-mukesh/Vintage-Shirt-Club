@@ -45,6 +45,10 @@ t4s-selector-mode__circle  */
     margin: 0.65em 0 0.5em;
     position: relative;
 }
+
+.t4s-swatch__list.size .t4s-swatch__item {
+    text-transform: capitalize;
+}
 .t4s-swatch__list {
     margin: 10px -5px 0;
 }
