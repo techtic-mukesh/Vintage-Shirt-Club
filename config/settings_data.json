@@ -552,203 +552,21 @@
       "header-inline": {
         "type": "header-inline",
         "blocks": {
-          "drop_cb8adX": {
-            "type": "drop",
-            "disabled": true,
-            "settings": {
-              "title": "NEW IN",
-              "url": "/collections/new-collection",
-              "open_link": "_self",
-              "menu": "",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "",
-              "lazy_mn": true,
-              "pos_sub": "bottom",
-              "pos": "left"
-            }
-          },
-          "mega_whbwjn": {
-            "type": "mega",
-            "settings": {
-              "title": "BEST SELLERS",
-              "url": "shopify://collections/retro-football-shirt",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#00badb",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 2,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "drop_CnYFLr": {
-            "type": "drop",
-            "settings": {
-              "title": "SHOP BY COUNTRY",
-              "url": "/collections/mens-1",
-              "open_link": "_self",
-              "menu": "shop-by-country",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "",
-              "lazy_mn": true,
-              "pos_sub": "bottom",
-              "pos": "left"
-            }
-          },
-          "e0be43d6-bf02-4962-a06e-4294c6d6bd53": {
-            "type": "mega",
-            "disabled": true,
-            "settings": {
-              "title": "SHOP BY COUNTRY",
-              "url": "/collections/womens",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#00badb",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 3,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "drop_CXtXGh": {
-            "type": "drop",
-            "disabled": true,
-            "settings": {
-              "title": "WOMENS",
-              "url": "/collections/womens",
-              "open_link": "_self",
-              "menu": "",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "",
-              "lazy_mn": true,
-              "pos_sub": "bottom",
-              "pos": "left"
-            }
-          },
-          "mega_nfqcTx": {
-            "type": "mega",
-            "settings": {
-              "title": "SHOP BY CLUB",
-              "url": "shopify://collections/accessory",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "NEW",
-              "lb_cl": "#109533",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 8,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "mega_hX4cwy": {
-            "type": "mega",
-            "disabled": true,
-            "settings": {
-              "title": "POSTERS",
-              "url": "shopify://collections/posters",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "NEW",
-              "lb_cl": "#109533",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 1,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "4a281327-6e12-4cd4-af83-0ce2f502e7b8": {
-            "type": "mega",
-            "disabled": true,
-            "settings": {
-              "title": "BRANDS",
-              "url": "/pages/brands",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#9ae86a",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 4,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "drop_d4yHtH": {
-            "type": "drop",
-            "disabled": true,
-            "settings": {
-              "title": "BRANDS",
-              "url": "/pages/brands",
-              "open_link": "_self",
-              "menu": "",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "",
-              "lazy_mn": true,
-              "pos_sub": "bottom",
-              "pos": "left"
-            }
-          },
-          "93b9d6cb-cd15-420c-b71e-bde328f3208f": {
-            "type": "mega",
-            "settings": {
-              "title": "MYSTERY BOXES",
-              "url": "/collections/vintage-new-collection",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": true,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#109533",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 5,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
           "base_Xa39KG": {
             "type": "base",
-            "disabled": true,
+            "settings": {
+              "title": "POSTERS",
+              "url": "shopify://collections/football-posters",
+              "open_link": "_self",
+              "icon": "",
+              "cus_cl": false,
+              "cl": "#ec0101",
+              "lb": "",
+              "lb_cl": "#ec0101"
+            }
+          },
+          "base_DaiWRE": {
+            "type": "base",
             "settings": {
               "title": "RETRO FOOTBALL SHIRTS",
               "url": "shopify://collections/retro-football-shirts",
@@ -762,7 +580,6 @@
           },
           "base_eGinw3": {
             "type": "base",
-            "disabled": true,
             "settings": {
               "title": "MYSTERY BOXES",
               "url": "shopify://collections/vintage-new-collection",
@@ -774,51 +591,8 @@
               "lb_cl": ""
             }
           },
-          "mega_FhVkCT": {
-            "type": "mega",
-            "disabled": true,
-            "settings": {
-              "title": "RACING JACKET",
-              "url": "shopify://collections/racingjacket",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#00badb",
-              "pos_sub": "bottom",
-              "wid": "full",
-              "cus_wid": 1200,
-              "id": 7,
-              "enable_packery": true,
-              "r_s_h_item": "10",
-              "r_s_v_item": "10"
-            }
-          },
-          "9a73cf8b-993e-4dbe-9f11-6e990bfb91c0": {
-            "type": "mega",
-            "disabled": true,
-            "settings": {
-              "title": "Blog",
-              "url": "https://demo-kalles-4-1.myshopify.com/blogs/fashion?preview_theme_id=",
-              "open_link": "_self",
-              "icon": "",
-              "cus_cl": false,
-              "cl": "#ec0101",
-              "lb": "",
-              "lb_cl": "#00badb",
-              "pos_sub": "bottom",
-              "wid": "cus",
-              "cus_wid": 950,
-              "id": 6,
-              "enable_packery": true,
-              "r_s_h_item": "20",
-              "r_s_v_item": "30"
-            }
-          },
           "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1": {
             "type": "base",
-            "disabled": true,
             "settings": {
               "title": "Buy Theme",
               "url": "https://bit.ly/2yrciwf",
@@ -832,20 +606,9 @@
           }
         },
         "block_order": [
-          "drop_cb8adX",
-          "mega_whbwjn",
-          "drop_CnYFLr",
-          "e0be43d6-bf02-4962-a06e-4294c6d6bd53",
-          "drop_CXtXGh",
-          "mega_nfqcTx",
-          "mega_hX4cwy",
-          "4a281327-6e12-4cd4-af83-0ce2f502e7b8",
-          "drop_d4yHtH",
-          "93b9d6cb-cd15-420c-b71e-bde328f3208f",
           "base_Xa39KG",
+          "base_DaiWRE",
           "base_eGinw3",
-          "mega_FhVkCT",
-          "9a73cf8b-993e-4dbe-9f11-6e990bfb91c0",
           "b52b8dda-3d6a-485a-8c89-e12b4c51e2b1"
         ],
         "settings": {
