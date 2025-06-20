@@ -591,9 +591,8 @@
           },
           "drop_CnYFLr": {
             "type": "drop",
-            "disabled": true,
             "settings": {
-              "title": "MENS",
+              "title": "SHOP BY COUNTRY",
               "url": "/collections/mens-1",
               "open_link": "_self",
               "menu": "shop-by-country",
@@ -609,6 +608,7 @@
           },
           "e0be43d6-bf02-4962-a06e-4294c6d6bd53": {
             "type": "mega",
+            "disabled": true,
             "settings": {
               "title": "SHOP BY COUNTRY",
               "url": "/collections/womens",
