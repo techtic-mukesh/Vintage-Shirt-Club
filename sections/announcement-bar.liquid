@@ -66,39 +66,24 @@
       } 
     } catch(err) {}
 
-    // Custom countdown logic
+    // Custom countdown logic - Start from 8:00:00, reset when reaches 4:00:00
     function initCustomCountdown() {
       const countdownElements = document.querySelectorAll('[data-countdown-custom]');
       
       countdownElements.forEach(element => {
-        const startHours = parseInt(element.dataset.startHours) || 8;
-        const resetHours = parseInt(element.dataset.resetHours) || 4;
-        
         function updateCountdown() {
           const now = new Date();
-          const currentHour = now.getHours();
-          const currentMinute = now.getMinutes();
-          const currentSecond = now.getSeconds();
+          const totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
           
-          // Calculate total seconds from midnight
-          const totalSecondsToday = (currentHour * 3600) + (currentMinute * 60) + currentSecond;
+          // 4 hour cycle (countdown period from 8:00:00 to 4:00:00)
+          const cycleLength = 4 * 3600; // 4 hours = 14400 seconds
+          const cyclePosition = totalSeconds % cycleLength; // Current position in 4-hour cycle
           
-          // 8-hour cycle in seconds (28800 seconds)
-          const cycleLength = startHours * 3600;
-          const resetPoint = resetHours * 3600;
-          
-          // Find current position in the 8-hour cycle
-          const cyclePosition = totalSecondsToday % cycleLength;
-          
-          let remainingSeconds;
-          
-          // If we're in the first 4 hours of the cycle (0-4 hours)
-          if (cyclePosition < resetPoint) {
-            remainingSeconds = resetPoint - cyclePosition;
-          } else {
-            // If we're in the second 4 hours (4-8 hours), count down to the reset
-            remainingSeconds = cycleLength - cyclePosition + resetPoint;
-          }
+          // Calculate countdown: 8 hours - cycle position
+          // When cycle position is 0, show 8:00:00
+          // When cycle position is 14400 (4 hours), it resets to 0, showing 8:00:00 again
+          const startTime = 8 * 3600; // 8 hours in seconds
+          const remainingSeconds = startTime - cyclePosition;
           
           const hours = Math.floor(remainingSeconds / 3600);
           const minutes = Math.floor((remainingSeconds % 3600) / 60);
