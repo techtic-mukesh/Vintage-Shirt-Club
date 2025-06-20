@@ -422,7 +422,7 @@
           "link_active_cl": "#222222",
           "border_cl": "#e6e6e6",
           "layout": "t4s-container-wrap",
-          "cl_bg": "#fff",
+          "cl_bg": "#ffffff",
           "cl_bg_gradient": "",
           "mg": "",
           "pd": "75px,,75px,",
@@ -438,12 +438,12 @@
           "announcement-bar-0": {
             "type": "announcement",
             "settings": {
-              "link": "shopify://collections/vintage-new-collection",
-              "content": "<p><strong> MYSTERY BOX SALE NOW ON</strong></p>",
+              "link": "shopify://collections/retro-football-shirt",
+              "content": "<p><strong>[countdown] - SALE ENDING</strong><br/><br/></p>",
               "adding_border": false,
               "countdown": "2022/09/19",
-              "txt_day": "days",
-              "dayx": 0
+              "txt_day": "DAYS",
+              "dayx": 2
             }
           },
           "announcement_nLD63D": {
@@ -856,7 +856,7 @@
           "hover": "hover_sideup",
           "enable_active": false,
           "h_navmb": 60,
-          "bgnav": "#fff",
+          "bgnav": "#ffffff",
           "opnav": 100,
           "clnav": "#222222",
           "clnav_hover": "#9ae86a",
