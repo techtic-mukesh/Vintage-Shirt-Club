@@ -41,7 +41,8 @@
 
              <div class="t4s-announcement-bar__wrap t4s-col t4s-col-item t4s-d-flex t4s-align-items-center t4s-text-center t4s-row t4s-row-cols-1 t4s-g-0 flickityt4s{% if se_stts.effect == '1' %} t4s-slide-eff-fade{% endif %}" data-flickityt4s-js='{ "cellAlign": "center","imagesLoaded": 0,"lazyLoad": 0,"freeScroll": 0,"wrapAround": true,"autoPlay" : {{ se_stts.au_time | times: 1000 }},"pauseAutoPlayOnHover" : true, "prevNextButtons": false,"pageDots": false, "contain" : 1,"adaptiveHeight" : 1,"dragThreshold" : 5,"percentPosition": 1 }'>
                {%- for block in section.blocks -%}{%- assign bk_stts = block.settings -%}
-                  {%- capture cap_date %}{% assign se_dayx = bk_stts.dayx %}<span data-refresh-owl data-countdown-t4s data-loop="{% if se_dayx > 0 %}true{% else %}false{% endif %}" data-date="{{ bk_stts.countdown }}" data-dayl="{{ se_dayx }}">%D {{ bk_stts.txt_day }} %H:%M:%S</span>{% endcapture -%}
+                  {%- comment -%} Custom countdown logic: 8 hours cycle, reset at 4 hours {%- endcomment -%}
+                  {%- capture cap_date %}<span data-refresh-owl data-countdown-custom data-start-hours="8" data-reset-hours="4">%H:%M:%S</span>{% endcapture -%}
 
                   <div id="b_{{ block.id }}" {{ block.shopify_attributes }} data-select-flickity class="t4s-col-item t4s-announcement-bar__item t4s-pr t4s-oh t4s-rte{% unless block.settings.adding_border %}--list{% endunless %}">
                   {%- if bk_stts.link != blank -%}<a href="{{ bk_stts.link }}" aria-label="{{ label }}" class="t4s-full-width-link t4s-a"></a>{%- endif -%}
@@ -55,7 +56,55 @@
        </div>
     </div>
   </div>
-  <script>try { if (document.cookie.indexOf('t4s_announcement_{{ theme_name }}_{{ se_stts.version }}_nt') > -1) { document.getElementById('shopify-section-announcement-bar').setAttribute("aria-hidden", true);document.getElementsByClassName('t4s-announcement-bar')[0].setAttribute("aria-hidden", true);document.getElementsByClassName('t4s-announcement-bar')[0].classList.add('t4s-d-none'); } }catch(err) {}</script>
+
+  <script>
+    try { 
+      if (document.cookie.indexOf('t4s_announcement_{{ theme_name }}_{{ se_stts.version }}_nt') > -1) { 
+        document.getElementById('shopify-section-announcement-bar').setAttribute("aria-hidden", true);
+        document.getElementsByClassName('t4s-announcement-bar')[0].setAttribute("aria-hidden", true);
+        document.getElementsByClassName('t4s-announcement-bar')[0].classList.add('t4s-d-none'); 
+      } 
+    } catch(err) {}
+
+    // Custom countdown logic - Start from 8:00:00, reset when reaches 4:00:00
+    function initCustomCountdown() {
+      const countdownElements = document.querySelectorAll('[data-countdown-custom]');
+      
+      countdownElements.forEach(element => {
+        function updateCountdown() {
+          const now = new Date();
+          const totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+          
+          // 4 hour cycle (countdown period from 8:00:00 to 4:00:00)
+          const cycleLength = 4 * 3600; // 4 hours = 14400 seconds
+          const cyclePosition = totalSeconds % cycleLength; // Current position in 4-hour cycle
+          
+          // Calculate countdown: 8 hours - cycle position
+          // When cycle position is 0, show 8:00:00
+          // When cycle position is 14400 (4 hours), it resets to 0, showing 8:00:00 again
+          const startTime = 8 * 3600; // 8 hours in seconds
+          const remainingSeconds = startTime - cyclePosition;
+          
+          const hours = Math.floor(remainingSeconds / 3600);
+          const minutes = Math.floor((remainingSeconds % 3600) / 60);
+          const seconds = remainingSeconds % 60;
+          
+          const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          element.textContent = formattedTime;
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+      });
+    }
+    
+    // Initialize when DOM is loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCustomCountdown);
+    } else {
+      initCustomCountdown();
+    }
+  </script>
 {%- else -%}
 <script>try { if (window.Shopify && !Shopify.designMode) { document.getElementById('shopify-section-announcement-bar').remove() } else { document.getElementById('shopify-section-announcement-bar').setAttribute("aria-hidden", true) } }catch(err) {}</script>
 {%- endif -%}
@@ -214,38 +263,14 @@
           "type": "richtext",
           "id": "content",
           "label": "Banner content",
-          "default": "<p>Today deal sale off 70%. End in [countdown]. Hurry Up!! [icon_arrow]</p>",
-          "info": "Place here text you want to see in the header banner. You can use shortocdes: [countdown], [icon_arrow]"
+          "default": "<p>Flash Sale ends in [countdown] - Don't miss out! [icon_arrow]</p>",
+          "info": "Place here text you want to see in the header banner. You can use shortcodes: [countdown], [icon_arrow]. The countdown will show HH:MM:SS format only."
         },
         {
           "type": "checkbox",
           "id": "adding_border",
           "label": "Adding a bottom border on link",
           "default": false
-        },
-        {
-          "type": "text",
-          "id": "countdown",
-          "label": "Date countdown",
-          "default": "2023/12/26",
-          "info": "Use shortocdes: [countdown]. Countdown to the end sale date will be shown.( 2023/12/26 or 2023/12/26 20:00:30 )"
-        },
-        {
-          "type": "text",
-          "id": "txt_day",
-          "label": "Text day countdown",
-          "default": "days"
-        },
-        {
-          "type": "range",
-          "id": "dayx",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "label": "Reset countdown every x days from an initial date.",
-          "info": "Set is '0' to disable reset countdown.",
-          "unit": "day",
-          "default": 0
         }
       ]
     }
@@ -253,13 +278,10 @@
   "default": {
     "blocks": [
       {
-        "type": "announcement"
-      },
-      {
-        "type": "announcement"
-      },
-      {
-        "type": "announcement"
+        "type": "announcement",
+        "settings": {
+          "content": "<p>Flash Sale ends in [countdown] - Don't miss out! [icon_arrow]</p>"
+        }
       }
     ]
   }

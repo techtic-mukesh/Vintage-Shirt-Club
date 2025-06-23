@@ -88,6 +88,7 @@
                 >
                   <path d="M 12.96875 4.28125 L 11.53125 5.71875 L 21.8125 16 L 11.53125 26.28125 L 12.96875 27.71875 L 23.96875 16.71875 L 24.65625 16 L 23.96875 15.28125 Z"/>
                 </svg>
+                {% if product.metafields.custom.country.value != blank %}
                 <a href="/a/search/all?filter_custom.country={{ product.metafields.custom.country.value }}" class="t4s-dib">
                   <span>{{ product.metafields.custom.country.value }}</span>
                 </a>
@@ -103,6 +104,7 @@
                 >
                   <path d="M 12.96875 4.28125 L 11.53125 5.71875 L 21.8125 16 L 11.53125 26.28125 L 12.96875 27.71875 L 23.96875 16.71875 L 24.65625 16 L 23.96875 15.28125 Z"/>
                 </svg>
+                {% endif %}
                 <a href="/collections/vendors?q={{ product.vendor | url_encode }}" class="t4s-dib">
                   {{- product.vendor -}}
                 </a>

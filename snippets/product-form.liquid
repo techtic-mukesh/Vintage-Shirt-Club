@@ -137,7 +137,7 @@
               <div data-swatch-option data-id="{{ forloop.index0 }}" class="t4s-swatch__option is-t4s-name__{{ option_name | handle }}">
                 <h4 class="t4s-swatch__title"><span>{{ option_name }}: <span data-current-value class="t4s-dib t4s-swatch__current">{{ selected_value | default: choose_an_option }}</span></span>{% if name_sizeg == name_downcase %}{{ html_sizeg }}{% endif %}
                 {% assign option_name_lower = option_name | downcase %}
-                  {% if option_name_lower == 'size' and product.type == 'Retro Football Shirt' %}
+                  {% if option_name_lower == 'size' %}
                     <span class="recommended_size">Recommended to <a href="javascript:void(0)">size up +1</a></span>
                   {% endif %}
                   </h4>
@@ -1234,6 +1234,99 @@ document.addEventListener('DOMContentLoaded', function() {
           {%- else -%}
 
             {%- if bk_stts.show_qty and isProductAvailable -%}
+                    {% if product.type contains 'Mystery Box' %}
+  <!-- Upsell options -->
+  <p class="upsell-options-heading">BUY MORE, SAVE MORE</p>
+
+  <div class="upsell-options">
+    {% assign mini_subtitle_value = product.metafields.custom.mini_subtitle
+      | remove: ' items'
+      | remove: '('
+      | remove: ')'
+      | strip
+    %}
+    {% assign mini_subtitle_number = mini_subtitle_value | plus: 0 %}
+
+    {% if mini_subtitle_number != 0 %}
+      {% assign multiplied_by_2 = mini_subtitle_number | times: 2 %}
+      {% assign multiplied_by_3 = mini_subtitle_number | times: 3 %}
+    {% endif %}
+
+    <!-- Option for 1 BOX -->
+    <label for="box1" class="upsell_btns">
+      <div class="left">
+        <input type="radio" id="box1" name="box-quantity" value="1" class="radio-input">
+        <div class="content">
+          <h5>1 BOX</h5>
+          <div class="bar-subtitle">{{ mini_subtitle_value }} items</div>
+        </div>
+      </div>
+      <span></span>
+      <div class="price-info">
+        <span class="current-price">{{ product.price | money }}</span>
+        {% assign price_per_piece_1 = product.price | divided_by: mini_subtitle_number %}
+        <div class="per-piece">(£{{ price_per_piece_1 | divided_by: 1.0 | round: 3 | money_without_currency }} pp)</div>
+      </div>
+    </label>
+
+    <!-- Option for 2 BOXES -->
+    <label for="box2" class="upsell_btns">
+      <div class="left">
+        <input type="radio" id="box2" name="box-quantity" value="2" class="radio-input">
+        <div class="content">
+          <h5>2 BOXES <span class="upsell_badge green">MOST POPULAR</span></h5>
+          <div class="bar-subtitle">{{ multiplied_by_2 }} items</div>
+        </div>
+      </div>
+      <span class="discount-badge">15% OFF</span>
+      <div class="price-info">
+        {% assign price_2box = product.price | times: 2 %}
+        {% assign compare_at_price_2box = product.compare_at_price | times: 2 %}
+        {% assign Second_discount = price_2box | times: 16 | divided_by: 100 %}
+        {% assign FinalSecond_price = price_2box | minus: Second_discount %}
+        {% assign total_items_2 = mini_subtitle_number | times: 2 %}
+        {% assign price_per_piece_2 = FinalSecond_price | divided_by: total_items_2 %}
+
+        {% if product.compare_at_price > product.price %}
+          <span class="compare-price" style="text-decoration: line-through;">
+            {{ compare_at_price_2box | money }}
+          </span>
+        {% endif %}
+
+        <span class="current-price">{{ FinalSecond_price | money }}</span>
+        <div class="per-piece">(£{{ price_per_piece_2 | divided_by: 1.0 | round: 3 | money_without_currency }} pp)</div>
+      </div>
+    </label>
+
+    <!-- Option for 3 BOXES -->
+    <label for="box3" class="upsell_btns">
+      <div class="left">
+        <input type="radio" id="box3" name="box-quantity" value="3" class="radio-input">
+        <div class="content">
+          <h5>3 BOXES <span class="upsell_badge">BEST VALUE</span></h5>
+          <div class="bar-subtitle">{{ multiplied_by_3 }} items</div>
+        </div>
+      </div>
+      <span class="discount-badge">20% OFF</span>
+      <div class="price-info">
+        {% assign price_3box = product.price | times: 3 %}
+        {% assign compare_at_price_3box = product.compare_at_price | times: 3 %}
+        {% assign third_discount = price_3box | times: 20 | divided_by: 100 %}
+        {% assign Finalthird_price = price_3box | minus: third_discount %}
+        {% assign total_items_3 = mini_subtitle_number | times: 3 %}
+        {% assign price_per_piece_3 = Finalthird_price | divided_by: total_items_3 %}
+
+        {% if product.compare_at_price > product.price %}
+          <span class="compare-price" style="text-decoration: line-through;">
+            {{ compare_at_price_3box | money }}
+          </span>
+        {% endif %}
+        <span class="current-price">{{ Finalthird_price | money }}</span>
+        <div class="per-piece">(£{{ price_per_piece_3 | divided_by: 1.0 | round: 3 | money_without_currency }} pp)</div>
+      </div>
+    </label>
+  </div>
+{% endif %}
               <div data-quantity-wrapper class="t4s-quantity-wrapper t4s-product-form__qty"> 
                 <button data-quantity-selector data-decrease-qty type="button" class="t4s-quantity-selector is--minus"><svg focusable="false" class="icon icon--minus" viewBox="0 0 10 2" role="presentation"><path d="M10 0v2H0V0z" fill="currentColor"></path></svg></button>
                 <input data-quantity-value type="number" class="t4s-quantity-input" step="{{ current_variant.quantity_rule.increment | default: 1 }}" min="{{ cus_qty }}" max="{{ max_qty }}" name="quantity" value="{{ cus_qty }}" size="4" pattern="[0-9]*" inputmode="numeric">
@@ -1271,3 +1364,157 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 {%- if PR_buy_pr and current_variant_available != true and type != 'main_sticky' -%}<style> #t4s-callBackVariant{{ product_form_id }} .shopify-payment-button { display: none;} </style>{% endif -%}
+
+
+   {% if template == 'product' %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Debug logging to verify script is running
+      console.log('Script initialized');
+
+      // Select elements
+      const radioInputs = document.querySelectorAll('input[name="box-quantity"]');
+      const quantityInput = document.querySelector('[data-quantity-value]');
+      const labels = document.querySelectorAll('.upsell_btns');
+
+      console.log('Quantity Input found:', quantityInput);
+      console.log('Radio buttons found:', radioInputs.length);
+      console.log('Labels found:', labels.length);
+
+      // Function to update active class on labels
+      function updateActiveLabels(selectedValue) {
+        console.log('Updating active label for value:', selectedValue);
+
+        // Remove active class from all labels
+        labels.forEach((label) => {
+          label.classList.remove('active');
+        });
+
+        // Find and activate the correct label
+        const activeLabel = document.querySelector(`label[for="box${selectedValue}"]`);
+        if (activeLabel) {
+          console.log('Setting active class on label:', activeLabel.getAttribute('for'));
+          activeLabel.classList.add('active');
+        } else {
+          console.log('No matching label found for value:', selectedValue);
+        }
+      }
+
+      // Function to update quantity
+      function handleQuantityChange(boxCount) {
+        console.log('Radio selection changed:', boxCount);
+
+        // Update active labels
+        updateActiveLabels(boxCount);
+
+        if (quantityInput) {
+          // Update quantity
+          quantityInput.value = boxCount;
+
+          // Trigger native change event
+          quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+          console.log('Quantity updated to:', boxCount);
+          // If you have a form, trigger form change event
+          const form = quantityInput.closest('form');
+          if (form) {
+            form.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      }
+
+      // Add change handlers to radio buttons
+      radioInputs.forEach((radio) => {
+        radio.addEventListener('change', function () {
+          if (this.checked) {
+            const boxCount = parseInt(this.value);
+            handleQuantityChange(boxCount);
+          }
+        });
+      });
+
+      // Optional: Add cart refresh function
+      function refreshCart(quantity) {
+        console.log('Attempting cart refresh with quantity:', quantity);
+
+        // Get the current variant ID from your form
+        const variantId = document.querySelector('input[name="id"]')?.value;
+
+        if (!variantId) {
+          console.error('No variant ID found');
+          return;
+        }
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [
+              {
+                id: variantId,
+                quantity: quantity,
+              },
+            ],
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Cart updated successfully:', data);
+            if (window.refreshCart) {
+              window.refreshCart();
+            }
+          })
+          .catch((error) => {
+            console.error('Error updating cart:', error);
+          });
+      }
+
+      // Optional: Add to cart button handler
+      const addToCartBtn = document.querySelector('[data-add-to-cart]');
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          const quantity = parseInt(quantityInput.value);
+          refreshCart(quantity);
+        });
+      }
+
+      // Set default selection to 2 boxes
+      const twoBoxRadio = Array.from(radioInputs).find((radio) => parseInt(radio.value) === 2);
+      if (twoBoxRadio) {
+        twoBoxRadio.checked = true;
+        handleQuantityChange(2);
+      } else {
+        console.warn('Could not find radio button for 2 boxes');
+        // Fallback to first radio if 2 boxes option doesn't exist
+        const defaultRadio = radioInputs[0];
+        if (defaultRadio) {
+          defaultRadio.checked = true;
+          handleQuantityChange(parseInt(defaultRadio.value));
+        }
+      }
+
+      // Add click handlers directly to labels
+      labels.forEach((label) => {
+        label.addEventListener('click', function () {
+          const radioId = this.getAttribute('for');
+          const value = radioId.replace('box', '');
+          updateActiveLabels(value);
+        });
+      });
+
+      // Sync quantity input with radio buttons
+      quantityInput?.addEventListener('change', function () {
+        const currentValue = parseInt(this.value);
+        radioInputs.forEach((radio) => {
+          if (parseInt(radio.value) === currentValue) {
+            radio.checked = true;
+            updateActiveLabels(currentValue);
+          }
+        });
+      });
+    });
+  </script>
+{% endif %}
