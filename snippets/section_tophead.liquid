@@ -27,6 +27,8 @@
         <p>
           Other
 
+           <span class="collection-title">{{ product.vendor }}</span>
+
           <span>
             {% assign allowed_collections = 'Poster,Cars Poster,Art Posters,Food Poster,Location Poster,Music Poster,Magazine Posters,Pop Art Poster,Sport Poster'
               | split: ','
@@ -40,7 +42,7 @@
                   | replace: 'Poster', ''
                   | replace: 'Posters', ''
                 %}
-                <span class="collection-title">{{ clean_title }}</span>
+               
               {% endif %}
             {% endfor %}
           </span>
