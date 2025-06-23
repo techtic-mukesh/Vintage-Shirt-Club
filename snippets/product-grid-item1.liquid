@@ -890,13 +890,14 @@
           {% else %}
             <h3 class="t4s-product-title">
               <a data-pr-href href="{{ pr_url }}">
-                <span class="brand-name">
+                {{ product.title }}
+                {% comment %} <span class="brand-name">
                   {{- product.vendor }}
                 </span>
                 {{ product.type }}
                 {% if product.variants.size > 0 and product.variants.first.option1 %}
                   {{ product.variants.first.option1 }}
-                {% endif -%}
+                {% endif -%} {% endcomment %}
               </a>
             </h3>
           {% endif %}
