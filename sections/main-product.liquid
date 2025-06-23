@@ -924,6 +924,27 @@
                   {%- endcapture -%}
                   {%- if ck_meta -%}
                     {%- if product.type == 'Mystery Box' -%}
+                          <button id="size-accodian" class="vcaccordion">Size Chart</button>
+                      <div class="vcpanel">
+                        <div class="t4s-size_cart">
+                          {{ section.settings.sizecart }}
+
+                          <div class="t4s-size_image">
+                            {% if section.settings.sizecart1 %}
+                              <div class="size-chart-image">
+                                <img src="{{ section.settings.sizecart1 | img_url: 'master' }}" alt="Size Chart 1">
+                              </div>
+                            {% endif %}
+
+                            {% if section.settings.sizecart2 %}
+                              <div class="size-chart-image">
+                                <img src="{{ section.settings.sizecart2 | img_url: 'master' }}" alt="Size Chart 2">
+                              </div>
+                            {% endif %}
+
+                          </div>
+                        </div>
+                      </div>
                       {% comment %}
                         <button class="vcaccordion">{{ section.settings.mstitle }}</button>
                         <div class="vcpanel">{{ section.settings.msdescription }}</div>
