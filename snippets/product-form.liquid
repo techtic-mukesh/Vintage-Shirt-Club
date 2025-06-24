@@ -1256,7 +1256,93 @@ document.addEventListener('DOMContentLoaded', function() {
       {% assign multiplied_by_3 = mini_subtitle_number | times: 3 %}
     {% endif %}
 
-    <!-- Option for 1 BOX -->
+  {% assign shirt_option_index = nil %}
+{% assign shown_values = "" %}
+
+{%- for option in product.options_with_values -%}
+  {% if option.name == "Shirts" %}
+    {% assign shirt_option_index = forloop.index0 %}
+  {% endif %}
+{%- endfor -%}
+
+{% if shirt_option_index != nil %}
+  {% for variant in product.variants %}
+    {% assign shirt_value = variant.options[shirt_option_index] %}
+    
+    {% unless shown_values contains shirt_value %}
+      {% assign shown_values = shown_values | append: shirt_value | append: "," %}
+
+      {% assign subtitle_value = shirt_value | plus: 0 %}
+      {% assign total_items = mini_subtitle_number | times: subtitle_value %}
+      {% assign base_price = product.price | times: subtitle_value %}
+      {% assign compare_price = product.compare_at_price | times: subtitle_value %}
+
+      {%- comment -%}
+      Apply 20% discount if 3 or more boxes
+      {%- endcomment -%}
+      {% assign discount_percent = 0 %}
+      {% if subtitle_value >= 3 %}
+        {% assign discount_percent = 20 %}
+      {% endif %}
+
+      {% assign discount_amount = base_price | times: discount_percent | divided_by: 100 %}
+      {% assign final_price = base_price | minus: discount_amount %}
+      {% assign price_per_piece = final_price | divided_by: total_items %}
+
+      <label for="box{{ shirt_value }}" class="upsell_btns">
+        <div class="left">
+          <input
+            type="radio"
+            id="box{{ shirt_value }}"
+            name="box-quantity"
+            value="{{ shirt_value }}"
+            class="radio-input"
+            data-variant-id="{{ variant.id }}"
+          >
+          <div class="content">
+            <h5>
+             {% if subtitle_value >= 2 %}
+              {{ shirt_value }} BOXES
+              {%  else %} 
+              {{ shirt_value }} BOX
+             {% endif %}
+              {% if subtitle_value == 3 %}
+                <span class="upsell_badge green">MOST POPULAR</span>
+              {% elsif subtitle_value >= 4 %}
+                <span class="upsell_badge">BEST VALUE</span>
+              {% endif %}
+            </h5>
+            <div class="bar-subtitle">{{ shirt_value }} items</div>
+          </div>
+        </div>
+
+        {% if discount_percent > 0 %}
+          <span class="discount-badge">{{ discount_percent }}% OFF</span>
+        {% else %}
+          <span></span>
+        {% endif %}
+
+        <div class="price-info">
+          {% if compare_price > base_price %}
+            <span class="compare-price" style="text-decoration: line-through;">
+              {{ compare_price | money }}
+            </span>
+          {% endif %}
+          <span class="current-price">{{ final_price | money }}</span>
+          <div class="per-piece">
+            (£{{ price_per_piece | divided_by: 1.0 | round: 2 | money_without_currency }} pp)
+          </div>
+        </div>
+      </label>
+
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+
+
+
+    {% comment %} <!-- Option for 1 BOX -->
     <label for="box1" class="upsell_btns">
       <div class="left">
         <input type="radio" id="box1" name="box-quantity" value="1" class="radio-input">
@@ -1328,7 +1414,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <span class="current-price">{{ Finalthird_price | money }}</span>
         <div class="per-piece">(£{{ price_per_piece_3 | divided_by: 1.0 | round: 3 | money_without_currency }} pp)</div>
       </div>
-    </label>
+    </label> {% endcomment %}
   </div>
 {% endif %}
               <div data-quantity-wrapper class="t4s-quantity-wrapper t4s-product-form__qty"> 
@@ -1530,13 +1616,27 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Add click handlers to labels
-  labels.forEach((label) => {
-    label.addEventListener('click', function() {
-      const radioId = this.getAttribute('for');
-      const value = parseInt(radioId.replace('box', ''));
-      updateActiveLabels(value);
-    });
+ labels.forEach((label) => {
+  label.addEventListener('click', function () {
+    const radioId = this.getAttribute('for');
+    const value = parseInt(radioId.replace('box', ''));
+
+    // Get the current price inside this label
+    const currentPriceElement = this.querySelector('.current-price');
+    if (currentPriceElement) {
+      const price = currentPriceElement.textContent.trim();
+
+      // Update price in target element
+      const targetPriceElement = document.querySelector('.t4s-product-price');
+      if (targetPriceElement) {
+        targetPriceElement.textContent = price;
+      }
+    }
+
+    updateActiveLabels(value);
   });
+});
+
 
   // =========================
   // EVENT DELEGATION & DYNAMIC CONTENT
@@ -1649,6 +1749,7 @@ document.addEventListener('DOMContentLoaded', function() {
             item.setAttribute('data-listener-attached', 'true');
             item.addEventListener('click', function() {
               handleSwatchSelection(this);
+              
             });
           });
           
