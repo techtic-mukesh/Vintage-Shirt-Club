@@ -610,3 +610,139 @@ document.addEventListener('cart:updated', function () {
 });
 
 
+// Quntity Updated
+
+// Add this JavaScript code to your theme's product page template or in a script tag
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Find only swatch items inside .t4s-swatch__list.shirts
+  const swatchItems = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+  
+  // Find the quantity input field
+  const quantityInput = document.querySelector('input[name="quantity"], .quantity-input input, .t4s-quantity input');
+  
+  // Function to update quantity
+  function updateQuantity(value) {
+    if (quantityInput) {
+      quantityInput.value = value;
+      
+      // Trigger change event to notify other scripts
+      const changeEvent = new Event('change', { bubbles: true });
+      quantityInput.dispatchEvent(changeEvent);
+      
+      // Also trigger input event for better compatibility
+      const inputEvent = new Event('input', { bubbles: true });
+      quantityInput.dispatchEvent(inputEvent);
+    }
+  }
+  
+  // Add click event listeners to swatch items inside .t4s-swatch__list.shirts only
+  swatchItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      // Get the value from data-value attribute
+      const selectedValue = this.getAttribute('data-value');
+      
+      // Convert to number and update quantity
+      const quantityValue = parseInt(selectedValue, 10);
+      
+      if (!isNaN(quantityValue) && quantityValue > 0) {
+        updateQuantity(quantityValue);
+      }
+      
+      // Update the current value display
+      const currentValueSpan = document.querySelector('[data-current-value]');
+      if (currentValueSpan) {
+        currentValueSpan.textContent = selectedValue;
+      }
+      
+      // Remove selected class from all items within .t4s-swatch__list.shirts and add to current
+      const allShirtSwatches = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+      allShirtSwatches.forEach(swatch => swatch.classList.remove('is--selected'));
+      this.classList.add('is--selected');
+    });
+  });
+});
+
+// Event delegation approach - only for .t4s-swatch__list.shirts
+document.addEventListener('click', function(e) {
+  // Check if clicked element is a swatch item AND is inside .t4s-swatch__list.shirts
+  if (e.target.hasAttribute('data-swatch-item') && e.target.closest('.t4s-swatch__list.shirts')) {
+    const selectedValue = e.target.getAttribute('data-value');
+    const quantityInput = document.querySelector('input[name="quantity"], .quantity-input input, .t4s-quantity input');
+    
+    if (quantityInput && selectedValue) {
+      const quantityValue = parseInt(selectedValue, 10);
+
+      if (!isNaN(quantityValue) && quantityValue > 0) {
+        quantityInput.value = quantityValue;
+
+        // Trigger events
+        quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+        quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }
+    
+    // Update current value display
+    const currentValueSpan = document.querySelector('[data-current-value]');
+    if (currentValueSpan) {
+      currentValueSpan.textContent = selectedValue;
+    }
+    
+    // Update selection state - only within .t4s-swatch__list.shirts
+    const allShirtSwatches = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+    allShirtSwatches.forEach(swatch => swatch.classList.remove('is--selected'));
+    e.target.classList.add('is--selected');
+  }
+});
+
+// Mutation observer for dynamically loaded content - only watch .t4s-swatch__list.shirts
+function syncVariantWithQuantity() {
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList') {
+        // Re-attach event listeners only for new swatch items in .t4s-swatch__list.shirts
+        const newSwatchItems = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]:not([data-listener-attached])');
+        
+        newSwatchItems.forEach(function(item) {
+          item.setAttribute('data-listener-attached', 'true');
+          item.addEventListener('click', function() {
+            const selectedValue = this.getAttribute('data-value');
+            const quantityInput = document.querySelector('input[name="quantity"], .quantity-input input, .t4s-quantity input');
+            
+            if (quantityInput && selectedValue) {
+              const quantityValue = parseInt(selectedValue, 10);
+              if (!isNaN(quantityValue) && quantityValue > 0) {
+                quantityInput.value = quantityValue;
+                quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+                quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            }
+            
+            // Update selection state
+            const allShirtSwatches = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+            allShirtSwatches.forEach(swatch => swatch.classList.remove('is--selected'));
+            this.classList.add('is--selected');
+          });
+        });
+      }
+    });
+  });
+  
+  // Start observing - focus on the shirts swatch container if it exists
+  const shirtsSwatchContainer = document.querySelector('.t4s-swatch__list.shirts');
+  if (shirtsSwatchContainer) {
+    observer.observe(shirtsSwatchContainer, {
+      childList: true,
+      subtree: true
+    });
+  } else {
+    // Fallback to observing the whole document if container not found yet
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+}
+
+// Initialize the observer
+syncVariantWithQuantity();
