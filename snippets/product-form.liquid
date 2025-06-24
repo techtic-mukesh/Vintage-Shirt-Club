@@ -1372,153 +1372,312 @@ document.addEventListener('DOMContentLoaded', function() {
 
    {% if template == 'product' %}
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Debug logging to verify script is running
-      console.log('Script initialized');
+   document.addEventListener('DOMContentLoaded', function() {
+  // Debug logging
+  console.log('Combined Swatch & Upsell Script initialized');
 
-      // Select elements
-      const radioInputs = document.querySelectorAll('input[name="box-quantity"]');
-      const quantityInput = document.querySelector('[data-quantity-value]');
-      const labels = document.querySelectorAll('.upsell_btns');
-
-      console.log('Quantity Input found:', quantityInput);
-      console.log('Radio buttons found:', radioInputs.length);
-      console.log('Labels found:', labels.length);
-
-      // Function to update active class on labels
-      function updateActiveLabels(selectedValue) {
-        console.log('Updating active label for value:', selectedValue);
-
-        // Remove active class from all labels
-        labels.forEach((label) => {
-          label.classList.remove('active');
-        });
-
-        // Find and activate the correct label
-        const activeLabel = document.querySelector(`label[for="box${selectedValue}"]`);
-        if (activeLabel) {
-          console.log('Setting active class on label:', activeLabel.getAttribute('for'));
-          activeLabel.classList.add('active');
-        } else {
-          console.log('No matching label found for value:', selectedValue);
-        }
+  // =========================
+  // SHARED QUANTITY FUNCTIONS
+  // =========================
+  
+  // Get all possible quantity input selectors
+  function getQuantityInput() {
+    return document.querySelector('[data-quantity-value], input[name="quantity"], .quantity-input input, .t4s-quantity input');
+  }
+  
+  // Universal quantity update function
+  function updateQuantity(value, source = 'unknown') {
+    const quantityInput = getQuantityInput();
+    console.log(`Updating quantity to ${value} from ${source}`);
+    
+    if (quantityInput) {
+      quantityInput.value = value;
+      
+      // Trigger all necessary events
+      quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+      quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+      
+      // Trigger form change if exists
+      const form = quantityInput.closest('form');
+      if (form) {
+        form.dispatchEvent(new Event('change', { bubbles: true }));
       }
+      
+      console.log('Quantity updated successfully');
+      return true;
+    }
+    
+    console.warn('No quantity input found');
+    return false;
+  }
 
-      // Function to update quantity
-      function handleQuantityChange(boxCount) {
-        console.log('Radio selection changed:', boxCount);
-
-        // Update active labels
-        updateActiveLabels(boxCount);
-
-        if (quantityInput) {
-          // Update quantity
-          quantityInput.value = boxCount;
-
-          // Trigger native change event
-          quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-          console.log('Quantity updated to:', boxCount);
-          // If you have a form, trigger form change event
-          const form = quantityInput.closest('form');
-          if (form) {
-            form.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-        }
+  // =========================
+  // SWATCH FUNCTIONALITY
+  // =========================
+  
+  // Find swatch items only inside .t4s-swatch__list.shirts
+  const swatchItems = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+  console.log('Swatch items found:', swatchItems.length);
+  
+  // Handle swatch selection
+  function handleSwatchSelection(swatchElement) {
+    const selectedValue = swatchElement.getAttribute('data-value');
+    const quantityValue = parseInt(selectedValue, 10);
+    
+    if (!isNaN(quantityValue) && quantityValue > 0) {
+      // Update quantity
+      updateQuantity(quantityValue, 'swatch');
+      
+      // Update current value display
+      const currentValueSpan = document.querySelector('[data-current-value]');
+      if (currentValueSpan) {
+        currentValueSpan.textContent = selectedValue;
       }
+      
+      // Update swatch selection state
+      const allShirtSwatches = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+      allShirtSwatches.forEach(swatch => swatch.classList.remove('is--selected'));
+      swatchElement.classList.add('is--selected');
+      
+      // Sync with upsell radio buttons
+      syncUpsellWithQuantity(quantityValue);
+      
+      console.log('Swatch selection handled:', selectedValue);
+    }
+  }
+  
+  // Add event listeners to existing swatch items
+  swatchItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      handleSwatchSelection(this);
+    });
+  });
 
-      // Add change handlers to radio buttons
-      radioInputs.forEach((radio) => {
-        radio.addEventListener('change', function () {
-          if (this.checked) {
-            const boxCount = parseInt(this.value);
-            handleQuantityChange(boxCount);
-          }
-        });
-      });
+  // =========================
+  // UPSELL FUNCTIONALITY
+  // =========================
+  
+  const radioInputs = document.querySelectorAll('input[name="box-quantity"]');
+  const labels = document.querySelectorAll('.upsell_btns');
+  
+  console.log('Radio buttons found:', radioInputs.length);
+  console.log('Upsell labels found:', labels.length);
+  
+  // Function to update active class on upsell labels
+  function updateActiveLabels(selectedValue) {
+    console.log('Updating active label for value:', selectedValue);
+    
+    // Remove active class from all labels
+    labels.forEach((label) => {
+      label.classList.remove('active');
+    });
+    
+    // Find and activate the correct label
+    const activeLabel = document.querySelector(`label[for="box${selectedValue}"]`);
+    if (activeLabel) {
+      console.log('Setting active class on label:', activeLabel.getAttribute('for'));
+      activeLabel.classList.add('active');
+    }
+  }
+  
+  // Handle upsell quantity change
+  function handleUpsellChange(boxCount) {
+    console.log('Upsell selection changed:', boxCount);
+    
+    // Update active labels
+    updateActiveLabels(boxCount);
+    
+    // Update quantity
+    updateQuantity(boxCount, 'upsell');
+    
+    // Sync with swatch selection
+    syncSwatchWithQuantity(boxCount);
+  }
+  
+  // Sync upsell radio with quantity value
+  function syncUpsellWithQuantity(quantity) {
+    const matchingRadio = Array.from(radioInputs).find(radio => parseInt(radio.value) === quantity);
+    if (matchingRadio) {
+      matchingRadio.checked = true;
+      updateActiveLabels(quantity);
+    }
+  }
+  
+  // Sync swatch with quantity value
+  function syncSwatchWithQuantity(quantity) {
+    const matchingSwatch = document.querySelector(`.t4s-swatch__list.shirts [data-swatch-item][data-value="${quantity}"]`);
+    if (matchingSwatch) {
+      const allShirtSwatches = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]');
+      allShirtSwatches.forEach(swatch => swatch.classList.remove('is--selected'));
+      matchingSwatch.classList.add('is--selected');
+      
+      // Update current value display
+      const currentValueSpan = document.querySelector('[data-current-value]');
+      if (currentValueSpan) {
+        currentValueSpan.textContent = quantity.toString();
+      }
+    }
+  }
+  
+  // Add change handlers to radio buttons
+  radioInputs.forEach((radio) => {
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        const boxCount = parseInt(this.value);
+        handleUpsellChange(boxCount);
+      }
+    });
+  });
+  
+  // Add click handlers to labels
+  labels.forEach((label) => {
+    label.addEventListener('click', function() {
+      const radioId = this.getAttribute('for');
+      const value = parseInt(radioId.replace('box', ''));
+      updateActiveLabels(value);
+    });
+  });
 
-      // Optional: Add cart refresh function
-      function refreshCart(quantity) {
-        console.log('Attempting cart refresh with quantity:', quantity);
+  // =========================
+  // EVENT DELEGATION & DYNAMIC CONTENT
+  // =========================
+  
+  // Event delegation for dynamically added swatch items
+  document.addEventListener('click', function(e) {
+    // Handle swatch clicks - only for .t4s-swatch__list.shirts
+    if (e.target.hasAttribute('data-swatch-item') && e.target.closest('.t4s-swatch__list.shirts')) {
+      handleSwatchSelection(e.target);
+    }
+  });
+  
+  // Monitor quantity input changes and sync both systems
+  const quantityInput = getQuantityInput();
+  if (quantityInput) {
+    quantityInput.addEventListener('change', function() {
+      const currentValue = parseInt(this.value);
+      if (!isNaN(currentValue)) {
+        // Sync both swatch and upsell
+        syncSwatchWithQuantity(currentValue);
+        syncUpsellWithQuantity(currentValue);
+      }
+    });
+  }
 
-        // Get the current variant ID from your form
-        const variantId = document.querySelector('input[name="id"]')?.value;
+  // =========================
+  // CART FUNCTIONALITY
+  // =========================
+  
+  // Cart refresh function
+  function refreshCart(quantity) {
+    console.log('Attempting cart refresh with quantity:', quantity);
+    
+    const variantId = document.querySelector('input[name="id"]')?.value;
+    
+    if (!variantId) {
+      console.error('No variant ID found');
+      return;
+    }
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: [{
+          id: variantId,
+          quantity: quantity,
+        }],
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Cart updated successfully:', data);
+      if (window.refreshCart) {
+        window.refreshCart();
+      }
+    })
+    .catch(error => {
+      console.error('Error updating cart:', error);
+    });
+  }
+  
+  // Add to cart button handler
+  const addToCartBtn = document.querySelector('[data-add-to-cart]');
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const quantity = parseInt(getQuantityInput()?.value || 1);
+      refreshCart(quantity);
+    });
+  }
 
-        if (!variantId) {
-          console.error('No variant ID found');
-          return;
-        }
+  // =========================
+  // INITIALIZATION
+  // =========================
+  
+  // Set default selection
+  function setDefaultSelection() {
+    // Try to set default to 1 box
+    const defaultRadio = Array.from(radioInputs).find(radio => parseInt(radio.value) === 1);
+    if (defaultRadio) {
+      defaultRadio.checked = true;
+      handleUpsellChange(1);
+    } else if (radioInputs.length > 0) {
+      // Fallback to first radio
+      const firstRadio = radioInputs[0];
+      firstRadio.checked = true;
+      handleUpsellChange(parseInt(firstRadio.value));
+    }
+  }
+  
+  // Initialize default selection
+  setDefaultSelection();
 
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            items: [
-              {
-                id: variantId,
-                quantity: quantity,
-              },
-            ],
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Cart updated successfully:', data);
-            if (window.refreshCart) {
-              window.refreshCart();
-            }
-          })
-          .catch((error) => {
-            console.error('Error updating cart:', error);
+  // =========================
+  // MUTATION OBSERVER FOR DYNAMIC CONTENT
+  // =========================
+  
+  function setupMutationObserver() {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList') {
+          // Check for new swatch items in .t4s-swatch__list.shirts
+          const newSwatchItems = document.querySelectorAll('.t4s-swatch__list.shirts [data-swatch-item]:not([data-listener-attached])');
+          
+          newSwatchItems.forEach(function(item) {
+            item.setAttribute('data-listener-attached', 'true');
+            item.addEventListener('click', function() {
+              handleSwatchSelection(this);
+            });
           });
-      }
-
-      // Optional: Add to cart button handler
-      const addToCartBtn = document.querySelector('[data-add-to-cart]');
-      if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          const quantity = parseInt(quantityInput.value);
-          refreshCart(quantity);
-        });
-      }
-
-      // Set default selection to 2 boxes
-      const twoBoxRadio = Array.from(radioInputs).find((radio) => parseInt(radio.value) === 2);
-      if (twoBoxRadio) {
-        twoBoxRadio.checked = true;
-        handleQuantityChange(2);
-      } else {
-        console.warn('Could not find radio button for 2 boxes');
-        // Fallback to first radio if 2 boxes option doesn't exist
-        const defaultRadio = radioInputs[0];
-        if (defaultRadio) {
-          defaultRadio.checked = true;
-          handleQuantityChange(parseInt(defaultRadio.value));
+          
+          // Check for new upsell elements
+          const newRadios = document.querySelectorAll('input[name="box-quantity"]:not([data-listener-attached])');
+          newRadios.forEach(function(radio) {
+            radio.setAttribute('data-listener-attached', 'true');
+            radio.addEventListener('change', function() {
+              if (this.checked) {
+                const boxCount = parseInt(this.value);
+                handleUpsellChange(boxCount);
+              }
+            });
+          });
         }
-      }
-
-      // Add click handlers directly to labels
-      labels.forEach((label) => {
-        label.addEventListener('click', function () {
-          const radioId = this.getAttribute('for');
-          const value = radioId.replace('box', '');
-          updateActiveLabels(value);
-        });
-      });
-
-      // Sync quantity input with radio buttons
-      quantityInput?.addEventListener('change', function () {
-        const currentValue = parseInt(this.value);
-        radioInputs.forEach((radio) => {
-          if (parseInt(radio.value) === currentValue) {
-            radio.checked = true;
-            updateActiveLabels(currentValue);
-          }
-        });
       });
     });
+    
+    // Observe the document for changes
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+  
+  // Initialize mutation observer
+  setupMutationObserver();
+  
+  console.log('Combined script initialization complete');
+});
   </script>
 {% endif %}

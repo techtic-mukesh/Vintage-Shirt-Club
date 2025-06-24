@@ -237,6 +237,7 @@
         "trustpilot_DQH4jw": {
           "type": "trustpilot",
           "settings": {
+            "tsicon": "shopify:\/\/shop_images\/Ts_logo.jpg",
             "name": "Mooi cadeau",
             "content": "<p>Een klassiek shirt besteld als cadeau voor mijn vader. Hij was er ontzettend blij mee. <br\/><br\/><\/p>",
             "rname": "Lisa"
