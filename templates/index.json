@@ -264,17 +264,19 @@
         "trustpilot_NiULUL": {
           "type": "trustpilot",
           "settings": {
-            "name": "Mooi cadeau",
-            "content": "<p>Een klassiek shirt besteld als cadeau voor mijn vader. Hij was er ontzettend blij mee. <br/><br/></p>",
-            "rname": "Lisa"
+            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "name": "Ordered 3 shirts in the 3 for 2 offer…",
+            "content": "<p>Ordered 3 shirts in the 3 for 2 offer and got all within given time frame<br/>Shirts a decent quality, not sure how long shirt sponsors will last in long run but hopefully with care they will stay on as they are now<br/>Wise to follow the sites recommendation for ordering a size bigger<br/>Will definitely be ordering more in the future</p>",
+            "rname": "David Green"
           }
         },
         "trustpilot_PaeERg": {
           "type": "trustpilot",
           "settings": {
-            "name": "Mooi cadeau",
-            "content": "<p>Een klassiek shirt besteld als cadeau voor mijn vader. Hij was er ontzettend blij mee. <br/><br/></p>",
-            "rname": "Lisa"
+            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "name": "Lovely gifts",
+            "content": "<p>I got my son 3 shirts, all arrived really fast, packaged beautifully so wasn’t creased or screwed up. Will defo be ordering again as he has given me a list of more he wants.</p>",
+            "rname": "Curly"
           }
         }
       },
