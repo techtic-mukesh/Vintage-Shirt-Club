@@ -300,7 +300,7 @@
             "type": "bl_col",
             "settings": {
               "col_heading": "Policy Pages",
-              "menu": "",
+              "menu": "policies",
               "menu_style": "1",
               "col_border": "none",
               "col_dk": "3",
