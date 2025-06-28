@@ -262,7 +262,7 @@
             "type": "bl_col",
             "settings": {
               "col_heading": "About Vintage Shirt Club",
-              "menu": "",
+              "menu": "about",
               "menu_style": "1",
               "col_border": "none",
               "col_dk": "2",
@@ -280,8 +280,8 @@
           "footer-8": {
             "type": "bl_col",
             "settings": {
-              "col_heading": "More From Vintage Shirt Club",
-              "menu": "",
+              "col_heading": "Pop-Ups Store Info",
+              "menu": "more-from",
               "menu_style": "1",
               "col_border": "none",
               "col_dk": "2",
