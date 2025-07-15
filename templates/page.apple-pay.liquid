@@ -19,9 +19,11 @@
 <script>
   function loadStripe(callback) {
     const script = document.createElement('script');
+    console.log("load start");
     script.src = 'https://js.stripe.com/v3/';
     script.onload = callback;
     document.head.appendChild(script);
+    console.log("loaded")
   }
   loadStripe(() => {
     document.addEventListener('DOMContentLoaded', function() {
