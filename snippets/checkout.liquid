@@ -1,13 +1,57 @@
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@16.0.2/build/css/intlTelInput.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@16.0.2/build/js/intlTelInput.js" defer></script>
+
+
+<div id="full-screen-loader" class="__web-inspector-hide-shortcut__">
+      <style>
+        #full-screen-loader {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.8);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          display: none;
+        }
+        .loader-spinner {
+          border: 5px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 5px solid #000;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+      <div class="loader-spinner"></div>
+    </div>
+
 <div class="cm-checkout">
     
-<div class="t4s-container">
+<div class="t4s-container"> 
     
-<form method="post" action="/cart" novalidate class="cart-delivery-form">
+<form id="checkoutForm" method="post"  novalidate class="cart-delivery-form">
   <div class="cart-left">
     <!-- Contact -->
     <div class="contact-section">
       <h2>Contact</h2>
-      <input type="email" name="contact[email]" value="{{ customer.email | default: '' }}" placeholder="Email or mobile phone number" required>
+      <div class="top-row">
+        <div class="input-row">
+            <input type="email" id="customerEmail" name="contact[email]" value="{{ customer.email | default: '' }}" placeholder="Email" required>
+          <div class="error-message" id="emailError">Please enter a valid email address</div>
+        </div>
+          <div class="input-row">
+           <input type="tel" id="phone" placeholder="Phone (optional)">
+        </div>
+      </div>
     </div>
 
     <!-- Delivery -->
@@ -28,32 +72,36 @@
           >
             {{- country_option_tags -}}
           </select>
+          <div class="error-message" id="countryError">Please select a country</div>
       </div>
 
       <div class="input-row half-width">
-        <input type="text" name="shipping_address[first_name]" placeholder="First name (optional)" value="{{ customer.first_name }}">
+        <input id="firstName"  type="text" name="shipping_address[first_name]" placeholder="First name (optional)" value="{{ customer.first_name }}">
       </div>
 
       <div class="input-row half-width">
-        <input type="text" name="shipping_address[last_name]" placeholder="Last name" value="{{ customer.last_name }}">
-
+        <input id="lastName" type="text" name="shipping_address[last_name]" placeholder="Last name" value="{{ customer.last_name }}">
+        <div class="error-message" id="lastNameError">Please enter your last name</div>
       </div>
 
       <div class="input-row">
-          <input type="text" name="shipping_address[address1]" placeholder="Address" required>
+          <input id="address1" type="text" name="shipping_address[address1]" placeholder="Address" required>
+          <div class="error-message" id="address1Error">Please enter your address</div>
       </div>
       <div class="input-row">
-          <input type="text" name="shipping_address[address2]" placeholder="Apartment, suite, etc. (optional)">
+          <input id="address2" type="text" name="shipping_address[address2]" placeholder="Apartment, suite, etc. (optional)">
       </div>
       
      
 
         <div class="input-row half-width">
-        <input type="text" name="shipping_address[city]" placeholder="City" required>
+        <input id="city"  type="text" name="shipping_address[city]" placeholder="City" required>
+            <div class="error-message" id="cityError">Please enter your city</div>
         </div>
 
          <div class="input-row half-width">
-        <input id="cityInput" type="text" name="shipping_address[zip]" placeholder="Postal code" required>
+            <input id="cityInput" type="text" name="shipping_address[zip]" placeholder="Postal code" required>
+            <div class="error-message" id="postalCodeError">Please enter your postal code</div>
         </div>
 
       <label class="save_info"><input type="checkbox" name="save_info"> Save this information for next time</label>
@@ -62,15 +110,19 @@
 
     <!-- Shipping Method -->
     <div class="shipping-method">
-     
+        <div class="error-message" id="shippingError">Please select a shipping method</div>
     </div>
+
+    <button type="submit" id="payNow" style="display: none;">Pay Now</button>
   </div>
 
   <!-- Cart Summary Sidebar -->
   <div class="cart-right">
     <ul class="cart-items">
       {% for item in cart.items %}
-        <li class="cart-item">
+        <li class="cart-item"  data-variant-id="{{ item.variant_id }}"
+      data-quantity="{{ item.quantity }}"
+      data-price="{{ item.final_line_price | money_without_currency }}">
             <div class="img-launch">
                 <span>{{ item.quantity }}</span>
                 <img src="{{ item.image | image_url: width: 80 }}" alt="{{ item.title }}">
@@ -79,9 +131,19 @@
             <div class="cm-price">
                 <p>{{ item.product.title }}</p>
                 <p class="cart-varriant_title">{{ item.variant.title }}</p>
+                {% comment %} <ul class="cart-item-properties">
+                    {% for prop in item.properties %}
+                    {% unless prop.last == blank %}
+                        <li>
+                        <strong>{{ prop.first }}:</strong> {{ prop.last }}
+                        </li>
+                    {% endunless %}
+                    {% endfor %}
+                </ul> {% endcomment %}
                 </div>
                 <p>{{ item.final_line_price | money }}</p>
           </div>
+         
         </li>
       {% endfor %}
     </ul>
@@ -105,6 +167,8 @@
     </div>
 
     {%  render 'apple-pay' %}
+
+    {%  render 'pay-with-card' %}
   </div>
 
   
@@ -120,6 +184,7 @@
     display: grid;
     grid-template-columns: 2fr 1.3fr;
     gap: 56px;
+    margin-bottom: 30px;
 }
 
 .cm-checkout form.cart-delivery-form .cart-left > div {
@@ -322,6 +387,84 @@
     font-weight: 600;
 }
 
+button#payNow {
+    margin-bottom: 40px;
+    width: 100%;
+    text-align: center;
+    padding: 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.cm-checkout .error-message {
+    font-size: 13px;
+    display: none;
+    color: #ec0101;
+    padding-top: 5px;
+}
+
+.cm-checkout .error-message.show {
+            display: block;
+        }
+
+        .cm-checkout input.error, .cm-checkout select.error {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5;
+}
+
+.pay-with-card {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #80808024;
+    border-radius: 4px;
+}
+
+.pay-with-card h2 {
+    text-align: center;
+    font-size: 18px;
+}
+
+.pay-with-card label {
+    margin-bottom: 6px;
+    display: inline-block;
+}
+
+.pay-with-card button#card-pay-btn {
+    margin-top: 14px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.pay-with-card iframe {
+    height: 40px !important;
+    padding: 10px;
+}
+
+
+.pay-with-card div#card-error {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #ec0101;
+}
+
+.contact-section .top-row {
+    display: flex;
+    gap: 20px;
+}
+
+.contact-section .top-row .input-row {
+    width: calc(100% / 2 - 10px);
+}
+
+.contact-section .top-row .input-row .iti.iti--allow-dropdown {
+    width: 100%;
+}
+
+.contact-section .top-row .input-row .iti.iti--allow-dropdown input#phone {
+    padding-left: 50px;
+}
+
 @media only screen and (max-width: 1200px) {
   .cm-checkout form.cart-delivery-form {
     grid-template-columns: 1fr;
@@ -336,8 +479,70 @@
 
 <script>
 window.addEventListener('DOMContentLoaded', function () {
+
+
+var input = document.querySelector("#phone");
+var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+window.addEventListener("load", function () {
+    var errorMsg = document.querySelector("#error-msg"),
+        validMsg = document.querySelector("#valid-msg");
+
+    var iti = window.intlTelInput(input, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        placeholderNumberType: "MOBILE",
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@16.0.2/build/js/utils.js"
+    });
+
+    $(validMsg).addClass("hide");
+
+    function reset() {
+        input.classList.remove("error");
+        errorMsg.innerHTML = "";
+        errorMsg.classList.add("hide");
+        validMsg.classList.add("hide");
+    }
+
+    input.addEventListener('blur', function () {
+        reset();
+        if (input.value.trim()) {
+            if (iti.isValidNumber()) {
+                validMsg.classList.remove("hide");
+
+                // Log number in US format (e.g. (123) 456-7890)
+                const nationalNumber = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
+                console.log("Formatted US number:", nationalNumber);
+            } else {
+                input.classList.add("error");
+                var errorCode = iti.getValidationError();
+                errorMsg.innerHTML = errorMap[errorCode] || "Invalid number";
+                errorMsg.classList.remove("hide");
+            }
+        }
+    });
+
+    input.addEventListener('change', reset);
+    input.addEventListener('keyup', reset);
+});
+
+
+    
+    var reset = function () {
+        input.classList.remove("error");
+        errorMsg.innerHTML = "";
+        errorMsg.classList.add("hide");
+        validMsg.classList.add("hide");
+    };
+
+
     const provinceSelect = document.getElementById('ShippingCountry_');
-    provinceSelect.value = 'United States';
+    provinceSelect.value = 'United Kingdom';
 
     const CountrySelector = document.getElementById("ShippingCountry_");
     const CountrySelectorhidden = document.getElementById("ShippingCountry_main_cart");
@@ -429,4 +634,177 @@ const cityInput = document.getElementById('cityInput');
 
   
 });
+
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     const form = document.getElementById('checkoutForm');
+//     const payNowButton = document.getElementById('payNow');
+//     const shippingOptions = document.querySelectorAll('input[name="shipping_method"]');
+//     const cartShipping = document.getElementById('cartShipping');
+//     const csFinal = document.getElementById('csFinal');
+
+//     let cartTotal = 0;
+//     let shippingCost = 0;
+//     let finalTotal = 0;
+
+//     // Extract float from price string like "£12.00"
+//     function extractPrice(value) {
+//         return parseFloat(value.replace(/[^\d.]/g, '')) || 0;
+//     }
+
+//     function updateTotals() {
+//         shippingCost = extractPrice(cartShipping?.textContent || '0');
+//         finalTotal = extractPrice(csFinal?.textContent || '0');
+//         cartTotal = finalTotal - shippingCost;
+//     }
+
+//     // Email validation function
+//     function validateEmail(email) {
+//         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//         return re.test(email);
+//     }
+
+//     // Generic field validation
+//     function validateField(fieldId, validator, errorMessage) {
+//         const field = document.getElementById(fieldId);
+//         const errorElement = document.getElementById(fieldId + 'Error');
+
+//         if (!field) return true;
+
+//         const value = field.value.trim();
+//         const isValid = validator(value);
+
+//         if (!isValid) {
+//             field.classList.add('error');
+//             if (errorElement) {
+//                 errorElement.textContent = errorMessage;
+//                 errorElement.classList.add('show');
+//             }
+//         } else {
+//             field.classList.remove('error');
+//             if (errorElement) {
+//                 errorElement.classList.remove('show');
+//             }
+//         }
+
+//         return isValid;
+//     }
+
+//     // Form validation
+//     function validateForm() {
+//         let isValid = true;
+
+//         if (!validateField('customerEmail', validateEmail, 'Please enter a valid email address')) isValid = false;
+//         if (!validateField('ShippingCountry', (value) => value !== '', 'Please select a country')) isValid = false;
+//         if (!validateField('lastName', (value) => value.length > 0, 'Please enter your last name')) isValid = false;
+//         if (!validateField('address1', (value) => value.length > 0, 'Please enter your address')) isValid = false;
+//         if (!validateField('city', (value) => value.length > 0, 'Please enter your city')) isValid = false;
+//         if (!validateField('postalCode', (value) => value.length > 0, 'Please enter your postal code')) isValid = false;
+
+//         const shippingMethod = document.querySelector('input[name="shipping_method"]:checked');
+//         const shippingError = document.getElementById('shippingError');
+//         if (!shippingMethod) {
+//             if (shippingError) shippingError.classList.add('show');
+//             isValid = false;
+//         } else {
+//             if (shippingError) shippingError.classList.remove('show');
+//         }
+
+//         return isValid;
+//     }
+
+//     // Handle shipping method selection
+//     shippingOptions.forEach(option => {
+//         option.addEventListener('change', function () {
+//             // Remove selected class from all options
+//             document.querySelectorAll('.shipping-option').forEach(opt => {
+//                 opt.classList.remove('selected');
+//             });
+
+//             // Add selected class to chosen option
+//             this.closest('.shipping-option').classList.add('selected');
+
+//             // You may want to update #cartShipping and #csFinal values here
+//             // if your logic updates the prices dynamically
+
+//             // Clear shipping error
+//             const shippingError = document.getElementById('shippingError');
+//             if (shippingError) shippingError.classList.remove('show');
+
+//             // Optionally re-run totals
+//             updateTotals();
+//         });
+//     });
+
+//     // Pay Now button click handler
+//     payNowButton.addEventListener('click', function (e) {
+//         e.preventDefault();
+//         console.log('Pay Now button clicked');
+
+//         updateTotals(); // Get fresh values from DOM
+
+//         if (validateForm()) {
+//             const formData = new FormData(form);
+//             const data = {};
+
+//             for (let [key, value] of formData.entries()) {
+//                 data[key] = value;
+//             }
+
+//             data.shipping_cost = shippingCost;
+//             data.cart_total = cartTotal;
+//             data.final_total = finalTotal;
+
+//             console.log('=== FORM SUBMISSION DATA ===');
+//             console.log('Contact Email:', data['contact[email]']);
+//             console.log('Country:', data.country);
+//             console.log('First Name:', data['shipping_address[first_name]']);
+//             console.log('Last Name:', data['shipping_address[last_name]']);
+//             console.log('Address 1:', data['shipping_address[address1]']);
+//             console.log('Address 2:', data['shipping_address[address2]']);
+//             console.log('City:', data['shipping_address[city]']);
+//             console.log('Postal Code:', data['shipping_address[zip]']);
+//             console.log('Shipping Method:', data.shipping_method);
+//             console.log('Save Info:', data.save_info ? 'Yes' : 'No');
+//             console.log('Shipping Cost:', '£' + shippingCost.toFixed(2));
+//             console.log('Cart Total:', '£' + cartTotal.toFixed(2));
+//             console.log('Final Total:', '£' + finalTotal.toFixed(2));
+//             console.log('=== END FORM DATA ===');
+
+//             alert('Form validated successfully! Check console for complete form data.');
+//             // form.submit(); // Uncomment this when you're ready to submit to server
+//         } else {
+//             console.log('=== FORM VALIDATION FAILED ===');
+//             alert('Please fix the errors in the form before submitting.');
+//         }
+//     });
+
+//     // Real-time validation on blur
+//     const fieldsToValidate = [
+//         { id: 'customerEmail', validator: validateEmail, message: 'Please enter a valid email address' },
+//         { id: 'ShippingCountry', validator: (value) => value !== '', message: 'Please select a country' },
+//         { id: 'lastName', validator: (value) => value.length > 0, message: 'Please enter your last name' },
+//         { id: 'address1', validator: (value) => value.length > 0, message: 'Please enter your address' },
+//         { id: 'city', validator: (value) => value.length > 0, message: 'Please enter your city' },
+//         { id: 'postalCode', validator: (value) => value.length > 0, message: 'Please enter your postal code' }
+//     ];
+
+//     fieldsToValidate.forEach(field => {
+//         const element = document.getElementById(field.id);
+//         if (element) {
+//             element.addEventListener('blur', function () {
+//                 validateField(field.id, field.validator, field.message);
+//             });
+//         }
+//     });
+
+//     // Set default shipping method if available
+//     const standardOption = document.getElementById('standard');
+//     if (standardOption) {
+//         standardOption.checked = true;
+//         standardOption.closest('.shipping-option').classList.add('selected');
+//     }
+
+//     updateTotals(); // Set initial totals
+// });
 </script>

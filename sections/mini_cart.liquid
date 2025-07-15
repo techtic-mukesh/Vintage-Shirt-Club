@@ -422,21 +422,20 @@
               }}
             </p>
           {%- endif -%}
-          <button
-            {{ block.shopify_attributes }}
-            type="submit"
-            data-loading-bar
-            data-confirm="{{ ck_lumise }}"
-            name="checkout"
-            class="t4s-btn__checkout t4s-btn t4s-btn-base t4s-btn-style-{{ button_style }} t4s-btn-color-{{ bk_stts.btn_cl }} {% if button_style == 'default' or button_style == 'outline' %}t4s-btn-effect-{{ bk_stts.button_effect }}{% endif %} t4s-w-100 t4s-justify-content-center t4s-truncate"
-          >
-            {{ 'cart.mini_cart.checkout' | t }}
-            {%- if bk_stts.btn_icon -%}
-              <svg class="t4s-btn-icon" width="14">
-                <use xlink:href="#t4s-icon-btn"></use>
-              </svg>
-            {%- endif -%}
-          </button>
+        <button
+  {{ block.shopify_attributes }}
+  type="button"
+  onclick="window.location.href = '/cart';"
+  class="t4s-btn__checkout t4s-btn t4s-btn-base t4s-btn-style-{{ button_style }} t4s-btn-color-{{ bk_stts.btn_cl }} {% if button_style == 'default' or button_style == 'outline' %}t4s-btn-effect-{{ bk_stts.button_effect }}{% endif %} t4s-w-100 t4s-justify-content-center t4s-truncate"
+>
+  {{ 'cart.mini_cart.checkout' | t }}
+  {%- if bk_stts.btn_icon -%}
+    <svg class="t4s-btn-icon" width="14">
+      <use xlink:href="#t4s-icon-btn"></use>
+    </svg>
+  {%- endif -%}
+</button>
+
 
         {%- when 'btnmr' -%}
           {%- if additional_checkout_buttons and unadmin_sp -%}

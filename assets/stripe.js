@@ -1,47 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Stripe Apple Pay Demo</title>
-  <!-- <script src="https://js.stripe.com/v3/"></script> -->
-
-  <style>
-    button { padding: 10px 20px; font-size: 16px; }
-  </style>
-</head>
-<body>
-
-
-
-  
-  <div id="payment-request-button">
-  </div>
-
-  
-
-<script>
-  function loadStripe(callback) {
-    const script = document.createElement('script');
-    console.log("load start");
-    script.src = 'https://js.stripe.com/v3/';
-    script.onload = callback;
-    document.head.appendChild(script);
-  }
-  loadStripe(() => {
-    document.addEventListener('DOMContentLoaded', function() {
+   document.addEventListener('DOMContentLoaded', function() {
     fetch('https://stripe.vintageshirtclub.com/config')
       .then(r => r.json())
       .then(({ publishableKey }) => {
+        console.log("ddddddddd")
         const stripe = Stripe(publishableKey);
-
 
         const paymentRequest = stripe.paymentRequest({
           country: 'US',
-         currency: 'gbp',
+          currency: 'usd',
           total: {
-            label: 'Product',
-            amount: {{ cart.total_price }}
-,
+            label: 'Demo Product',
+            amount: 100,
           },
           requestPayerName: true,
           requestPayerEmail: true,
@@ -60,7 +29,6 @@
         });
 
         paymentRequest.on('paymentmethod', async (ev) => {
-
           const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', { method: 'POST' });
           const { clientSecret } = await res.json();
 
@@ -69,17 +37,10 @@
           }, { handleActions: false });
 
           if (error) {
-            console.log("fail");
             ev.complete('fail');
           } else {
             ev.complete('success');
-            console.log('sucess');
           }
         });
       });
         });
-  });
-</script>
-
-</body>
-</html>
