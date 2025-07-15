@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Stripe Apple Pay Demo</title>
-  <script src="https://js.stripe.com/v3/"></script>
+  <!-- <script src="https://js.stripe.com/v3/"></script> -->
 
   <style>
     button { padding: 10px 20px; font-size: 16px; }
@@ -17,7 +17,14 @@
   </div>
 
 <script>
-       document.addEventListener('DOMContentLoaded', function() {
+  function loadStripe(callback) {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/';
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+  loadStripe(() => {
+    document.addEventListener('DOMContentLoaded', function() {
     fetch('https://stripe.vintageshirtclub.com/config')
       .then(r => r.json())
       .then(({ publishableKey }) => {
@@ -63,6 +70,7 @@
         });
       });
         });
+  });
 </script>
 
 </body>
