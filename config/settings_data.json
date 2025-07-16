@@ -3594,16 +3594,16 @@
               "button_effect": "fade"
             }
           },
-          "product_D4i7EU": {
-            "type": "product",
-            "settings": {
-              "product": "premium-vintage-mystery-box-8-item"
-            }
-          },
           "product_4xc669": {
             "type": "product",
             "settings": {
-              "product": "vivienne-westwood-poster-copy"
+              "product": "retro-manchester-united-away-shirt-1993-1995-football-shirt"
+            }
+          },
+          "product_D4i7EU": {
+            "type": "product",
+            "settings": {
+              "product": "retro-mystery-football-shirt-box"
             }
           },
           "product_yLtjA8": {
@@ -3634,8 +3634,8 @@
           "mini_cart-4",
           "mini_cart-5",
           "mini_cart-6",
-          "product_D4i7EU",
           "product_4xc669",
+          "product_D4i7EU",
           "product_yLtjA8",
           "product_MediMq",
           "product_drJ83g"
