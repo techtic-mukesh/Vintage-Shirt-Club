@@ -50,8 +50,8 @@
         </div>
           <div class="input-row">
            <input type="tel" id="phone" placeholder="Phone (optional)">
-            <div id="error-msg" class="error-msg hide"></div>
-        <div id="valid-msg" class="valid-msg hide">Valid number</div>
+            {% comment %} <div id="error-msg" class="error-msg hide"></div>
+        <div id="valid-msg" class="valid-msg hide">Valid number</div> {% endcomment %}
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@
     </div>
 
     <!-- Shipping Method -->
-    <div class="shipping-method">
+    <div class="shipping-method" style="display: none;">
         <div class="error-message" id="shippingError">Please select a shipping method</div>
     </div>
 
@@ -186,6 +186,17 @@
 
     {%  render 'apple-pay' %}
 
+    {% comment %} <div class="pay-pal_button">
+        {%- if additional_checkout_buttons -%}
+            <div
+                    data-add-ckt4
+                    class="additional_checkout_buttons additional-checkout-buttons--vertical {{ cl_agree }}"
+                  >
+                    {{ content_for_additional_checkout_buttons }}
+                  </div>
+        {%- endif -%}
+    </div> {% endcomment %}
+
     {%  render 'pay-with-card' %}
   </div>
 
@@ -203,6 +214,21 @@
     grid-template-columns: 2fr 1.3fr;
     gap: 56px;
     margin-bottom: 30px;
+    position: relative;
+}
+
+.cm-checkout form.cart-delivery-form .cart-left {
+    position: relative;
+}
+
+.cm-checkout form.cart-delivery-form .cart-left::after {
+   content: '';
+    background-color: #8080805e;
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    right: -28px;
+    top: 0;
 }
 
 .cm-checkout form.cart-delivery-form .cart-left > div {
@@ -387,6 +413,8 @@
 
 .cm-checkout .cart-totals {
     margin-top: 10px;
+        border-top: 1px solid #8080805e;
+    padding-top: 10px;
 }
 
 .cm-checkout .cart-totals ul {
@@ -425,7 +453,7 @@ button#payNow {
 }
 
 .cm-checkout .error-message {
-    font-size: 13px;
+    font-size: 12px;
     display: none;
     color: #ec0101;
     padding-top: 5px;
@@ -461,6 +489,8 @@ button#payNow {
     margin-top: 14px;
     width: 100%;
     border-radius: 4px;
+     font-size: 14px;
+    font-weight: 500;
 }
 
 .pay-with-card iframe {
@@ -474,6 +504,11 @@ button#payNow {
     font-size: 12px;
     line-height: 1.4;
     color: #ec0101;
+    text-align: center;
+}
+
+.pay-with-card div#card-error:empty {
+    display: none;
 }
 
 .contact-section .top-row {
@@ -501,12 +536,14 @@ button#payNow {
     font-size: 13px;
     padding: 5px 0 0 10px;
     color: green;
+    position: absolute;
 }
 
 .contact-section .top-row .input-row div#error-msg {
     font-size: 13px;
     padding: 5px 0 0 10px;
     color: #ec0101;
+    position: absolute;
 }
 
 .cm-checkout ul.cart-items li.cart-item .cart-data ul.t4s-cart_discount_price {
@@ -530,6 +567,11 @@ button#payNow {
   display: inline-block;
   vertical-align: middle;
   margin-left: 6px;
+}
+
+.cm-checkout ul.cart-items li.cart-item .cart-data p.cart-varriant_title {
+    font-size: 12px;
+    color: grey;
 }
 
 @keyframes spin {
