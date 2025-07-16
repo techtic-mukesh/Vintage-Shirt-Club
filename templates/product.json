@@ -102,7 +102,7 @@
           "type": "excellent",
           "settings": {
             "title": "Excellent",
-            "image": "shopify:\/\/shop_images\/WhatsApp_Image_2025-02-24_at_8.39.10_AM.jpg",
+            "image": "shopify://shop_images/WhatsApp_Image_2025-02-24_at_8.39.10_AM.jpg",
             "image_width": 100
           }
         },
@@ -292,22 +292,22 @@
         "enable_select": true,
         "ani": "t4s-ani-shake",
         "time": 3,
-        "delivery": "<p>Our policy lasts 14 days. If 14 days have gone by since you received your item, unfortunately we can’t offer you a refund.<\/p><p>To be eligible for a return, your item must be unused and returned in the same condition that you received it.<\/p><p><strong>Shipping<\/strong><br\/>To return your product, you should mail your product to:<br\/>Unit 2B,<br\/>Cherry Walk,<br\/>Sarratt,<br\/>Hertfordshire,<br\/>WD3 6AF<br\/>Inside the parcel please include:<br\/>Full Name<br\/>Order Number<br\/>Reason for return. If reason is sizing, please let us know if the item was too big or small, and what size you usually wear!<br\/>Email<br\/>Payment Method<br\/>Item in the same condition it arrived<br\/>Flyer<br\/>You will be responsible for paying for your own shipping costs for returning your item. Shipping costs are non-refundable. If you receive a refund, the original cost of shipping will be deducted from the refund amount<\/p><p>If you are shipping an item to be returned, you should consider using a trackable shipping service and purchasing shipping insurance. Until we receive the returned item it is the senders responsibility. We don’t guarantee that we will receive your returned item.<\/p><p><strong>Refunds<\/strong><br\/>Once your return is received and inspected, we will send you an email to notify you of the status of your returned item.<br\/>If you are eligible for a refund. It will be automatically applied to your original method of payment.<br\/>You will be refunded for the cost of the ITEM only. Any shipping cost will not be refunded. If the item was purchased with free shipping then a fee of £3 will be taken out for all UK orders to cover the initial shipping costs. If the order was international then the equivilant shipping cost will be taken out to cover the initial shipping costs.<\/p><p>We do not offer refunds to anyone who purchases through our depop shop. Please contact us on Depop directly about any Depop orders.<\/p><p><strong>Exchanges<\/strong><br\/>If you are looking to exchange your item for another size\/product then please follow the above steps, however you must include a note inside to inform our team the item is for an exchange. Please also send an email to our customer service team so they can prepare the exchange for you: <a href=\"mailto:customerservice@vintageclub.uk\" title=\"mailto:customerservice@vintageclub.uk\">customerservice@vintageclub.uk<\/a><\/p><p>Late or missing refunds<br\/>If you haven’t received a refund yet, first check your original payment method again. Then contact your payment method company, it may take some time before your refund is officially posted.<br\/>If you’ve done all of this and you still have not received your refund yet, please contact us at <a href=\"mailto:vintageclubuk@gmail.com\" title=\"mailto:vintageclubuk@gmail.com\">vintageclubuk@gmail.com<\/a>.<\/p>",
-        "sizecart": "<p><strong>Size Guide<\/strong><\/p><p>Please see the below charts for our size guide. We recommend to size up one size bigger than your usual UK size, particularly in Retros as these come up smaller fitting. <br\/><br\/>Our selection of shirts includes a wide variety of styles and fabrics across different eras and teams, therefore certain shirts may fit differently to others. <\/p>",
-        "sizecart1": "shopify:\/\/shop_images\/Screenshot_2024-11-18_at_09_25_00.png",
-        "sizecart2": "shopify:\/\/shop_images\/Screenshot_2024-11-18_at_09_25_23.png",
+        "delivery": "<p>Our policy lasts 14 days. If 14 days have gone by since you received your item, unfortunately we can’t offer you a refund.</p><p>To be eligible for a return, your item must be unused and returned in the same condition that you received it.</p><p><strong>Shipping</strong><br/>To return your product, you should mail your product to:<br/>Unit 2B,<br/>Cherry Walk,<br/>Sarratt,<br/>Hertfordshire,<br/>WD3 6AF<br/>Inside the parcel please include:<br/>Full Name<br/>Order Number<br/>Reason for return. If reason is sizing, please let us know if the item was too big or small, and what size you usually wear!<br/>Email<br/>Payment Method<br/>Item in the same condition it arrived<br/>Flyer<br/>You will be responsible for paying for your own shipping costs for returning your item. Shipping costs are non-refundable. If you receive a refund, the original cost of shipping will be deducted from the refund amount</p><p>If you are shipping an item to be returned, you should consider using a trackable shipping service and purchasing shipping insurance. Until we receive the returned item it is the senders responsibility. We don’t guarantee that we will receive your returned item.</p><p><strong>Refunds</strong><br/>Once your return is received and inspected, we will send you an email to notify you of the status of your returned item.<br/>If you are eligible for a refund. It will be automatically applied to your original method of payment.<br/>You will be refunded for the cost of the ITEM only. Any shipping cost will not be refunded. If the item was purchased with free shipping then a fee of £3 will be taken out for all UK orders to cover the initial shipping costs. If the order was international then the equivilant shipping cost will be taken out to cover the initial shipping costs.</p><p>We do not offer refunds to anyone who purchases through our depop shop. Please contact us on Depop directly about any Depop orders.</p><p><strong>Exchanges</strong><br/>If you are looking to exchange your item for another size/product then please follow the above steps, however you must include a note inside to inform our team the item is for an exchange. Please also send an email to our customer service team so they can prepare the exchange for you: <a href=\"mailto:customerservice@vintageclub.uk\" title=\"mailto:customerservice@vintageclub.uk\">customerservice@vintageclub.uk</a></p><p>Late or missing refunds<br/>If you haven’t received a refund yet, first check your original payment method again. Then contact your payment method company, it may take some time before your refund is officially posted.<br/>If you’ve done all of this and you still have not received your refund yet, please contact us at <a href=\"mailto:vintageclubuk@gmail.com\" title=\"mailto:vintageclubuk@gmail.com\">vintageclubuk@gmail.com</a>.</p>",
+        "sizecart": "<p><strong>Size Guide</strong></p><p>Please see the below charts for our size guide. We recommend to size up one size bigger than your usual UK size, particularly in Retros as these come up smaller fitting. <br/><br/>Our selection of shirts includes a wide variety of styles and fabrics across different eras and teams, therefore certain shirts may fit differently to others. </p>",
+        "sizecart1": "shopify://shop_images/Screenshot_2024-11-18_at_09_25_00.png",
+        "sizecart2": "shopify://shop_images/Screenshot_2024-11-18_at_09_25_23.png",
         "mstitle": "item 1",
-        "msdescription": "<p>item 1<\/p>",
+        "msdescription": "<p>item 1</p>",
         "mstitle2": "item 2",
-        "msdescription2": "<p>item 2<\/p>",
+        "msdescription2": "<p>item 2</p>",
         "mstitle3": "item 3",
-        "msdescription3": "<p>item 3<\/p>"
+        "msdescription3": "<p>item 3</p>"
       }
     },
     "insta_images_slider_kFgy7x": {
       "type": "insta-images-slider",
       "settings": {
-        "html": "<p><strong>150,000+ CUSTOMERS<\/strong> LOVED THEIR MYSTERY BOXES<\/p>"
+        "html": "<p><strong>150,000+ CUSTOMERS</strong> LOVED THEIR MYSTERY BOXES</p>"
       }
     },
     "review_section_MULeRr": {
@@ -415,7 +415,7 @@
       "settings": {
         "maintitle": "What our customers say..",
         "collection": "racingjacket",
-        "html": "<p><strong>150,000+ CUSTOMERS<\/strong> LOVED THEIR MYSTERY BOXES<\/p>",
+        "html": "<p><strong>150,000+ CUSTOMERS</strong> LOVED THEIR MYSTERY BOXES</p>",
         "globle": false
       }
     },
@@ -524,7 +524,7 @@
       "settings": {
         "maintitle": "What our customers say..",
         "collection": "vintage",
-        "html": "<p><strong>150,000+ CUSTOMERS<\/strong> LOVED THEIR MYSTERY BOXES<\/p>",
+        "html": "<p><strong>150,000+ CUSTOMERS</strong> LOVED THEIR MYSTERY BOXES</p>",
         "globle": false
       }
     },
@@ -576,7 +576,8 @@
       ],
       "settings": {
         "left_heading": "vs them",
-        "left_subtext": "<p>We take the hard work out of Vintage shopping. Here's how:<br\/><\/p>",
+        "left_subtext": "<p>We take the hard work out of Vintage shopping. Here's how:<br/></p>",
+        "logoimg": "shopify://shop_images/Untitled_5.png",
         "righttext": "Other vintage stores"
       }
     },
@@ -788,7 +789,7 @@
           "settings": {
             "icon": "none",
             "title": "What to expect",
-            "content": "<p>Love vintage clothing but don’t like thrifting? We’ve done the hard work so you don’t have to!<\/p><p>Each box contains a curated assortment of handpicked vintage pieces from the 80s, 90s, and 00s. Expect a mix of sportswear, workwear, designer, and more — tailored to your chosen sizes!<\/p><p><strong>Brands to Expect:<\/strong> Carhartt, North Face, Nike, Dickies, Adidas, Polo Ralph Lauren, Tommy Hilfiger, Levi’s, Burberry, and other trendy, popular names.<\/p><p><strong>Condition:<\/strong> Every item is Grade A*, meaning excellent quality vintage ready to wear right out of the box.<\/p><p>Dive into the best of vintage style without the hassle of the hunt!<\/p>"
+            "content": "<p>Love vintage clothing but don’t like thrifting? We’ve done the hard work so you don’t have to!</p><p>Each box contains a curated assortment of handpicked vintage pieces from the 80s, 90s, and 00s. Expect a mix of sportswear, workwear, designer, and more — tailored to your chosen sizes!</p><p><strong>Brands to Expect:</strong> Carhartt, North Face, Nike, Dickies, Adidas, Polo Ralph Lauren, Tommy Hilfiger, Levi’s, Burberry, and other trendy, popular names.</p><p><strong>Condition:</strong> Every item is Grade A*, meaning excellent quality vintage ready to wear right out of the box.</p><p>Dive into the best of vintage style without the hassle of the hunt!</p>"
           }
         },
         "accor_item_4URDzb": {
@@ -796,7 +797,7 @@
           "settings": {
             "icon": "none",
             "title": "Delivery and returns",
-            "content": "<p><strong>Delivery & Returns<\/strong><\/p><p>Don’t panic — we’ve got you covered!<\/p><p><strong>Delivery:<\/strong><br\/>We aim to dispatch your box the same day as purchase, however please expect a max of 1-3 days after your order is placed. Just sit back and get ready to enjoy your curated vintage finds.<\/p><p><strong>Exchanges:<\/strong><br\/>If your box doesn’t quite suit your style or fit, don’t worry! We offer like-for-like exchanges for sizing only. Simply send the box back to us with your order number, and we’ll handle the rest.<\/p><p><strong>Returns Policy:<\/strong><br\/>Please note, we do not accept returns — exchanges only. To help us get it right the first time, include any specific notes with your order, and we’ll do our best to accommodate your preferences!<\/p>"
+            "content": "<p><strong>Delivery & Returns</strong></p><p>Don’t panic — we’ve got you covered!</p><p><strong>Delivery:</strong><br/>We aim to dispatch your box the same day as purchase, however please expect a max of 1-3 days after your order is placed. Just sit back and get ready to enjoy your curated vintage finds.</p><p><strong>Exchanges:</strong><br/>If your box doesn’t quite suit your style or fit, don’t worry! We offer like-for-like exchanges for sizing only. Simply send the box back to us with your order number, and we’ll handle the rest.</p><p><strong>Returns Policy:</strong><br/>Please note, we do not accept returns — exchanges only. To help us get it right the first time, include any specific notes with your order, and we’ll do our best to accommodate your preferences!</p>"
           }
         },
         "accor_item_AkRRaz": {
@@ -804,7 +805,7 @@
           "settings": {
             "icon": "none",
             "title": "Condition",
-            "content": "<p>Our products are Grade A* — the highest quality vintage pieces available.<\/p><p>Please note that all clothing is preworn and has had a previous life. This means you shouldn’t expect a brand-new product, but instead, a one-of-a-kind garment with its own unique story.<\/p><p>Slight imperfections may be present, but these add to the charm and individuality of each piece, reminding you that it’s truly yours and yours alone. Vintage clothing at its finest!<\/p>"
+            "content": "<p>Our products are Grade A* — the highest quality vintage pieces available.</p><p>Please note that all clothing is preworn and has had a previous life. This means you shouldn’t expect a brand-new product, but instead, a one-of-a-kind garment with its own unique story.</p><p>Slight imperfections may be present, but these add to the charm and individuality of each piece, reminding you that it’s truly yours and yours alone. Vintage clothing at its finest!</p>"
           }
         }
       },
@@ -957,7 +958,7 @@
           "settings": {
             "title": "Shipping & Delivery",
             "shipping_1": "las la-truck,FREE SHIPPING,Free shipping for all US order",
-            "shipping_2": "las la-headset,SUPPORT 24\/7,We support 24 hours a day",
+            "shipping_2": "las la-headset,SUPPORT 24/7,We support 24 hours a day",
             "shipping_3": "las la-exchange-alt,30 DAYS RETURN,You have 30 days to return",
             "shipping_4": "",
             "shipping_5": "",
@@ -970,7 +971,7 @@
             "b_link": "",
             "open_link": "_self",
             "img_effect": "none",
-            "date": "2022\/12\/26",
+            "date": "2022/12/26",
             "content_align": "center",
             "cdt_des": "2",
             "countdown_pos": "2",
@@ -1177,7 +1178,7 @@
       "settings": {
         "maintitle": "What our customers say..",
         "collection": "",
-        "html": "<p><strong>150,000+ CUSTOMERS<\/strong> LOVED THEIR MYSTERY BOXES<\/p>",
+        "html": "<p><strong>150,000+ CUSTOMERS</strong> LOVED THEIR MYSTERY BOXES</p>",
         "globle": true
       }
     },
