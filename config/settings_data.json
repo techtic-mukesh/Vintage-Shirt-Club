@@ -1965,7 +1965,7 @@
             "type": "menu",
             "settings": {
               "title": "MYSTERY BOX",
-              "url": "shopify://collections/mystery-box",
+              "url": "shopify://products/retro-mystery-football-shirt-box",
               "open_link": "_self",
               "menu": "",
               "lb": "NEW",
