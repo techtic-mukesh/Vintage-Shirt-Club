@@ -1,5 +1,5 @@
 <div class="pay-with-card">
-  <h2>Or pay with card</h2>
+  <h2>Pay with card</h2>
   <form id="card-form">
     <label for="card-number-element" style="font-size: 0.95em; color: #666;">Card information</label>
     <div style="border: 1px solid #ccc; border-radius: 4px; padding: 0 16px; background-color:#fff; margin-bottom: 10px;">
@@ -20,53 +20,130 @@
 </div>
 <script>
 window.addEventListener('DOMContentLoaded', function () {
-function showLoader() {
-  // Create loader if it doesn't exist
-  if (!document.getElementById('full-screen-loader')) {
-    const loader = document.createElement('div');
-    loader.id = 'full-screen-loader';
-    loader.innerHTML = `
-      <style>
-        #full-screen-loader {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(255, 255, 255, 0.8);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
-        }
-        .loader-spinner {
-          border: 5px solid #f3f3f3;
-          border-radius: 50%;
-          border-top: 5px solid #000;
-          width: 50px;
-          height: 50px;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
-      <div class="loader-spinner"></div>
-    `;
-    document.body.appendChild(loader);
-  } else {
-    document.getElementById('full-screen-loader').style.display = 'flex';
-  }
-}
+  // Global variable for phone input
+  let iti;
+  
+  // Error map for phone validation
+  const errorMap = [
+    "Invalid number",
+    "Invalid country code",
+    "Number too short",
+    "Number too long",
+    "Invalid number"
+  ];
 
-function hideLoader() {
-  const loader = document.getElementById('full-screen-loader');
-  if (loader) {
-    loader.style.display = 'none';
+  function showLoader() {
+    // Create loader if it doesn't exist
+    if (!document.getElementById('full-screen-loader')) {
+      const loader = document.createElement('div');
+      loader.id = 'full-screen-loader';
+      loader.innerHTML = `
+        <style>
+          #full-screen-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+          }
+          .loader-spinner {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid #000;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+        <div class="loader-spinner"></div>
+      `;
+      document.body.appendChild(loader);
+    } else {
+      document.getElementById('full-screen-loader').style.display = 'flex';
+    }
   }
-}
 
+  function hideLoader() {
+    const loader = document.getElementById('full-screen-loader');
+    if (loader) {
+      loader.style.display = 'none';
+    }
+  }
+
+  // Initialize phone input - make sure this matches your phone input ID
+  function initializePhoneInput() {
+    const input = document.querySelector("#phone"); // Change this to your actual phone input ID
+    
+    if (!input) {
+      console.error('Phone input element not found. Make sure the ID matches your HTML.');
+      return;
+    }
+
+    const errorMsg = document.querySelector("#error-msg");
+    const validMsg = document.querySelector("#valid-msg");
+
+    iti = window.intlTelInput(input, {
+      initialCountry: "auto",
+      geoIpLookup: function (callback) {
+        $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+          var countryCode = (resp && resp.country) ? resp.country : "";
+          callback(countryCode);
+        });
+      },
+      placeholderNumberType: "MOBILE",
+      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@16.0.2/build/js/utils.js"
+    });
+
+    if (validMsg) {
+      $(validMsg).addClass("hide");
+    }
+
+    function reset() {
+      input.classList.remove("error");
+      if (errorMsg) {
+        errorMsg.innerHTML = "";
+        errorMsg.classList.add("hide");
+      }
+      if (validMsg) {
+        validMsg.classList.add("hide");
+      }
+    }
+
+    input.addEventListener('blur', function () {
+      reset();
+      if (input.value.trim()) {
+        if (iti.isValidNumber()) {
+          if (validMsg) {
+            validMsg.classList.remove("hide");
+          }
+          const nationalNumber = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
+          console.log("Formatted number:", nationalNumber);
+        } else {
+          input.classList.add("error");
+          var errorCode = iti.getValidationError();
+          if (errorMsg) {
+            errorMsg.innerHTML = errorMap[errorCode] || "Invalid number";
+            errorMsg.classList.remove("hide");
+          }
+        }
+      }
+    });
+
+    input.addEventListener('change', reset);
+    input.addEventListener('keyup', reset);
+  }
+
+  // Initialize phone input immediately
+  initializePhoneInput();
 
   fetch('https://stripe.vintageshirtclub.com/config')
     .then(r => r.json())
@@ -77,31 +154,27 @@ function hideLoader() {
         fonts: [{ cssSrc: 'https://fonts.googleapis.com/css?family=Roboto' }]
       });
 
-  const style = {
-  base: {
-    color: "#32325d",
-    fontFamily: "Roboto, Arial, sans-serif",
-    fontSize: "16px",
-    fontSmoothing: "antialiased",
-    padding: "12px",            // Padding inside the input
-    height: "40px",               // ⚠️ May not always apply directly — iframe styling is limited
-    lineHeight: "40px",           // Helps align text vertically
-    borderRadius: "4px",          // Rounded corners visually, but use outer div
-    backgroundColor: "#fff",
-     padding: "0 12px", // Padding inside input (horizontal only)
-    "::placeholder": {
-      color: "#a0aec0",
-       padding: "12px",
-    }
-  },
-  invalid: {
-    color: "#d32f2f",
-    iconColor: "#d32f2f"
-  }
-};
-
-
-
+      const style = {
+        base: {
+          color: "#32325d",
+          fontFamily: "Roboto, Arial, sans-serif",
+          fontSize: "16px",
+          fontSmoothing: "antialiased",
+          padding: "12px",
+          height: "40px",
+          lineHeight: "40px",
+          borderRadius: "4px",
+          backgroundColor: "#fff",
+          "::placeholder": {
+            color: "#a0aec0",
+            padding: "12px",
+          }
+        },
+        invalid: {
+          color: "#d32f2f",
+          iconColor: "#d32f2f"
+        }
+      };
 
       const cardNumber = elements.create('cardNumber', { style });
       cardNumber.mount('#card-number-element');
@@ -185,6 +258,28 @@ function hideLoader() {
         // Get contact information
         const email = document.getElementById('customerEmail').value;
         
+        // Get phone number with proper validation
+        let phoneNumber = '';
+        if (iti) {
+          try {
+            phoneNumber = iti.getNumber(); // International format
+            console.log("Phone number retrieved:", phoneNumber);
+          } catch (error) {
+            console.error("Error getting phone number:", error);
+            phoneNumber = '';
+          }
+        } else {
+          console.error("Phone input not initialized");
+          // Fallback to raw input value
+          const phoneInput = document.querySelector("#phone");
+          if (phoneInput) {
+            phoneNumber = phoneInput.value;
+          }
+        }
+
+        // Alert the phone number
+        // alert("Phone Number: " + phoneNumber);
+
         // Get country value and convert to code
         const countryElement = document.getElementById('ShippingCountry_{{ idShip }}') || 
                               document.querySelector('[name="country"]');
@@ -201,9 +296,9 @@ function hideLoader() {
           address1: document.getElementById('address1').value || '',
           address2: document.getElementById('address2').value || '',
           city: document.getElementById('city').value || '',
-          zip: document.getElementById('cityInput').value || '', // Note: this seems to be postal code based on placeholder
+          zip: document.getElementById('cityInput').value || '',
           country: countryCode,
-          province: provinceValue, // Add province field if you have one in your form
+          province: provinceValue,
         };
         
         // Get cart data from the existing cart items in the sidebar
@@ -211,17 +306,36 @@ function hideLoader() {
         const cartItemElements = document.querySelectorAll('.cart-item');
 
         cartItemElements.forEach(item => {
-        const quantity = parseInt(item.getAttribute('data-quantity')) || 1;
-        const variantId = item.getAttribute('data-variant-id') || 'unknown';
-        const price = parseFloat(item.getAttribute('data-price').replace(',', '.')) || 0;
+          const quantity = parseInt(item.getAttribute('data-quantity')) || 1;
+          const variantId = item.getAttribute('data-variant-id') || 'unknown';
+          const price = parseFloat(item.getAttribute('data-price').replace(',', '.')) || 0;
 
-        cartItems.push({
+          const properties = [];
+          const propertyElements = item.querySelectorAll('.cart-item-properties li');
+
+          propertyElements.forEach(li => {
+            const nameEl = li.querySelector('strong');
+            const name = nameEl?.textContent?.replace(':', '').trim();
+            const valueNode = nameEl?.nextSibling;
+            const value = valueNode?.textContent?.trim() || valueNode?.nodeValue?.trim();
+
+            if (name && value) {
+              properties.push({ name, value });
+            }
+          });
+
+          const cartItem = {
             quantity,
             variantId,
-            price
+            price,
+            properties
+          };
+
+          cartItems.push(cartItem);
         });
-        });
-        
+
+        console.log('Cart items:', cartItems);
+
         // Get cart totals
         const subtotalElement = document.querySelector('.cart-totals li:first-child span');
         const totalElement = document.querySelector('#csFinal');
@@ -231,6 +345,7 @@ function hideLoader() {
         
         return {
           email,
+          phoneNumber,
           shippingAddress,
           cartItems,
           subtotal,
@@ -247,6 +362,9 @@ function hideLoader() {
         if (!email || !email.includes('@')) {
           errors.push('Please enter a valid email address');
         }
+        
+        // Validate phone number
+        
         
         // Validate required shipping fields
         const requiredFields = [
@@ -273,7 +391,7 @@ function hideLoader() {
       }
 
       document.querySelector('#card-pay-btn').addEventListener('click', async (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
 
         // Validate form data
         const validationErrors = validateFormData();
@@ -289,7 +407,7 @@ function hideLoader() {
         try {
           const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
             method: 'POST',
-            body: JSON.stringify({ amount: Math.round(formData.total * 100) }), // Convert to cents
+            body: JSON.stringify({ amount: Math.round(formData.total * 100) }),
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -301,12 +419,13 @@ function hideLoader() {
               billing_details: {
                 name: `${formData.shippingAddress.firstName} ${formData.shippingAddress.lastName}`.trim(),
                 email: formData.email,
+                phone: formData.phoneNumber, // Include phone number
                 address: {
                   line1: formData.shippingAddress.address1,
                   line2: formData.shippingAddress.address2 || undefined,
                   city: formData.shippingAddress.city,
                   postal_code: formData.shippingAddress.zip,
-                  country: formData.shippingAddress.country.length === 2 ? formData.shippingAddress.country : 'US' // Fallback to US if invalid
+                  country: formData.shippingAddress.country.length === 2 ? formData.shippingAddress.country : 'US'
                 }
               }
             }
@@ -319,13 +438,14 @@ function hideLoader() {
             errorDiv.textContent = 'Payment successful!';
             
             // Create payload with properly structured order data
-           const payload = {
-            paymentIntentId: paymentIntent.id,
-            amount: formData.total,
-            currency: 'eur',
-            email: formData.email,
-            cart: formData.cartItems, // already formatted with variantId, quantity, price
-            shippingAddress: {
+            const payload = {
+              paymentIntentId: paymentIntent.id,
+              amount: formData.total,
+              currency: 'gbp',
+              email: formData.email,
+              phone: formData.phoneNumber, // Include phone number in payload
+              cart: formData.cartItems,
+              shippingAddress: {
                 address1: formData.shippingAddress.address1,
                 address2: formData.shippingAddress.address2,
                 city: formData.shippingAddress.city,
@@ -334,10 +454,10 @@ function hideLoader() {
                 zip: formData.shippingAddress.zip,
                 firstName: formData.shippingAddress.firstName,
                 lastName: formData.shippingAddress.lastName
-            }
+              }
             };
 
-                console.log('Payload:', JSON.stringify(payload, null, 2));
+            console.log('Payload:', JSON.stringify(payload, null, 2));
 
             // Send payload to your success endpoint
             fetch('https://stripe.vintageshirtclub.com/payment-success', {
@@ -348,13 +468,11 @@ function hideLoader() {
               .then(res => res.json())
               .then(data => {
                 console.log('Payment success logged:', data);
-
-                showLoader();
                 
+                showLoader();
                 setTimeout(function() {
-                window.location.href = '/pages/thank-you';
-                }, 1000); // 1000 milliseconds = 1 second
-
+                  window.location.href = '/pages/thank-you';
+                }, 1000);
               })
               .catch(err => {
                 console.error('Error sending payment success data:', err);
@@ -367,5 +485,5 @@ function hideLoader() {
         }
       });
     });
-    });
+});
 </script>

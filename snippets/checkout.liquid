@@ -50,6 +50,8 @@
         </div>
           <div class="input-row">
            <input type="tel" id="phone" placeholder="Phone (optional)">
+            <div id="error-msg" class="error-msg hide"></div>
+        <div id="valid-msg" class="valid-msg hide">Valid number</div>
         </div>
       </div>
     </div>
@@ -65,13 +67,14 @@
 
       <div class="input-row">
       <label for="country">Country/Region</label>
-       <select
-            id="ShippingCountry_{{ idShip }}"
-            name="country"
-            data-default="{% if customer %}{{ customer.default_address.country }}{% elsif se_stts.ship_df_country != '' %}{{ se_stts.ship_df_country | escape }}{% endif %}"
-          >
-            {{- country_option_tags -}}
-          </select>
+     <select
+        id="ShippingCountry_{{ idShip }}"
+        name="country"
+        data-default="{% if customer %}{{ customer.default_address.country }}{% elsif se_stts.ship_df_country != '' %}{{ se_stts.ship_df_country | escape }}{% else %}United Kingdom{% endif %}"
+        >
+        {{- country_option_tags -}}
+        </select>
+
           <div class="error-message" id="countryError">Please select a country</div>
       </div>
 
@@ -118,7 +121,7 @@
 
   <!-- Cart Summary Sidebar -->
   <div class="cart-right">
-    <ul class="cart-items">
+    <ul class="cart-items {% if cart.items.size >= 4 %}scroll-y{% endif %}">
       {% for item in cart.items %}
         <li class="cart-item"  data-variant-id="{{ item.variant_id }}"
       data-quantity="{{ item.quantity }}"
@@ -130,8 +133,11 @@
           <div class="cart-data">
             <div class="cm-price">
                 <p>{{ item.product.title }}</p>
-                <p class="cart-varriant_title">{{ item.variant.title }}</p>
-                {% comment %} <ul class="cart-item-properties">
+                <p class="cart-varriant_title">
+                    {{ item.variant.title }}
+                </p>
+                {% if item.properties.size > 0 %}
+                <ul class="cart-item-properties">
                     {% for prop in item.properties %}
                     {% unless prop.last == blank %}
                         <li>
@@ -139,7 +145,19 @@
                         </li>
                     {% endunless %}
                     {% endfor %}
-                </ul> {% endcomment %}
+                </ul>
+                {% endif %}
+                 {% if item.line_level_discount_allocations.size > 0 %}
+                    <ul class="t4s-cart_discount_price">
+                        {%- for discount_allocation in item.line_level_discount_allocations -%}
+                        <li class="t4s-order-discount__item">
+                            <svg viewBox="0 0 24 24" width="20"><use href="#icon-cart-tag"/></svg>
+                            {{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
+                        </li>
+                        {%- endfor -%}
+                    </ul>
+                    {% endif %}
+
                 </div>
                 <p>{{ item.final_line_price | money }}</p>
           </div>
@@ -226,6 +244,12 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+}
+
+.cm-checkout ul.cart-items.scroll-y {
+    height: 299px;
+    overflow-y: scroll;
+    padding: 10px;
 }
 
 .cm-checkout ul.cart-items li.cart-item {
@@ -378,6 +402,10 @@
     gap: 10px;
 }
 
+.input-row .hide {
+      display: none;
+}
+
 .cm-checkout .cart-totals ul li:last-of-type {
     margin-top: 20px;
 }
@@ -465,6 +493,50 @@ button#payNow {
     padding-left: 50px;
 }
 
+.cm-checkout ul.cart-items li.cart-item .cart-data ul.cart-item-properties {
+    padding: 0;
+}
+
+.contact-section .top-row .input-row div#valid-msg {
+    font-size: 13px;
+    padding: 5px 0 0 10px;
+    color: green;
+}
+
+.contact-section .top-row .input-row div#error-msg {
+    font-size: 13px;
+    padding: 5px 0 0 10px;
+    color: #ec0101;
+}
+
+.cm-checkout ul.cart-items li.cart-item .cart-data ul.t4s-cart_discount_price {
+    margin: 0;
+}
+
+.cm-checkout ul.cart-items li.cart-item .cart-data ul.t4s-cart_discount_price li.t4s-order-discount__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.cm-checkout .spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media only screen and (max-width: 1200px) {
   .cm-checkout form.cart-delivery-form {
     grid-template-columns: 1fr;
@@ -476,62 +548,9 @@ button#payNow {
 </style>
 
 
-
 <script>
+
 window.addEventListener('DOMContentLoaded', function () {
-
-
-var input = document.querySelector("#phone");
-var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
-
-window.addEventListener("load", function () {
-    var errorMsg = document.querySelector("#error-msg"),
-        validMsg = document.querySelector("#valid-msg");
-
-    var iti = window.intlTelInput(input, {
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                callback(countryCode);
-            });
-        },
-        placeholderNumberType: "MOBILE",
-        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@16.0.2/build/js/utils.js"
-    });
-
-    $(validMsg).addClass("hide");
-
-    function reset() {
-        input.classList.remove("error");
-        errorMsg.innerHTML = "";
-        errorMsg.classList.add("hide");
-        validMsg.classList.add("hide");
-    }
-
-    input.addEventListener('blur', function () {
-        reset();
-        if (input.value.trim()) {
-            if (iti.isValidNumber()) {
-                validMsg.classList.remove("hide");
-
-                // Log number in US format (e.g. (123) 456-7890)
-                const nationalNumber = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
-                console.log("Formatted US number:", nationalNumber);
-            } else {
-                input.classList.add("error");
-                var errorCode = iti.getValidationError();
-                errorMsg.innerHTML = errorMap[errorCode] || "Invalid number";
-                errorMsg.classList.remove("hide");
-            }
-        }
-    });
-
-    input.addEventListener('change', reset);
-    input.addEventListener('keyup', reset);
-});
-
-
     
     var reset = function () {
         input.classList.remove("error");
@@ -542,7 +561,9 @@ window.addEventListener("load", function () {
 
 
     const provinceSelect = document.getElementById('ShippingCountry_');
+    const provinceSelectmain = document.getElementById('ShippingCountry_main_cart');
     provinceSelect.value = 'United Kingdom';
+    provinceSelectmain.value = 'United Kingdom';
 
     const CountrySelector = document.getElementById("ShippingCountry_");
     const CountrySelectorhidden = document.getElementById("ShippingCountry_main_cart");
