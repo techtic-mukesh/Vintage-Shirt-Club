@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stripe Apple Pay Demo</title>
+  <!-- <script src="https://js.stripe.com/v3/"></script> -->
+
+  <style>
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+
+
+  
+  {% comment %} <div id="payment-request-button">
+  </div> {% endcomment %}
+
+  
+
+<script>
+  function loadStripe(callback) {
+    const script = document.createElement('script');
+    console.log("load start");
+    script.src = 'https://js.stripe.com/v3/';
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+  
+  loadStripe(() => {
+    document.addEventListener('DOMContentLoaded', function() {
+    fetch('https://stripe.vintageshirtclub.com/config')
+      .then(r => r.json())
+      .then(({ publishableKey }) => {
+        const stripe = Stripe(publishableKey);
+
+
+        const paymentRequest = stripe.paymentRequest({
+          country: 'US',
+         currency: 'gbp',
+          total: {
+            label: 'Product',
+            amount: {{ cart.total_price }}
+,
+          },
+          requestPayerName: true,
+          requestPayerEmail: true,
+        });
+
+        const elements = stripe.elements();
+        paymentRequest.canMakePayment().then(result => {
+          if (result) {
+            const prButton = elements.create('paymentRequestButton', {
+              paymentRequest: paymentRequest,
+            });
+            prButton.mount('#payment-request-button');
+          } else {
+            document.getElementById('payment-request-button').style.display = 'none';
+          }
+        });
+
+        paymentRequest.on('paymentmethod', async (ev) => {
+
+          const amount = {{ cart.total_price }}; 
+
+          const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount }) // Pass amount here
+          });
+          const { clientSecret } = await res.json();
+
+          const { error,paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: ev.paymentMethod.id,
+          }, { handleActions: false });
+
+          if (error) {
+            console.log("fail");
+            alert('Payment Fail');
+            ev.complete('fail');
+          } else {
+            ev.complete('success');
+            console.log('sucess');
+
+        const payload = {
+              paymentIntentId: paymentIntent.id,
+              amount: {{ cart.total_price }}, // static value in pence (e.g. £49.99 = 4999)
+              currency: 'gbp',
+              email: "john.doe@example.com",
+              phone: "+447911123456",
+              cart: [
+                {
+                  quantity: 1,
+                  price: 9.99,
+                  variant_id: 55538230493562
+                },
+              ],
+              shippingAddress: {
+                address1: "123 Baker Street",
+                address2: "Flat 4B",
+                city: "London",
+                province: "Greater London",
+                country: "GB",
+                zip: "NW1 6XE",
+                firstName: "John",
+                lastName: "Doe"
+              }
+            };
+
+
+          }
+        });
+      });
+        });
+  });
+</script>
+
+</body>
+</html>

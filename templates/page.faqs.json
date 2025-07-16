@@ -36,8 +36,10 @@
         "18952756-58af-4afa-a0cc-b1b54300fb8b",
         "cc993342-0dd0-41d6-a6c4-a5f3c87e6f96"
       ],
+      "disabled": true,
       "settings": {
-        "image": "shopify:\/\/shop_images\/bg-heading.jpg",
+        "heading_fullwidth": false,
+        "use_specify_image": true,
         "parallax": false,
         "color": "#000000",
         "overlay": 54,
@@ -55,12 +57,15 @@
     },
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "layout": "t4s-container-wrap",
         "cl_bg": "",
         "cl_bg_gradient": "",
         "mg": "60px,,60px,",
         "pd": "",
+        "mg_tb": "",
+        "pd_tb": "",
         "mg_mb": ",,30px,",
         "pd_mb": ""
       }
@@ -77,11 +82,22 @@
         "sidebar_bdr": 5,
         "sidebar_pd": 10
       }
+    },
+    "thank_you_UwPmNA": {
+      "type": "thank-you",
+      "name": "Thank You Section",
+      "settings": {
+        "heading": "Thank you for your order!",
+        "subheading": "We’ve received your order and sent a confirmation email.",
+        "button_text": "Continue Shopping",
+        "button_link": "\/"
+      }
     }
   },
   "order": [
     "heading",
     "main",
-    "sidebar-page"
+    "sidebar-page",
+    "thank_you_UwPmNA"
   ]
 }

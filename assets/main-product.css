@@ -687,6 +687,7 @@ button.t4s-product-form__submit[disabled="disabled"]{
     cursor: pointer;
     margin-top: 20px;
     order: 4;
+    background-color: #121212;
 }
 .t4s-product-form__buttons .t4s-product-form__submit svg.t4s-btn-icon{width:18px;height:18px;margin-left: 0;margin-right: 8px;}
 .t4s-product-form__buttons .t4s-product-form__submit.t4s-btn-style-bordered{

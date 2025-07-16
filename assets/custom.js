@@ -763,3 +763,7 @@ function syncVariantWithQuantity() {
 }
 
 syncVariantWithQuantity();
+
+
+// Cart Page redirect
+
