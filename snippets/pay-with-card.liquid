@@ -692,10 +692,10 @@ window.addEventListener('DOMContentLoaded', function () {
               .then(data => {
                 console.log('Payment success logged:', data);
                 
-                // showLoader();
-                // setTimeout(function() {
-                //   window.location.href = '/pages/thank-you';
-                // }, 1000);
+                showLoader();
+                setTimeout(function() {
+                  window.location.href = '/pages/thank-you';
+                }, 1000);
               })
               .catch(err => {
                 console.error('Error sending payment success data:', err);
