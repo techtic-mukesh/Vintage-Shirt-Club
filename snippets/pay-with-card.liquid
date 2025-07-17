@@ -658,7 +658,7 @@ window.addEventListener('DOMContentLoaded', function () {
           if (error) {
             errorDiv.textContent = error.message;
           } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-            errorDiv.textContent = 'Payment successful!';
+            errorDiv.textContent = '';
             
             // Create payload with properly structured order data
             const payload = {

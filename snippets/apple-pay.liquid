@@ -7,9 +7,7 @@
 
   <style>
     button { padding: 10px 20px; font-size: 16px; }
-      div#payment-request-button {
-    display: none;
-}
+   
   </style>
 </head>
 <body>
@@ -20,105 +18,525 @@
  <div id="payment-request-button">
   </div>
 
-  
 
 <script>
-  function loadStripe(callback) {
+ function loadStripe(callback) {
     const script = document.createElement('script');
-    console.log("load start");
+    console.log("Stripe loading started");
     script.src = 'https://js.stripe.com/v3/';
     script.onload = callback;
     document.head.appendChild(script);
-  }
-  
-  loadStripe(() => {
+}
+
+loadStripe(() => {
     document.addEventListener('DOMContentLoaded', function() {
-    fetch('https://stripe.vintageshirtclub.com/config')
-      .then(r => r.json())
-      .then(({ publishableKey }) => {
-        const stripe = Stripe(publishableKey);
+        fetch('https://stripe.vintageshirtclub.com/config') 
+            .then(r => r.json())
+            .then(({ publishableKey }) => {
+                const stripe = Stripe(publishableKey);
 
+                // Country name to code mapping (same as your existing code)
+                const countryCodeMap = {
+                    'United States': 'US',
+                    'United Kingdom': 'GB',
+                    'Canada': 'CA',
+                    'Australia': 'AU',
+                    'Germany': 'DE',
+                    'France': 'FR',
+                    'Italy': 'IT',
+                    'Spain': 'ES',
+                    'Netherlands': 'NL',
+                    'Belgium': 'BE',
+                    'Switzerland': 'CH',
+                    'Austria': 'AT',
+                    'Sweden': 'SE',
+                    'Norway': 'NO',
+                    'Denmark': 'DK',
+                    'Finland': 'FI',
+                    'Poland': 'PL',
+                    'Czech Republic': 'CZ',
+                    'Hungary': 'HU',
+                    'Portugal': 'PT',
+                    'Ireland': 'IE',
+                    'Luxembourg': 'LU',
+                    'Greece': 'GR',
+                    'Japan': 'JP',
+                    'South Korea': 'KR',
+                    'China': 'CN',
+                    'India': 'IN',
+                    'Brazil': 'BR',
+                    'Mexico': 'MX',
+                    'Argentina': 'AR',
+                    'Chile': 'CL',
+                    'Colombia': 'CO',
+                    'Peru': 'PE',
+                    'Russia': 'RU',
+                    'Ukraine': 'UA',
+                    'Turkey': 'TR',
+                    'Israel': 'IL',
+                    'South Africa': 'ZA',
+                    'Egypt': 'EG',
+                    'Morocco': 'MA',
+                    'Nigeria': 'NG',
+                    'Kenya': 'KE',
+                    'Ghana': 'GH',
+                    'Singapore': 'SG',
+                    'Malaysia': 'MY',
+                    'Thailand': 'TH',
+                    'Philippines': 'PH',
+                    'Indonesia': 'ID',
+                    'Vietnam': 'VN',
+                    'New Zealand': 'NZ'
+                };
 
-        const paymentRequest = stripe.paymentRequest({
-          country: 'US',
-         currency: 'gbp',
-          total: {
-            label: 'Product',
-            amount: {{ cart.total_price }}
-,
-          },
-          requestPayerName: true,
-          requestPayerEmail: true,
-        });
+                // Function to convert country name to code
+                function getCountryCode(countryName) {
+                    if (countryName && countryName.length === 2) {
+                        return countryName.toUpperCase();
+                    }
+                    return countryCodeMap[countryName] || countryName;
+                }
 
-        const elements = stripe.elements();
-        paymentRequest.canMakePayment().then(result => {
-          if (result) {
-            const prButton = elements.create('paymentRequestButton', {
-              paymentRequest: paymentRequest,
+                // Function to get dynamic form data (same as your existing code)
+                function getFormData() {
+                    const form = document.getElementById('checkoutForm');
+                    const formData = new FormData(form);
+                    
+                    // Get contact information
+                    const email = document.getElementById('customerEmail').value;
+                    
+                    // Get phone number with proper validation (optional)
+                    let phoneNumber = '';
+                    if (window.iti) {
+                        try {
+                            const phoneValue = document.querySelector("#phone").value.trim();
+                            if (phoneValue) {
+                                phoneNumber = window.iti.getNumber(); // International format
+                                console.log("Phone number retrieved:", phoneNumber);
+                            }
+                        } catch (error) {
+                            console.error("Error getting phone number:", error);
+                            phoneNumber = '';
+                        }
+                    } else {
+                        // Fallback to raw input value
+                        const phoneInput = document.querySelector("#phone");
+                        if (phoneInput && phoneInput.value.trim()) {
+                            phoneNumber = phoneInput.value.trim();
+                        }
+                    }
+
+                    // Get country value and convert to code
+                    const countryElement = document.getElementById('ShippingCountry_{{ idShip }}') || 
+                                          document.querySelector('[name="country"]');
+                    const countryValue = countryElement ? countryElement.value : '';
+                    const countryCode = getCountryCode(countryValue);
+
+                    const provinceElement = document.getElementById('ShippingProvince_dynamic');
+                    const provinceValue = provinceElement && provinceElement.value ? provinceElement.value : null;
+                    
+                    // Get shipping address data
+                    const shippingAddress = {
+                        firstName: document.getElementById('firstName').value || '',
+                        lastName: document.getElementById('lastName').value || '',
+                        address1: document.getElementById('address1').value || '',
+                        address2: document.getElementById('address2').value || '',
+                        city: document.getElementById('city').value || '',
+                        zip: document.getElementById('cityInput').value || '',
+                        country: countryCode,
+                        province: provinceValue,
+                    };
+                    
+                    // Get cart data from the existing cart items in the sidebar
+                    const cartItems = [];
+                    const cartItemElements = document.querySelectorAll('.cart-item');
+
+                    cartItemElements.forEach(item => {
+                        const quantity = parseInt(item.getAttribute('data-quantity')) || 1;
+                        const variantId = item.getAttribute('data-variant-id') || 'unknown';
+                        const price = parseFloat(item.getAttribute('data-price').replace(',', '.')) || 0;
+
+                        const properties = [];
+                        const propertyElements = item.querySelectorAll('.cart-item-properties li');
+
+                        propertyElements.forEach(li => {
+                            const nameEl = li.querySelector('strong');
+                            const name = nameEl?.textContent?.replace(':', '').trim();
+                            const valueNode = nameEl?.nextSibling;
+                            const value = valueNode?.textContent?.trim() || valueNode?.nodeValue?.trim();
+
+                            if (name && value) {
+                                properties.push({ name, value });
+                            }
+                        });
+
+                        const cartItem = {
+                            quantity,
+                            variantId,
+                            price,
+                            properties
+                        };
+
+                        cartItems.push(cartItem);
+                    });
+
+                    console.log('Cart items:', cartItems);
+
+                    // Get cart totals
+                    const subtotalElement = document.querySelector('.cart-totals li:first-child span');
+                    const totalElement = document.querySelector('#csFinal');
+                    
+                    const subtotal = subtotalElement ? parseFloat(subtotalElement.textContent.replace(/[^0-9.,]/g, '').replace(',', '.')) : 0;
+                    const total = totalElement ? parseFloat(totalElement.textContent.replace(/[^0-9.,]/g, '').replace(',', '.')) : 0;
+                    
+                    return {
+                        email,
+                        phoneNumber,
+                        shippingAddress,
+                        cartItems,
+                        subtotal,
+                        total
+                    };
+                }
+
+                // Validation function (same as your existing code)
+                function validateFormData() {
+                    let isValid = true;
+                    const errors = [];
+
+                    // Clear all existing error messages first
+                    const allErrorMessages = document.querySelectorAll('.error-message');
+                    allErrorMessages.forEach(el => el.classList.remove('show'));
+
+                    // Email validation
+                    const email = document.getElementById('customerEmail');
+                    const emailError = document.getElementById('emailError');
+                    if (email && emailError) {
+                        const emailValue = email.value.trim();
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        
+                        if (!emailValue || !emailRegex.test(emailValue)) {
+                            emailError.classList.add('show');
+                            errors.push('Valid email is required');
+                            isValid = false;
+                        }
+                    }
+
+                    // Country validation
+                    const countrySelect = document.querySelector('select[name="country"]');
+                    const countryError = document.getElementById('countryError');
+                    if (countrySelect && countryError) {
+                        if (!countrySelect.value || countrySelect.value.trim() === '') {
+                            countryError.classList.add('show');
+                            errors.push('Country is required');
+                            isValid = false;
+                        }
+                    }
+
+                    // Required fields validation
+                    const fieldChecks = [
+                        { id: 'lastName', errorId: 'lastNameError', name: 'Last name' },
+                        { id: 'address1', errorId: 'address1Error', name: 'Address' },
+                        { id: 'city', errorId: 'cityError', name: 'City' },
+                        { id: 'cityInput', errorId: 'postalCodeError', name: 'Postal code' }
+                    ];
+
+                    fieldChecks.forEach(field => {
+                        const input = document.getElementById(field.id);
+                        const errorEl = document.getElementById(field.errorId);
+                        
+                        if (input && errorEl) {
+                            if (!input.value || !input.value.trim()) {
+                                errorEl.classList.add('show');
+                                errors.push(`${field.name} is required`);
+                                isValid = false;
+                            }
+                        }
+                    });
+
+                    // Phone validation (optional - only validate if user enters something)
+                    const phoneInput = document.querySelector("#phone");
+                    const phoneError = document.querySelector("#error-msg");
+                    
+                    if (phoneInput && phoneError && window.iti) {
+                        const phoneValue = phoneInput.value.trim();
+                        // Only validate if user has entered something (phone is optional)
+                        if (phoneValue && !window.iti.isValidNumber()) {
+                            phoneError.classList.remove('hide');
+                            phoneInput.classList.add('error');
+                            errors.push('Please enter a valid phone number or leave it empty');
+                            isValid = false;
+                        }
+                    }
+
+                    // Cart validation
+                    const cartItemElements = document.querySelectorAll('.cart-item');
+                    if (cartItemElements.length === 0) {
+                        errors.push('Your cart is empty');
+                        isValid = false;
+                    }
+
+                    // Shipping method validation
+                    const shippingMethod = document.querySelector('input[name="shipping_method"]:checked');
+                    const shippingError = document.getElementById('shippingError');
+                    if (!shippingMethod) {
+                        if (shippingError) shippingError.classList.add('show');
+                        errors.push('Please select a shipping method');
+                        isValid = false;
+                    } else {
+                        if (shippingError) shippingError.classList.remove('show');
+                    }
+
+                    return { isValid, errors };
+                }
+
+                // Get current total for payment request
+                function getCurrentTotal() {
+                    const formData = getFormData();
+                    console.log('Current total for payment request:', formData.total);
+                    return Math.round(formData.total * 100); // Convert to pence
+                }
+
+                // Create payment request with shipping options
+                const paymentRequest = stripe.paymentRequest({
+                    country: 'GB',
+                    currency: 'gbp',
+                    total: {
+                        label: 'Total',
+                        amount: getCurrentTotal(),
+                    },
+                });
+
+                const elements = stripe.elements();
+                
+                // Check if payment request is available
+                paymentRequest.canMakePayment().then(result => {
+                    if (result) {
+                        const prButton = elements.create('paymentRequestButton', {
+                            paymentRequest: paymentRequest,
+                            style: {
+                                paymentRequestButton: {
+                                    type: 'default', // 'default' | 'book' | 'buy' | 'donate'
+                                    theme: 'dark', // 'dark' | 'light' | 'light-outline'
+                                    height: '50px',
+                                },
+                            },
+                        });
+                        prButton.mount('#payment-request-button');
+                        console.log('Payment request button mounted successfully');
+
+                        // Add click event listener to validate form before payment
+                        prButton.on('click', (event) => {
+                            console.log('Payment request button clicked');
+                            
+                            // Validate form data before allowing payment to proceed
+                            const validation = validateFormData();
+                            if (!validation.isValid) {
+                                console.log('Form validation failed on button click:', validation.errors);
+                                event.preventDefault();
+                                
+                                // Show error message to user
+                                // alert('Please fill in all required fields before proceeding with payment:\n\n' + validation.errors.join('\n'));
+                                
+                                // Scroll to first error field
+                                const firstErrorElement = document.querySelector('.error-message.show');
+                                if (firstErrorElement) {
+                                    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                                
+                                return;
+                            }
+                            
+                            console.log('Form validation passed, proceeding with payment');
+
+                               const formData = getFormData();
+                              console.log('Form data for payment:', formData);
+                        });
+                    } else {
+                        document.getElementById('payment-request-button').style.display = 'none';
+                        console.log('Payment request not available');
+                    }
+                });
+
+                // Handle payment method event
+                paymentRequest.on('paymentmethod', async (ev) => {
+                    console.log('Payment method event triggered');
+                    console.log('Payment method details:', ev.paymentMethod);
+                    console.log('Shipping address from Apple Pay/Google Pay:', ev.shippingAddress);
+                    console.log('Shipping option from Apple Pay/Google Pay:', ev.shippingOption);
+
+                    // Double-check validation (even though we check on click)
+                    const validation = validateFormData();
+                    if (!validation.isValid) {
+                        console.log('Form validation failed during payment:', validation.errors);
+                        ev.complete('fail');
+                        alert('Please fill in all required fields correctly: ' + validation.errors.join(', '));
+                        return;
+                    }
+
+                    // Get form data
+                    const formData = getFormData();
+                    console.log('Form data for payment:', formData);
+
+                    // Calculate total including shipping
+                    const shippingAmount = ev.shippingOption ? ev.shippingOption.amount : 0;
+                    const totalAmount = getCurrentTotal() + shippingAmount;
+                    const finalTotal = totalAmount / 100; // Convert back to pounds for payload
+                    
+                    console.log('Shipping amount (pence):', shippingAmount);
+                    console.log('Total payment amount (pence):', totalAmount);
+                    console.log('Final total (pounds):', finalTotal);
+
+                    try {
+                        // Create payment intent
+                        const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ amount: totalAmount })
+                        });
+
+                        const { clientSecret } = await res.json();
+                        console.log('Payment intent created successfully');
+
+                        // Confirm payment
+                        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                            payment_method: ev.paymentMethod.id,
+                        }, { handleActions: false });
+
+                        if (error) {
+                            console.error('Payment confirmation failed:', error);
+                            alert('Payment failed: ' + error.message);
+                            ev.complete('fail');
+                        } else {
+                            console.log('Payment confirmed successfully');
+                            console.log('Payment intent:', paymentIntent);
+                            ev.complete('success');
+
+                            // Create payload for success endpoint
+                            const payload = {
+                                paymentIntentId: paymentIntent.id,
+                                amount: finalTotal,
+                                currency: 'gbp',
+                                email: formData.email,
+                                phone: formData.phoneNumber || '',
+                                cart: formData.cartItems,
+                                shippingAddress: {
+                                    address1: formData.shippingAddress.address1,
+                                    address2: formData.shippingAddress.address2,
+                                    city: formData.shippingAddress.city,
+                                    province: formData.shippingAddress.province,
+                                    country: formData.shippingAddress.country,
+                                    zip: formData.shippingAddress.zip,
+                                    firstName: formData.shippingAddress.firstName,
+                                    lastName: formData.shippingAddress.lastName
+                                },
+                                paymentMethod: ev.paymentMethod.type, // 'card' for Apple Pay/Google Pay
+                                shippingOption: ev.shippingOption || null,
+                                applePayGooglePayAddress: ev.shippingAddress || null
+                            };
+
+                            console.log('Payment success payload:', JSON.stringify(payload, null, 2));
+
+                            // Send to success endpoint
+                            fetch('https://stripe.vintageshirtclub.com/payment-success', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                console.log('Payment success logged:', data);
+                                alert('Payment successful! Order has been processed.');
+                                
+                                // Uncomment these lines to redirect to thank you page
+                                setTimeout(function() {
+                                    window.location.href = '/pages/thank-you';
+                                }, 1000);
+                            })
+                            .catch(err => {
+                                console.error('Error sending payment success data:', err);
+                                alert('Payment was successful, but there was an issue processing your order. Please contact support.');
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Payment processing error:', err);
+                        alert('An error occurred processing your payment. Please try again.');
+                        ev.complete('fail');
+                    }
+                });
+
+                // Handle shipping address change
+                paymentRequest.on('shippingaddresschange', (ev) => {
+                    console.log('Shipping address changed:', ev.shippingAddress);
+                    
+                    // Get current form data to calculate updated total
+                    const formData = getFormData();
+                    let shippingAmount = 0;
+                    
+                    // You can customize shipping options based on the address
+                    const shippingOptions = [
+                        {
+                            id: 'standard',
+                            label: 'Standard Shipping',
+                            detail: '5-7 business days',
+                            amount: 0, // Free shipping
+                        },
+                        {
+                            id: 'express',
+                            label: 'Express Shipping',
+                            detail: '2-3 business days',
+                            amount: 500, // £5.00 in pence
+                        },
+                    ];
+                    
+                    // If you have different shipping rates based on country, you can customize here
+                    const country = ev.shippingAddress.country;
+                    if (country !== 'GB') {
+                        shippingOptions.push({
+                            id: 'international',
+                            label: 'International Shipping',
+                            detail: '10-15 business days',
+                            amount: 1000, // £10.00 in pence
+                        });
+                    }
+                    
+                    ev.updateWith({
+                        status: 'success',
+                        shippingOptions: shippingOptions,
+                        total: {
+                            label: 'Total',
+                            amount: getCurrentTotal() + shippingAmount,
+                        }
+                    });
+                });
+
+                // Handle shipping option change
+                paymentRequest.on('shippingoptionchange', (ev) => {
+                    console.log('Shipping option changed:', ev.shippingOption);
+                    
+                    // Get the selected shipping option amount
+                    const shippingAmount = ev.shippingOption.amount;
+                    console.log('Selected shipping amount:', shippingAmount);
+                    
+                    // Update total based on shipping option
+                    ev.updateWith({
+                        status: 'success',
+                        total: {
+                            label: 'Total',
+                            amount: getCurrentTotal() + shippingAmount,
+                        }
+                    });
+                });
+
+                console.log('Apple Pay/Google Pay integration initialized successfully');
+            })
+            .catch(error => {
+                console.error('Error initializing Stripe:', error);
             });
-            prButton.mount('#payment-request-button');
-          } else {
-            document.getElementById('payment-request-button').style.display = 'none';
-          }
-        });
-
-        paymentRequest.on('paymentmethod', async (ev) => {
-
-          const amount = {{ cart.total_price }}; 
-
-          const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount }) // Pass amount here
-          });
-          const { clientSecret } = await res.json();
-
-          const { error,paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: ev.paymentMethod.id,
-          }, { handleActions: false });
-
-          if (error) {
-            console.log("fail");
-            alert('Payment Fail');
-            ev.complete('fail');
-          } else {
-            ev.complete('success');
-            console.log('sucess');
-
-        const payload = {
-              paymentIntentId: paymentIntent.id,
-              amount: {{ cart.total_price }}, // static value in pence (e.g. £49.99 = 4999)
-              currency: 'gbp',
-              email: "john.doe@example.com",
-              phone: "+447911123456",
-              cart: [
-                {
-                  quantity: 1,
-                  price: 9.99,
-                  variant_id: 55538230493562
-                },
-              ],
-              shippingAddress: {
-                address1: "123 Baker Street",
-                address2: "Flat 4B",
-                city: "London",
-                province: "Greater London",
-                country: "GB",
-                zip: "NW1 6XE",
-                firstName: "John",
-                lastName: "Doe"
-              }
-            };
-
-
-          }
-        });
-      });
-        });
-  });
+    });
+});
 </script>
 
 </body>
