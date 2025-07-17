@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero_image_nJy3jN": {
@@ -107,11 +98,11 @@
         "height_tb": 400,
         "custom_mb": true,
         "height_mb": 250,
-        "image": "shopify://shop_images/Untitled_19_559f8f7c-d197-4ba1-8f52-086370f2249a.png",
-        "imagemob": "shopify://shop_images/Untitled_63.png",
+        "image": "shopify:\/\/shop_images\/Untitled_19_559f8f7c-d197-4ba1-8f52-086370f2249a.png",
+        "imagemob": "shopify:\/\/shop_images\/Untitled_63.png",
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify://collections/retro-football-shirt",
+        "link_img1": "shopify:\/\/collections\/retro-football-shirt",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -160,7 +151,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify://collections/retro-football-shirt",
+        "head_btn_url": "shopify:\/\/collections\/retro-football-shirt",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -229,57 +220,57 @@
         "league_8pimyi": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/Untitled_94.png",
+            "icon": "shopify:\/\/shop_images\/Untitled_94.png",
             "title": "International",
-            "link": "shopify://collections/international"
+            "link": "shopify:\/\/collections\/international"
           }
         },
         "league_mnQEW4": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/Untitled_89.png",
+            "icon": "shopify:\/\/shop_images\/Untitled_89.png",
             "title": "Premier League",
-            "link": "shopify://collections/premier-leauge"
+            "link": "shopify:\/\/collections\/premier-leauge"
           }
         },
         "league_RphAMk": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/Untitled_90.png",
+            "icon": "shopify:\/\/shop_images\/Untitled_90.png",
             "title": "La Liga",
-            "link": "shopify://collections/laliga"
+            "link": "shopify:\/\/collections\/laliga"
           }
         },
         "league_dYQCBE": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/Untitled_91.png",
+            "icon": "shopify:\/\/shop_images\/Untitled_91.png",
             "title": "Serie A",
-            "link": "shopify://collections/serie-a"
+            "link": "shopify:\/\/collections\/serie-a"
           }
         },
         "league_8mmjHT": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/bundesliga-logo-on-transparent-background-free-vector.jpg",
+            "icon": "shopify:\/\/shop_images\/bundesliga-logo-on-transparent-background-free-vector.jpg",
             "title": "Bundesliga",
-            "link": "shopify://collections/bundesliga"
+            "link": "shopify:\/\/collections\/bundesliga"
           }
         },
         "league_hfiCWA": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/Untitled_93.png",
+            "icon": "shopify:\/\/shop_images\/Untitled_93.png",
             "title": "Ligue 1",
-            "link": "shopify://collections/ligue-1"
+            "link": "shopify:\/\/collections\/ligue-1"
           }
         },
         "league_Uy4pi3": {
           "type": "league",
           "settings": {
-            "icon": "shopify://shop_images/images.png",
+            "icon": "shopify:\/\/shop_images\/images.png",
             "title": "Rest of the World",
-            "link": "shopify://collections/retro-football-shirt"
+            "link": "shopify:\/\/collections\/retro-football-shirt"
           }
         }
       },
@@ -301,36 +292,36 @@
         "trustpilot_DQH4jw": {
           "type": "trustpilot",
           "settings": {
-            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "tsicon": "shopify:\/\/shop_images\/Ts_logo.jpg",
             "name": "Would recommend",
-            "content": "<p>Shirt arrived quicker than expected. Quality is insane. COYS</p>",
+            "content": "<p>Shirt arrived quicker than expected. Quality is insane. COYS<\/p>",
             "rname": "Steve Clarke"
           }
         },
         "trustpilot_QqyKaT": {
           "type": "trustpilot",
           "settings": {
-            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "tsicon": "shopify:\/\/shop_images\/Ts_logo.jpg",
             "name": "BEST SHIRT I OWN. THANK YOU",
-            "content": "<p>I was slightly skeptical when buying my shirt, but when it arrived i was blown away, it is so good! Amazing quality, amazing fit, truly 100/10</p>",
+            "content": "<p>I was slightly skeptical when buying my shirt, but when it arrived i was blown away, it is so good! Amazing quality, amazing fit, truly 100\/10<\/p>",
             "rname": "Lisa Stevenson"
           }
         },
         "trustpilot_NiULUL": {
           "type": "trustpilot",
           "settings": {
-            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "tsicon": "shopify:\/\/shop_images\/Ts_logo.jpg",
             "name": "Ordered 3 shirts in the 3 for 2 offer…",
-            "content": "<p>Ordered 3 shirts in the 3 for 2 offer and got all within given time frame</p>",
+            "content": "<p>Ordered 3 shirts in the 3 for 2 offer and got all within given time frame<\/p>",
             "rname": "David Green"
           }
         },
         "trustpilot_PaeERg": {
           "type": "trustpilot",
           "settings": {
-            "tsicon": "shopify://shop_images/Ts_logo.jpg",
+            "tsicon": "shopify:\/\/shop_images\/Ts_logo.jpg",
             "name": "Lovely gifts",
-            "content": "<p>I got my son 3 shirts, all arrived really fast, packaged beautifully so wasn’t creased or screwed up. Will defo be ordering again as he has given me a list of more he wants.</p>",
+            "content": "<p>I got my son 3 shirts, all arrived really fast, packaged beautifully so wasn’t creased or screwed up. Will defo be ordering again as he has given me a list of more he wants.<\/p>",
             "rname": "Curly"
           }
         }
@@ -344,7 +335,7 @@
       "name": "Trustpilot Slider",
       "settings": {
         "heading": "Our customers tell it better than we do!",
-        "subhead": "<p>Excellent <strong>4.95 / 5</strong></p>",
+        "subhead": "<p>Excellent <strong>4.95 \/ 5<\/strong><\/p>",
         "subtext": "based on 1074 reviews"
       }
     },
@@ -380,7 +371,7 @@
           "disabled": true,
           "settings": {
             "button_text": "Men",
-            "button_link": "shopify://collections",
+            "button_link": "shopify:\/\/collections",
             "target_link": "_blank",
             "fontf": "inherit",
             "button_icon_w": 0,
@@ -412,7 +403,7 @@
           "disabled": true,
           "settings": {
             "button_text": "Women",
-            "button_link": "shopify://collections",
+            "button_link": "shopify:\/\/collections",
             "target_link": "_blank",
             "fontf": "inherit",
             "button_icon_w": 0,
@@ -454,11 +445,11 @@
         "height_tb": 500,
         "custom_mb": false,
         "height_mb": 400,
-        "image": "shopify://shop_images/Untitled_64.png",
-        "imagemob": "shopify://shop_images/Untitled_64.png",
+        "image": "shopify:\/\/shop_images\/Untitled_64.png",
+        "imagemob": "shopify:\/\/shop_images\/Untitled_64.png",
         "parallax": false,
         "image_position": "0",
-        "link_img1": "shopify://collections/vintage-football-clothing",
+        "link_img1": "shopify:\/\/collections\/vintage-football-clothing",
         "open_link": "_self",
         "text_align": "center",
         "text_align_mb": "center",
@@ -507,7 +498,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify://collections/vintage-football-clothing",
+        "head_btn_url": "shopify:\/\/collections\/vintage-football-clothing",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -579,7 +570,7 @@
             "icon_themes": "truck",
             "icon": "tractor",
             "title": "",
-            "text": "<p><strong>FREE SHIPPING</strong> ALL ORDER OVER $100</p>",
+            "text": "<p><strong>FREE SHIPPING<\/strong> ALL ORDER OVER $100<\/p>",
             "html": ""
           }
         },
@@ -589,7 +580,7 @@
             "icon_themes": "help",
             "icon": "life-ring",
             "title": "",
-            "text": "<p>SUMMER <strong>SALE OFF</strong> TO <strong>50%</strong></p>",
+            "text": "<p>SUMMER <strong>SALE OFF<\/strong> TO <strong>50%<\/strong><\/p>",
             "html": ""
           }
         },
@@ -599,7 +590,7 @@
             "icon_themes": "refesh",
             "icon": "undo-alt",
             "title": "",
-            "text": "<p>WE SUPPORT <strong>24 HOURS</strong> A DAY</p>",
+            "text": "<p>WE SUPPORT <strong>24 HOURS<\/strong> A DAY<\/p>",
             "html": ""
           }
         }
@@ -661,10 +652,10 @@
         "image_parent_pzUx87": {
           "type": "image_parent",
           "settings": {
-            "image": "shopify://shop_images/Untitled_67.png",
+            "image": "shopify:\/\/shop_images\/Untitled_67.png",
             "image_position": "8",
             "cl_img": "",
-            "link_img1": "shopify://collections/football-posters",
+            "link_img1": "shopify:\/\/collections\/football-posters",
             "open_link": "_self",
             "animate_slide": "none",
             "text_align": "start",
@@ -751,7 +742,7 @@
         "top_subheading": "",
         "tophead_mb": 30,
         "head_btn_label": "View All",
-        "head_btn_url": "shopify://collections/football-posters",
+        "head_btn_url": "shopify:\/\/collections\/football-posters",
         "head_btn_icon": false,
         "head_btn_style": "link",
         "head_btn_size": "medium",
@@ -822,7 +813,7 @@
           "settings": {
             "collection": "racingjacket",
             "collection_title": "Racing Jacket",
-            "collection_link": "shopify://collections/racingjacket"
+            "collection_link": "shopify:\/\/collections\/racingjacket"
           }
         },
         "1647415086bad34ffd-1": {
@@ -830,7 +821,7 @@
           "settings": {
             "collection": "vintage-tees",
             "collection_title": "Vintage Tees",
-            "collection_link": "shopify://collections/vintage-tees"
+            "collection_link": "shopify:\/\/collections\/vintage-tees"
           }
         },
         "1647415086bad34ffd-2": {
@@ -838,7 +829,7 @@
           "settings": {
             "collection": "rework",
             "collection_title": "REWORK",
-            "collection_link": "shopify://collections/rework"
+            "collection_link": "shopify:\/\/collections\/rework"
           }
         },
         "869e62fb-63f1-4931-af83-f09ff6e4c0c6": {
@@ -846,7 +837,7 @@
           "settings": {
             "collection": "rewrok-x-wavy",
             "collection_title": "Wavy Rework",
-            "collection_link": "shopify://collections/rewrok-x-wavy"
+            "collection_link": "shopify:\/\/collections\/rewrok-x-wavy"
           }
         },
         "18de129f-0a34-4931-a30e-89980b15cd51": {
@@ -854,7 +845,7 @@
           "settings": {
             "collection": "mens-ralph-lauren-1-4-zip-jumper",
             "collection_title": "Ralph Lauren",
-            "collection_link": "shopify://collections/ralph-lauren"
+            "collection_link": "shopify:\/\/collections\/ralph-lauren"
           }
         }
       },
@@ -914,7 +905,7 @@
         "top_subheading": "OVER 100,000 SOLD",
         "tophead_mb": 30,
         "head_btn_label": "",
-        "head_btn_url": "shopify://collections/vintage-new-collection",
+        "head_btn_url": "shopify:\/\/collections\/vintage-new-collection",
         "head_btn_icon": false,
         "head_btn_style": "default",
         "head_btn_size": "medium",
@@ -1456,7 +1447,7 @@
             "height_tb": 400,
             "custom_mb": true,
             "height_mb": 300,
-            "b_link": "shopify://collections/rework",
+            "b_link": "shopify:\/\/collections\/rework",
             "open_link": "_self",
             "img_effect": "zoom",
             "b_effect": "none",
@@ -1545,7 +1536,7 @@
             "height_tb": 400,
             "custom_mb": true,
             "height_mb": 300,
-            "b_link": "shopify://collections/vintage-new-collection",
+            "b_link": "shopify:\/\/collections\/vintage-new-collection",
             "open_link": "_self",
             "img_effect": "zoom",
             "b_effect": "none",
