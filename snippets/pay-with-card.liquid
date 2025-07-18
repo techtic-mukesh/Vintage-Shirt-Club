@@ -387,7 +387,9 @@ window.addEventListener('DOMContentLoaded', function () {
   // Initialize phone input immediately
   initializePhoneInput();
 
-  fetch('https://stripe.vintageshirtclub.com/config')
+  const STRIPE_BASE_URL = 'https://stripe.vintageshirtclub.com';
+
+  fetch(`${STRIPE_BASE_URL}/config`)
     .then(r => r.json())
     .then(({ publishableKey }) => {
       const stripe = Stripe(publishableKey);
@@ -529,6 +531,30 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const provinceElement = document.getElementById('ShippingProvince_dynamic');
         const provinceValue = provinceElement && provinceElement.value ? provinceElement.value : null;
+
+
+            const shippingText = document.getElementById('cartShipping').textContent.trim().toUpperCase();
+            let shippingAmount;
+
+            if (shippingText.includes('FREE')) {
+              shippingAmount = "0.00";
+            } else {
+              // Extract numeric value (e.g., "£15.00" → "15.00")
+              const matched = shippingText.match(/[\d.,]+/);
+              shippingAmount = matched ? matched[0].replace(',', '') : "0.00";
+            }
+
+            var hiddenInput = document.querySelector('input[name="shippingTitle"]');
+            if (hiddenInput) {
+                var shippingTitleValue = hiddenInput.value;
+                console.log('Shipping Title (from hidden input):', shippingTitleValue);
+            }
+
+            console.log("Shipping Amount:", shippingAmount);
+
+
+
+
         
         // Get shipping address data
         const shippingAddress = {
@@ -590,7 +616,9 @@ window.addEventListener('DOMContentLoaded', function () {
           shippingAddress,
           cartItems,
           subtotal,
-          total
+          total,
+          shippingAmount,
+          shippingTitle: shippingTitleValue || ''
         };
       }
 
@@ -628,7 +656,7 @@ window.addEventListener('DOMContentLoaded', function () {
         const formData = getFormData();
 
         try {
-          const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
+          const res = await fetch(`${STRIPE_BASE_URL}/create-payment-intent`, {
             method: 'POST',
             body: JSON.stringify({ amount: Math.round(formData.total * 100) }),
             headers: { 'Content-Type': 'application/json' }
@@ -677,13 +705,25 @@ window.addEventListener('DOMContentLoaded', function () {
                 zip: formData.shippingAddress.zip,
                 firstName: formData.shippingAddress.firstName,
                 lastName: formData.shippingAddress.lastName
-              }
+              },
+               shippingLines: [
+                    {
+                      title: formData.shippingTitle || 'FREE SHIPPING (7-10 business days)',
+                      priceSet: {
+                        shopMoney: {
+                          amount: formData.shippingAmount || '0.00',
+                          currencyCode: 'GBP'
+                        }
+                      }
+                    }
+                  ],
+              
             };
 
             console.log('Payload:', JSON.stringify(payload, null, 2));
 
             // Send payload to your success endpoint
-            fetch('https://stripe.vintageshirtclub.com/payment-success', {
+            fetch(`${STRIPE_BASE_URL}/payment-success`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
@@ -692,10 +732,10 @@ window.addEventListener('DOMContentLoaded', function () {
               .then(data => {
                 console.log('Payment success logged:', data);
                 
-                // showLoader();
-                // setTimeout(function() {
-                //   window.location.href = '/pages/thank-you';
-                // }, 1000);
+                showLoader();
+                setTimeout(function() {
+                  window.location.href = '/pages/thank-you';
+                }, 1000);
               })
               .catch(err => {
                 console.error('Error sending payment success data:', err);

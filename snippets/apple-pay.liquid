@@ -20,7 +20,7 @@
 
 
 <script>
- function loadStripe(callback) {
+function loadStripe(callback) {
     const script = document.createElement('script');
     console.log("Stripe loading started");
     script.src = 'https://js.stripe.com/v3/';
@@ -30,9 +30,11 @@
 
 loadStripe(() => {
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('https://stripe.vintageshirtclub.com/config') 
+        const STRIPE_BASE_URL = 'https://stripe.vintageshirtclub.com';
+
+        fetch(`${STRIPE_BASE_URL}/config`) 
             .then(r => r.json())
-            .then(({ publishableKey }) => {
+            .then(({ publishableKey }) => { 
                 const stripe = Stripe(publishableKey);
 
                 // Country name to code mapping (same as your existing code)
@@ -134,6 +136,25 @@ loadStripe(() => {
 
                     const provinceElement = document.getElementById('ShippingProvince_dynamic');
                     const provinceValue = provinceElement && provinceElement.value ? provinceElement.value : null;
+
+                      const shippingText = document.getElementById('cartShipping').textContent.trim().toUpperCase();
+                        let shippingAmount;
+
+                        if (shippingText.includes('FREE')) {
+                        shippingAmount = "0.00";
+                        } else {
+                        // Extract numeric value (e.g., "£15.00" → "15.00")
+                        const matched = shippingText.match(/[\d.,]+/);
+                        shippingAmount = matched ? matched[0].replace(',', '') : "0.00";
+                        }
+
+                        var hiddenInput = document.querySelector('input[name="shippingTitle"]');
+                        if (hiddenInput) {
+                            var shippingTitleValue = hiddenInput.value;
+                            console.log('Shipping Title (from hidden input):', shippingTitleValue);
+                        }
+
+                        console.log("Shipping Amount:", shippingAmount);
                     
                     // Get shipping address data
                     const shippingAddress = {
@@ -195,7 +216,9 @@ loadStripe(() => {
                         shippingAddress,
                         cartItems,
                         subtotal,
-                        total
+                        total,
+                        shippingAmount,
+                        shippingTitle: shippingTitleValue || ''
                     };
                 }
 
@@ -293,11 +316,17 @@ loadStripe(() => {
                 // Get current total for payment request
                 function getCurrentTotal() {
                     const formData = getFormData();
-                    console.log('Current total for payment request:', formData.total);
-                    return Math.round(formData.total * 100); // Convert to pence
+                    // Get shipping amount from selected radio button
+                    const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
+                    const shippingAmountNum = selectedShipping ? parseFloat(selectedShipping.getAttribute('data-price')) || 0 : 0;
+                    const totalWithShipping = formData.subtotal + shippingAmountNum;
+                    console.log('Subtotal:', formData.subtotal);
+                    console.log('Shipping amount:', shippingAmountNum);
+                    console.log('Total with shipping:', totalWithShipping);
+                    return Math.round(totalWithShipping * 100); // Convert to pence
                 }
 
-                // Create payment request with shipping options
+                // Create payment request
                 const paymentRequest = stripe.paymentRequest({
                     country: 'GB',
                     currency: 'gbp',
@@ -308,6 +337,27 @@ loadStripe(() => {
                 });
 
                 const elements = stripe.elements();
+                
+                // Function to update payment request amount
+                function updatePaymentRequestAmount() {
+                    const newAmount = getCurrentTotal();
+                    console.log('Updating payment request amount to:', newAmount);
+                    
+                    paymentRequest.update({
+                        total: {
+                            label: 'Total',
+                            amount: newAmount,
+                        },
+                    });
+                }
+
+                // Add event listener for shipping method changes
+                document.addEventListener('change', function(e) {
+                    if (e.target.name === 'shipping_method') {
+                        console.log('Shipping method changed:', e.target.value);
+                        updatePaymentRequestAmount();
+                    }
+                });
                 
                 // Check if payment request is available
                 paymentRequest.canMakePayment().then(result => {
@@ -349,8 +399,8 @@ loadStripe(() => {
                             
                             console.log('Form validation passed, proceeding with payment');
 
-                               const formData = getFormData();
-                              console.log('Form data for payment:', formData);
+                            const formData = getFormData();
+                            console.log('Form data for payment:', formData);
                         });
                     } else {
                         document.getElementById('payment-request-button').style.display = 'none';
@@ -363,7 +413,6 @@ loadStripe(() => {
                     console.log('Payment method event triggered');
                     console.log('Payment method details:', ev.paymentMethod);
                     console.log('Shipping address from Apple Pay/Google Pay:', ev.shippingAddress);
-                    console.log('Shipping option from Apple Pay/Google Pay:', ev.shippingOption);
 
                     // Double-check validation (even though we check on click)
                     const validation = validateFormData();
@@ -374,39 +423,60 @@ loadStripe(() => {
                         return;
                     }
 
-                    // Get form data
+                    // Get form data - all shipping info comes from here
                     const formData = getFormData();
                     console.log('Form data for payment:', formData);
 
-                    // Calculate total including shipping
-                    const shippingAmount = ev.shippingOption ? ev.shippingOption.amount : 0;
-                    const totalAmount = getCurrentTotal() + shippingAmount;
-                    const finalTotal = totalAmount / 100; // Convert back to pounds for payload
-                    
-                    console.log('Shipping amount (pence):', shippingAmount);
-                    console.log('Total payment amount (pence):', totalAmount);
+                    // Calculate final total with shipping from selected radio button
+                    const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
+                    const shippingAmountNum = selectedShipping ? parseFloat(selectedShipping.getAttribute('data-price')) || 0 : 0;
+                    const finalTotal = formData.total;
+                    const totalAmount = Math.round(finalTotal * 100); // Convert to pence
+
+                    console.log('Selected shipping method:', selectedShipping?.value);
+                    console.log('Shipping amount from radio button:', shippingAmountNum);
                     console.log('Final total (pounds):', finalTotal);
+                    console.log('Total payment amount (pence):', totalAmount);
 
                     try {
-                        // Create payment intent
-                        const res = await fetch('https://stripe.vintageshirtclub.com/create-payment-intent', {
+                        // Create payment intent with the total including shipping
+                        console.log('Creating payment intent with amount:', finalTotal);
+                        const res = await fetch(`${STRIPE_BASE_URL}/create-payment-intent`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ amount: totalAmount })
+                            // amount: Math.round(finalTotal * 100) / 100 // Send amount in pounds, rounded to 2 decimal places
+                                    body: JSON.stringify({ amount: Math.round(finalTotal * 100) }),
                         });
 
-                        const { clientSecret } = await res.json();
+                        console.log('Payment intent response status:', res.status);
+                        
+                        if (!res.ok) {
+                            throw new Error(`Payment intent creation failed: ${res.status} ${res.statusText}`);
+                        }
+
+                        const responseData = await res.json();
+                        console.log('Payment intent response:', responseData);
+                        
+                        const { clientSecret } = responseData;
+                        
+                        if (!clientSecret) {
+                            throw new Error('No client secret received from payment intent');
+                        }
+                        
                         console.log('Payment intent created successfully');
 
                         // Confirm payment
+                        console.log('Confirming payment with client secret:', clientSecret);
                         const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                             payment_method: ev.paymentMethod.id,
                         }, { handleActions: false });
 
                         if (error) {
                             console.error('Payment confirmation failed:', error);
+                            console.error('Error code:', error.code);
+                            console.error('Error message:', error.message);
                             alert('Payment failed: ' + error.message);
                             ev.complete('fail');
                         } else {
@@ -417,7 +487,7 @@ loadStripe(() => {
                             // Create payload for success endpoint
                             const payload = {
                                 paymentIntentId: paymentIntent.id,
-                                amount: finalTotal,
+                                amount: finalTotal, // Use the calculated final total
                                 currency: 'gbp',
                                 email: formData.email,
                                 phone: formData.phoneNumber || '',
@@ -433,22 +503,39 @@ loadStripe(() => {
                                     lastName: formData.shippingAddress.lastName
                                 },
                                 paymentMethod: ev.paymentMethod.type, // 'card' for Apple Pay/Google Pay
-                                shippingOption: ev.shippingOption || null,
-                                applePayGooglePayAddress: ev.shippingAddress || null
+                                applePayGooglePayAddress: ev.shippingAddress || null,
+                                shippingLines: [
+                                    {
+                                        title: selectedShipping?.value || 'FREE SHIPPING (7-10 business days)',
+                                        priceSet: {
+                                            shopMoney: {
+                                                amount: shippingAmountNum.toFixed(2),
+                                                currencyCode: 'GBP'
+                                            }
+                                        }
+                                    }
+                                ],
                             };
 
                             console.log('Payment success payload:', JSON.stringify(payload, null, 2));
 
                             // Send to success endpoint
-                            fetch('https://stripe.vintageshirtclub.com/payment-success', {
+                            console.log('Sending payment success data to server...');
+                            fetch(`${STRIPE_BASE_URL}/payment-success`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)
                             })
-                            .then(res => res.json())
+                            .then(res => {
+                                console.log('Payment success response status:', res.status);
+                                if (!res.ok) {
+                                    throw new Error(`Payment success endpoint failed: ${res.status} ${res.statusText}`);
+                                }
+                                return res.json();
+                            })
                             .then(data => {
                                 console.log('Payment success logged:', data);
-                                alert('Payment successful! Order has been processed.');
+                                // alert('Payment successful! Order has been processed.');
                                 
                                 // Uncomment these lines to redirect to thank you page
                                 setTimeout(function() {
@@ -457,77 +544,17 @@ loadStripe(() => {
                             })
                             .catch(err => {
                                 console.error('Error sending payment success data:', err);
-                                alert('Payment was successful, but there was an issue processing your order. Please contact support.');
+                                console.error('Error details:', err.message);
+                                alert('Payment was successful, but there was an issue processing your order. Please contact support with your payment confirmation.');
                             });
                         }
                     } catch (err) {
                         console.error('Payment processing error:', err);
-                        alert('An error occurred processing your payment. Please try again.');
+                        console.error('Error details:', err.message);
+                        console.error('Error stack:', err.stack);
+                        alert('Payment processing error: ' + err.message + '. Please try again or contact support.');
                         ev.complete('fail');
                     }
-                });
-
-                // Handle shipping address change
-                paymentRequest.on('shippingaddresschange', (ev) => {
-                    console.log('Shipping address changed:', ev.shippingAddress);
-                    
-                    // Get current form data to calculate updated total
-                    const formData = getFormData();
-                    let shippingAmount = 0;
-                    
-                    // You can customize shipping options based on the address
-                    const shippingOptions = [
-                        {
-                            id: 'standard',
-                            label: 'Standard Shipping',
-                            detail: '5-7 business days',
-                            amount: 0, // Free shipping
-                        },
-                        {
-                            id: 'express',
-                            label: 'Express Shipping',
-                            detail: '2-3 business days',
-                            amount: 500, // £5.00 in pence
-                        },
-                    ];
-                    
-                    // If you have different shipping rates based on country, you can customize here
-                    const country = ev.shippingAddress.country;
-                    if (country !== 'GB') {
-                        shippingOptions.push({
-                            id: 'international',
-                            label: 'International Shipping',
-                            detail: '10-15 business days',
-                            amount: 1000, // £10.00 in pence
-                        });
-                    }
-                    
-                    ev.updateWith({
-                        status: 'success',
-                        shippingOptions: shippingOptions,
-                        total: {
-                            label: 'Total',
-                            amount: getCurrentTotal() + shippingAmount,
-                        }
-                    });
-                });
-
-                // Handle shipping option change
-                paymentRequest.on('shippingoptionchange', (ev) => {
-                    console.log('Shipping option changed:', ev.shippingOption);
-                    
-                    // Get the selected shipping option amount
-                    const shippingAmount = ev.shippingOption.amount;
-                    console.log('Selected shipping amount:', shippingAmount);
-                    
-                    // Update total based on shipping option
-                    ev.updateWith({
-                        status: 'success',
-                        total: {
-                            label: 'Total',
-                            amount: getCurrentTotal() + shippingAmount,
-                        }
-                    });
                 });
 
                 console.log('Apple Pay/Google Pay integration initialized successfully');

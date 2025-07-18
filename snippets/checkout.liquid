@@ -198,6 +198,7 @@
         </li>
         <li>
             <strong>Shipping</strong>
+            <input type="hidden" name="shippingTitle" value="" />
             <span id="cartShipping">FREE</span>
         </li>
         <li>
@@ -611,6 +612,25 @@ button#payNow {
 .cm-checkout ul.cart-items li.cart-item .cart-data .t4s-cart_price {
     display: flex;
     gap: 7px;
+}
+
+.cm-checkout ul.t4s-mess__rates.is--rates-error {
+    padding: 0;
+    list-style: none !important;
+    padding: 10px;
+    text-align: center;
+    background-color: #ff000040;
+    /* color: #fff; */
+    border-radius: 4px;
+}
+
+.cm-checkout ul.t4s-mess__rates.is--rates-error li {
+    color: #191919;
+}
+
+.shipping-method ul.t4s-shipping-rates-list span.shipping-description {
+    font-size: 12px;
+    color: grey;
 }
 
 @keyframes spin {
