@@ -3205,3 +3205,7 @@ body.template-product.Mystery.Box .t4s-product-form__buttons .t4s-quantity-wrapp
 #t4s-mini_cart .t4s-drawer__bottom .t4s-btn__checkout {
   background-color: #000;
 }
+
+.swiper-wrapper {
+  height:auto;
+}
