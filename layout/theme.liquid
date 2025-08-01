@@ -435,9 +435,23 @@ src="https://www.facebook.com/tr?id=1174033978084216&ev=PageView&noscript=1"
 
       <!-- End Shopify-Clearpay JavaScript Snippet (v1.2.1) -->
 
-      <script>
-        snaptr('track', 'ADD_CART', {'price': INSERT_PRICE, 'currency': 'INSERT_CURRENCY', 'item_ids': ['INSERT_ITEM_ID_1', 'INSERT_ITEM_ID_2'], 'item_category': 'INSERT_ITEM_CATEGORY', 'number_items': INSERT_NUMBER_ITEMS, 'uuid_c1': 'INSERT_UUID_C1', 'user_email': 'INSERT_USER_EMAIL', 'user_phone_number': 'INSERT_USER_PHONE_NUMBER', 'user_hashed_email': 'INSERT_USER_HASHED_EMAIL', 'user_hashed_phone_number': 'INSERT_USER_HASHED_PHONE_NUMBER'});
-      </script>
+      <!-- Snap Pixel Code -->
+<script type='text/javascript'>
+(function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+{a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+r.src=n;var u=t.getElementsByTagName(s)[0];
+u.parentNode.insertBefore(r,u);})(window,document,
+'https://sc-static.net/scevent.min.js');
+
+snaptr('init', '6bda802b-8806-4f01-a2f7-cebd3ef86e04', {
+'user_email': '_INSERT_USER_EMAIL_'
+});
+
+snaptr('track', 'PAGE_VIEW');
+
+</script>
+<!-- End Snap Pixel Code -->
     </body>
   </html>
 
