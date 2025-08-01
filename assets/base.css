@@ -3207,5 +3207,5 @@ body.template-product.Mystery.Box .t4s-product-form__buttons .t4s-quantity-wrapp
 }
 
 .swiper-wrapper {
-  height:auto;
+  height:auto !important;
 }
