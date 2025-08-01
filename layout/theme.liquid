@@ -436,21 +436,8 @@ src="https://www.facebook.com/tr?id=1174033978084216&ev=PageView&noscript=1"
       <!-- End Shopify-Clearpay JavaScript Snippet (v1.2.1) -->
 
       <script>
-    window.snaptrAddCart = function(data) {
-      snaptr('track', 'ADD_CART', {
-        'price': data.price,
-        'currency': data.currency,
-        'item_ids': data.item_ids,
-        'item_category': data.item_category,
-        'number_items': data.number_items,
-        'uuid_c1': data.uuid_c1,
-        'user_email': data.user_email,
-        'user_phone_number': data.user_phone_number,
-        'user_hashed_email': data.user_hashed_email,
-        'user_hashed_phone_number': data.user_hashed_phone_number
-      });
-    };
-  </script>
+        snaptr('track', 'ADD_CART', {'price': INSERT_PRICE, 'currency': 'INSERT_CURRENCY', 'item_ids': ['INSERT_ITEM_ID_1', 'INSERT_ITEM_ID_2'], 'item_category': 'INSERT_ITEM_CATEGORY', 'number_items': INSERT_NUMBER_ITEMS, 'uuid_c1': 'INSERT_UUID_C1', 'user_email': 'INSERT_USER_EMAIL', 'user_phone_number': 'INSERT_USER_PHONE_NUMBER', 'user_hashed_email': 'INSERT_USER_HASHED_EMAIL', 'user_hashed_phone_number': 'INSERT_USER_HASHED_PHONE_NUMBER'})
+      </script>
     </body>
   </html>
 
