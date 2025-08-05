@@ -438,7 +438,7 @@
   <script>
    function redirectToCheckoutWithRandomId(itemId) {
   const randomId = Math.floor(Math.random() * 100); // 0 to 99
-  window.location.href = `/cart?id=${randomId}`;
+  window.location.href = `/cart?{id}=${randomId}`;
 }
 
 
