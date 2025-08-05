@@ -815,7 +815,7 @@ a.t4s-mini_cart__remove {
     right: 0;
 }
 .t4s-mini_cart__actions .t4s-quantity-cart-item button{
-  top:-6px !important
+  top:0px !important
 }
 .checkout-countdown-timer .checkout-countdown-timer-text{
   width:100% !important

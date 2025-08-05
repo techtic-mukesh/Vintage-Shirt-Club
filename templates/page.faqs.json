@@ -90,7 +90,9 @@
         "heading": "Thank you for your order!",
         "subheading": "We’ve received your order and sent a confirmation email.",
         "button_text": "Continue Shopping",
-        "button_link": "\/"
+        "button_link": "shopify:\/\/collections",
+        "show_order_details": true,
+        "show_shipping_address": true
       }
     }
   },
