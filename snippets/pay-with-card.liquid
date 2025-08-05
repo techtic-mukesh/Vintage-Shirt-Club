@@ -731,10 +731,19 @@ window.addEventListener('DOMContentLoaded', function () {
               .then(res => res.json())
               .then(data => {
                 console.log('Payment success logged:', data);
+
+                  localStorage.setItem('shopify_order_number', data.order.name);
+                  localStorage.setItem('shopify_order_id', data.order.id);
+
+                  // (Optional) Log it to confirm
+                  console.log('Order number saved to localStorage:', data.order.name);
+                  console.log('Order number saved to localStorage:', data.order.id);
+
+                  const orderIdNumeric = data.order.id.split('/').pop();
                 
                 showLoader();
                 setTimeout(function() {
-                  window.location.href = '/pages/thank-you';
+                 window.location.href = `/pages/thank-you?order=${orderIdNumeric}`;
                 }, 1000);
               })
               .catch(err => {
