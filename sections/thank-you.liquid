@@ -451,12 +451,8 @@ function getQueryParam(param) {
 // Get order ID from URL
 const orderId = getQueryParam('order'); 
 
-
-
- 
-
   // Fetch order details from backend
-  fetch("https://stripe.websitetestingbox.com/shopify/order", {
+  fetch("https://stripe.vintageshirtclub.com/shopify/order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
