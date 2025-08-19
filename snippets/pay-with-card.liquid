@@ -1,4 +1,7 @@
 <div class="pay-with-card">
+
+  <input type="hidden" id="shopifyCurrency" value="{{ cart.currency.iso_code }}">
+
   <h2>Pay with card</h2>
   <form id="card-form">
     <label for="card-number-element" style="font-size: 0.95em; color: #666;">Card information</label>
@@ -18,6 +21,11 @@
   </form>
   <div id="card-error"></div>
 </div>
+
+
+
+
+
 <script>
 
   function attachLiveValidation() {
@@ -387,7 +395,7 @@ window.addEventListener('DOMContentLoaded', function () {
   // Initialize phone input immediately
   initializePhoneInput();
 
-  const STRIPE_BASE_URL = 'https://stripe.vintageshirtclub.com';
+  const STRIPE_BASE_URL = 'https://stripe.vintageshirtclub.com'; 
 
   fetch(`${STRIPE_BASE_URL}/config`)
     .then(r => r.json())
@@ -576,6 +584,7 @@ window.addEventListener('DOMContentLoaded', function () {
           const quantity = parseInt(item.getAttribute('data-quantity')) || 1;
           const variantId = item.getAttribute('data-variant-id') || 'unknown';
           const price = parseFloat(item.getAttribute('data-price').replace(',', '.')) || 0;
+          console.log("price11",price)
 
           const properties = [];
           const propertyElements = item.querySelectorAll('.cart-item-properties li');
@@ -655,10 +664,19 @@ window.addEventListener('DOMContentLoaded', function () {
         // Get dynamic form data
         const formData = getFormData();
 
+        const activeCurrency = document.getElementById('shopifyCurrency').value;
+        
+
+        console.log("amount total",formData.total * 100)
+
+
         try {
           const res = await fetch(`${STRIPE_BASE_URL}/create-payment-intent`, {
             method: 'POST',
-            body: JSON.stringify({ amount: Math.round(formData.total * 100) }),
+           body: JSON.stringify({ 
+              amount: Math.round(formData.total * 100),
+              currency: activeCurrency.toLowerCase() // 👈 convert to lowercase
+            }),
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -692,7 +710,7 @@ window.addEventListener('DOMContentLoaded', function () {
             const payload = {
               paymentIntentId: paymentIntent.id,
               amount: formData.total,
-              currency: 'gbp',
+              currency: activeCurrency,
               email: formData.email,
               phone: formData.phoneNumber || '', // Include phone number in payload (empty if not provided)
               cart: formData.cartItems,
@@ -712,7 +730,7 @@ window.addEventListener('DOMContentLoaded', function () {
                       priceSet: {
                         shopMoney: {
                           amount: formData.shippingAmount || '0.00',
-                          currencyCode: 'GBP'
+                          currencyCode: activeCurrency
                         }
                       }
                     }

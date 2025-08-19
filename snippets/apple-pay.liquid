@@ -12,12 +12,12 @@
 </head>
 <body>
 
-
+<input type="hidden" id="shopifyCountry" value="{{ localization.country.iso_code }}">
 
   
  <div id="payment-request-button">
   </div>
-
+ 
 
 <script>
 function loadStripe(callback) {
@@ -326,15 +326,27 @@ loadStripe(() => {
                     return Math.round(totalWithShipping * 100); // Convert to pence
                 }
 
+                // Get currency dynamically (ensure lowercase)
+                 const activeCurrency = document.getElementById('shopifyCurrency').value;
+
+                // Get country dynamically (Shopify provides it via localization object or hidden input)
+                let activeCountry = 'GB'; // fallback
+                const countryInput = document.getElementById('shopifyCountry');
+                if (countryInput) {
+                activeCountry = countryInput.value.toUpperCase();
+                } else if (Shopify && Shopify.country) {
+                activeCountry = Shopify.country.toUpperCase();
+                }
+
                 // Create payment request
                 const paymentRequest = stripe.paymentRequest({
-                    country: 'GB',
-                    currency: 'gbp',
-                    total: {
-                        label: 'Total',
-                        amount: getCurrentTotal(),
-                    },
-                });
+                country: activeCountry,
+                currency: activeCurrency.toLowerCase(),
+                total: {
+                    label: 'Total',
+                    amount: getCurrentTotal(),
+                },
+});
 
                 const elements = stripe.elements();
                 
@@ -438,6 +450,9 @@ loadStripe(() => {
                     console.log('Final total (pounds):', finalTotal);
                     console.log('Total payment amount (pence):', totalAmount);
 
+
+                         const activeCurrency = document.getElementById('shopifyCurrency').value; 
+ 
                     try {
                         // Create payment intent with the total including shipping
                         console.log('Creating payment intent with amount:', finalTotal);
@@ -447,7 +462,11 @@ loadStripe(() => {
                                 'Content-Type': 'application/json'
                             },
                             // amount: Math.round(finalTotal * 100) / 100 // Send amount in pounds, rounded to 2 decimal places
-                                    body: JSON.stringify({ amount: Math.round(finalTotal * 100) }),
+                                    
+                                     body: JSON.stringify({ 
+              amount: Math.round(finalTotal * 100),
+              currency: activeCurrency.toLowerCase() // 👈 convert to lowercase
+            }),
                         });
 
                         console.log('Payment intent response status:', res.status);
@@ -484,11 +503,13 @@ loadStripe(() => {
                             console.log('Payment intent:', paymentIntent);
                             ev.complete('success');
 
+                            const activeCurrency = document.getElementById('shopifyCurrency').value;   
+
                             // Create payload for success endpoint
                             const payload = {
                                 paymentIntentId: paymentIntent.id,
                                 amount: finalTotal, // Use the calculated final total
-                                currency: 'gbp',
+                                currency: activeCurrency,
                                 email: formData.email,
                                 phone: formData.phoneNumber || '',
                                 cart: formData.cartItems,
@@ -508,9 +529,9 @@ loadStripe(() => {
                                     {
                                         title: selectedShipping?.value || 'FREE SHIPPING (7-10 business days)',
                                         priceSet: {
-                                            shopMoney: {
+                                            shopMoney: { 
                                                 amount: shippingAmountNum.toFixed(2),
-                                                currencyCode: 'GBP'
+                                                 currencyCode: activeCurrency,
                                             }
                                         }
                                     }
