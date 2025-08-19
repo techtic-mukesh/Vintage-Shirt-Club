@@ -320,6 +320,8 @@
 }
 {% endstyle %}
 
+ <input type="hidden" id="shopifyCurrency" value="{{ cart.currency.iso_code }}">
+
 <div class="thank-you-wrapper">
     <div class="order-detail">
 
@@ -476,6 +478,8 @@ const orderId = getQueryParam('order');
       orderNumberSpan.textContent = order.name;
     }
 
+     const activeCurrency = document.getElementById('shopifyCurrency').value;
+
     // 🚚 Shipping Address (Mocked for now – update if address fields are available in real data)
     shippingContent.innerHTML = `
       <p><strong>Name:</strong> John Doe</p>
@@ -498,7 +502,7 @@ const orderId = getQueryParam('order');
               <p class="cart-varriant_title">${item.variantTitle || ""}</p>
             </div>
             <div class="t4s-cart_price">
-              <span>£${Number(item.originalUnitPriceSet.presentmentMoney.amount).toFixed(2)}</span>
+              <span>${activeCurrency} ${Number(item.originalUnitPriceSet.presentmentMoney.amount).toFixed(2)}</span>
             </div>
           </div>
         </li>
@@ -506,11 +510,13 @@ const orderId = getQueryParam('order');
       cartItemsWrapper.insertAdjacentHTML("beforeend", itemHTML);
     });
 
+     
+
     // 💰 Totals
     cartTotalsWrapper.innerHTML = `
       <li>
         <strong>Subtotal</strong> <p>${order.currentSubtotalLineItemsQuantity} item</p>
-        <span>£${Number(order.subtotalPriceSet.presentmentMoney.amount).toFixed(2)}</span>
+        <span>${activeCurrency} ${Number(order.subtotalPriceSet.presentmentMoney.amount).toFixed(2)}</span>
       </li>
       <li>
         <strong>Shipping</strong>
@@ -520,12 +526,12 @@ const orderId = getQueryParam('order');
       <li>
         <strong>Total</strong>
         <p></p>
-        <span id="csFinal">£${Number(order.totalPriceSet.presentmentMoney.amount).toFixed(2)}</span>
+        <span id="csFinal">${activeCurrency} ${Number(order.totalPriceSet.presentmentMoney.amount).toFixed(2)}</span>
       </li>
       <li>
         <strong>Paid</strong>
         <p></p>
-        <span id="csFinal">£${Number(order.totalReceivedSet.presentmentMoney.amount).toFixed(2)}</span>
+        <span id="csFinal">${activeCurrency} ${Number(order.totalReceivedSet.presentmentMoney.amount).toFixed(2)}</span>
       </li>
     `;
   })
