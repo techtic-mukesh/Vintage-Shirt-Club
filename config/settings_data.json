@@ -74,6 +74,7 @@
     "currency_code_enabled": true,
     "currency_type": "1",
     "size_currency": "sm",
+    "currency_pos": "1",
     "share_facebook": true,
     "share_twitter": false,
     "share_pinterest": false,
