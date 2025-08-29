@@ -767,3 +767,322 @@ syncVariantWithQuantity();
 
 // Cart Page redirect
 
+(() => {
+  const CHECKBOX_SELECTOR = '#shipping-insurance-checkbox';
+  const INSURANCE_VARIANT_ID = '55820416614778'; // insurance variant id
+  const VARIANT_ID = '55820416614778'; // main product variant id
+  const log = (...a) => console.log('[Insurance]', ...a);
+  
+  // --- UI HELPERS ---
+  function showLoader(checkbox) {
+    const checkboxContainer = checkbox.closest('.custom-checkbox');
+    const labelText = checkboxContainer.querySelector('.lable-text p');
+    
+    // Hide checkbox and show loader
+    checkbox.style.display = 'none';
+    checkboxContainer.querySelector('.checkmark').style.display = 'none';
+    
+    // Create loader if it doesn't exist
+    let loader = checkboxContainer.querySelector('.insurance-loader');
+    if (!loader) {
+      loader = document.createElement('div');
+      loader.className = 'insurance-loader';
+      loader.innerHTML = `
+        <div class="spinner" style="
+          width: 20px;
+          height: 20px;
+          border: 2px solid #f3f3f3;
+          border-top: 2px solid #333;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        "></div>
+      `;
+      checkboxContainer.insertBefore(loader, checkboxContainer.firstChild);
+      
+      // Add CSS animation if not already added
+      if (!document.querySelector('#insurance-loader-css')) {
+        const style = document.createElement('style');
+        style.id = 'insurance-loader-css';
+        style.textContent = `
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          .insurance-loader {
+            display: flex;
+            align-items: center;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
+    loader.style.display = 'flex';
+    
+    // Update text based on checkbox state
+    if (checkbox.checked) {
+      labelText.textContent = 'Shipping insurance adding...';
+    } else {
+      labelText.textContent = 'Shipping insurance removing...';
+    }
+  }
+  
+  function hideLoader(checkbox) {
+    const checkboxContainer = checkbox.closest('.custom-checkbox');
+    const labelText = checkboxContainer.querySelector('.lable-text p');
+    const loader = checkboxContainer.querySelector('.insurance-loader');
+    
+    // Hide loader and show checkbox
+    if (loader) {
+      loader.style.display = 'none';
+    }
+    checkbox.style.display = '';
+    checkboxContainer.querySelector('.checkmark').style.display = '';
+    
+    // Reset text
+    labelText.textContent = 'Protect your package (£4.99)';
+  }
+  
+  // --- CART HELPERS ---
+  async function addInsurance() {
+    return fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        items: [{
+          id: Number(INSURANCE_VARIANT_ID),
+          quantity: 1
+        }]
+      })
+    }).then(r => r.json());
+  }
+  
+  async function removeInsurance() {
+    return fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ updates: { [INSURANCE_VARIANT_ID]: 0 } })
+    }).then(r => r.json());
+  }
+  
+  // --- KALLES SPECIFIC CART REFRESH ---
+  async function refreshKallesCartDrawer() {
+    try {
+      // Method 1: Try Kalles theme specific functions
+      if (window.KART && typeof window.KART.getCart === 'function') {
+        window.KART.getCart();
+        log('Kalles KART.getCart() triggered');
+        return;
+      }
+      
+      // Method 2: Try cart drawer refresh using Kalles structure
+      const drawerSelectors = [
+        '#cart-drawer',
+        '#CartDrawer', 
+        '.cart-drawer',
+        '[data-cart-drawer]',
+        '#drawer-cart',
+        '.drawer__cart'
+      ];
+      
+      for (const selector of drawerSelectors) {
+        const drawerEl = document.querySelector(selector);
+        if (drawerEl) {
+          // Try to get section ID from element
+          const sectionId = drawerEl.dataset.sectionId || 'cart-drawer';
+          
+          try {
+            const res = await fetch(`${window.location.pathname}?sections=${sectionId}`);
+            const data = await res.json();
+            
+            if (data[sectionId]) {
+              drawerEl.innerHTML = data[sectionId];
+              log(`Kalles drawer refreshed via sections API: ${sectionId}`);
+              return;
+            }
+          } catch (e) {
+            log('Section refresh failed, trying next method');
+          }
+        }
+      }
+      
+      // Method 3: Use Kalles cart events
+      const cartEvents = [
+        'cart:updated',
+        'cart:build', 
+        'cart:refresh',
+        'drawer:refresh',
+        'kalles:cart:updated'
+      ];
+      
+      const cart = await fetch('/cart.js').then(r => r.json());
+      
+      cartEvents.forEach(eventName => {
+        document.dispatchEvent(new CustomEvent(eventName, { 
+          detail: { cart },
+          bubbles: true 
+        }));
+        window.dispatchEvent(new CustomEvent(eventName, { 
+          detail: { cart },
+          bubbles: true 
+        }));
+      });
+      
+      // Method 4: Update cart counts and totals manually
+      updateCartElements(cart);
+      
+      log('Kalles cart updated via events and manual update');
+      
+    } catch (error) {
+      log('Error refreshing Kalles cart:', error);
+      // Fallback: reload page
+    }
+  }
+  
+  // --- UPDATE CART ELEMENTS MANUALLY ---
+  function updateCartElements(cart) {
+    // Update cart count
+    const countSelectors = [
+      '[data-cart-count]',
+      '.cart-count',
+      '#cart-count',
+      '.header__cart-count',
+      '.cart__count',
+      '.js-cart-count'
+    ];
+    
+    countSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        el.textContent = cart.item_count;
+        if (cart.item_count > 0) {
+          el.style.display = '';
+          el.classList.remove('hidden');
+        }
+      });
+    });
+    
+    // Update cart total
+    const totalSelectors = [
+      '[data-cart-total]',
+      '.cart-total',
+      '#cart-total',
+      '.cart__total',
+      '.js-cart-total'
+    ];
+    
+    totalSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        if (window.Shopify && window.Shopify.formatMoney) {
+          el.textContent = window.Shopify.formatMoney(cart.total_price);
+        } else {
+          el.textContent = (cart.total_price / 100).toFixed(2);
+        }
+      });
+    });
+    
+    // Update cart drawer items if drawer is open
+    const drawerItems = document.querySelector('.cart-drawer__items, .drawer__cart-items, [data-cart-items]');
+    if (drawerItems) {
+      updateCartItems(drawerItems, cart);
+    }
+  }
+  
+  // --- UPDATE CART ITEMS IN DRAWER ---
+  function updateCartItems(container, cart) {
+    // This is a simplified version - you might need to adjust based on your exact HTML structure
+    let itemsHTML = '';
+    
+    cart.items.forEach(item => {
+      itemsHTML += `
+        <div class="cart-item" data-variant-id="${item.variant_id}">
+          <div class="cart-item__info">
+            <h4>${item.product_title}</h4>
+            <p>Qty: ${item.quantity}</p>
+            <p>Price: ${window.Shopify ? window.Shopify.formatMoney(item.line_price) : (item.line_price / 100).toFixed(2)}</p>
+          </div>
+        </div>
+      `;
+    });
+    
+    if (itemsHTML) {
+      container.innerHTML = itemsHTML;
+    }
+  }
+  
+  // --- TRY EXISTING KALLES FUNCTIONS ---
+  function triggerKallesCartUpdate() {
+    // Kalles specific functions
+    const kallesFunctions = [
+      () => window.KART && window.KART.getCart && window.KART.getCart(),
+      () => window.theme && window.theme.cart && window.theme.cart.getCart && window.theme.cart.getCart(),
+      () => window.ajaxCart && window.ajaxCart.load && window.ajaxCart.load(),
+      () => window.cartDrawer && window.cartDrawer.refresh && window.cartDrawer.refresh(),
+      () => window.KallesCart && window.KallesCart.refresh && window.KallesCart.refresh()
+    ];
+    
+    for (const fn of kallesFunctions) {
+      try {
+        const result = fn();
+        if (result) {
+          log('Kalles function executed successfully');
+          return true;
+        }
+      } catch (e) {
+        // Continue to next function
+      }
+    }
+    
+    return false;
+  }
+  
+  // --- MAIN EVENT HANDLER ---
+  document.addEventListener('change', async (e) => {
+    if (!e.target.matches(CHECKBOX_SELECTOR)) return;
+    
+    const checkbox = e.target;
+    const originalState = !checkbox.checked; // Store opposite state for rollback
+    
+    try {
+      // Show loader immediately
+      showLoader(checkbox);
+      
+      if (checkbox.checked) {
+        log('Adding insurance...');
+        const result = await addInsurance();
+        log('Insurance added:', result);
+      } else {
+        log('Removing insurance...');
+        const result = await removeInsurance();
+        log('Insurance removed:', result);
+      }
+      
+      // Try Kalles specific functions first
+      if (!triggerKallesCartUpdate()) {
+        // Fallback to our custom refresh
+        await refreshKallesCartDrawer();
+      }
+      
+    } catch (error) {
+      log('Error updating cart:', error);
+      // Reset checkbox on error
+      checkbox.checked = originalState;
+    } finally {
+      // Always hide loader and restore UI
+      hideLoader(checkbox);
+    }
+  });
+  
+  // --- INITIALIZE ---
+  log('Kalles Insurance script loaded for variant:', VARIANT_ID);
+  
+  // Debug: Log available cart functions
+  log('Available cart functions:', {
+    KART: !!window.KART,
+    theme: !!window.theme,
+    ajaxCart: !!window.ajaxCart,
+    cartDrawer: !!window.cartDrawer,
+    KallesCart: !!window.KallesCart
+  });
+})();

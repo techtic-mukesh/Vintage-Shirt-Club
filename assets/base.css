@@ -3209,3 +3209,107 @@ body.template-product.Mystery.Box .t4s-product-form__buttons .t4s-quantity-wrapp
 .swiper-wrapper {
   height:auto !important;
 }
+
+.shipping-insurance-wrap {
+    padding: 3px 20px;
+    background-color: #000;
+    margin: 10px 0 6px;
+        width: 106%;
+    left: -12px;
+    position: relative;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Custom checkmark box */
+.custom-checkbox {
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  user-select: none;
+  color: #fff;
+}
+
+/* Square box */
+.custom-checkbox .checkmark {
+  position: relative;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border-radius: 4px;
+  border: 2px solid #9ae86a;
+  min-width:20px;
+}
+
+/* Show tick when checked */
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #9ae86a;
+  border-color: #9ae86a;
+}
+
+/* Tick mark */
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.shipping-insurance-wrap p {
+    margin: 0;
+}
+
+.shipping-insurance-wrap label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding:0;
+}
+
+.shipping-insurance-wrap label input#shipping-insurance-checkbox {
+    width: 18px;
+    height: 18px;
+}
+
+.lable-text span {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.4;
+    display: inline-block;
+}
+
+.t4s-mini_cart__item[data-pid="15314515198330"] .t4s-mini_cart__actions  {
+    display: none;
+}
+
+.t4s-mini_cart__items.t4s_ratioadapt.t4s-product {
+    display: flex;
+    flex-direction: column;
+}
+
+.t4s-mini_cart__item[data-pid="15314515198330"] {
+    order: 5000;
+}
