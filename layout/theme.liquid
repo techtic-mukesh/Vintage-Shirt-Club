@@ -4,8 +4,6 @@
   w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
 var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
 ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-
-
   ttq.load('D2567JBC77U1E84BD6FG');
   ttq.page();
 }(window, document, 'ttq');
@@ -436,6 +434,60 @@ src="https://www.facebook.com/tr?id=1174033978084216&ev=PageView&noscript=1"
       {% endif %}
 
     </body>
+    <script>
+let __ttq_ic_fired = false;
+
+async function getCartPayload(){
+  try{
+    const r = await fetch('/cart.js', {credentials:'same-origin'});
+    const cart = await r.json();
+    return {
+      contents: cart.items.map(i => ({
+        content_id: String(i.variant_id),
+        content_type: 'product',
+        content_name: i.product_title,
+        quantity: i.quantity,
+        price: (i.final_line_price/100)
+      })),
+      value: cart.total_price/100,
+      currency: '{{ shop.currency }}'
+    };
+  }catch(e){
+    return { contents: [], value: 0, currency: '{{ shop.currency }}' };
+  }
+}
+
+async function fireInitiateCheckoutGlobal(){
+  if (__ttq_ic_fired) return; __ttq_ic_fired = true;
+  const payload = await getCartPayload();
+  ttq.track('InitiateCheckout', payload);
+}
+
+// Bắt click/submit dẫn đến checkout ở mọi nơi
+document.addEventListener('click', function(e){
+  const el = e.target.closest('a,button,input[type="submit"]');
+  if (!el) return;
+  const href = el.getAttribute('href') || '';
+  const name = el.getAttribute('name') || '';
+  if (href.includes('/checkout') || name === 'checkout') {
+    fireInitiateCheckoutGlobal();
+  }
+}, true);
+
+document.addEventListener('submit', function(e){
+  const f = e.target;
+  if (!(f instanceof HTMLFormElement)) return;
+  if (f.action.includes('/checkout')) {
+    fireInitiateCheckoutGlobal();
+  } else if (f.action.endsWith('/cart') || f.action.endsWith('/cart/')) {
+    // form /cart + input name="checkout"
+    const s = e.submitter;
+    if (s && (s.name === 'checkout' || (s.value||'').toLowerCase().includes('checkout'))) {
+      fireInitiateCheckoutGlobal();
+    }
+  }
+}, true);
+</script>
   </html>
 
 {% else %}
