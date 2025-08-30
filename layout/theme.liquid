@@ -340,6 +340,72 @@ src="https://www.facebook.com/tr?id=1174033978084216&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
     </head>
+<script>
+let __ttq_ic_fired = false;
+
+async function getCartPayload(){
+  try{
+    const r = await fetch('/cart.js', {credentials:'same-origin'});
+    const cart = await r.json();
+    return {
+      contents: cart.items.map(i => ({
+        content_id: String(i.variant_id),
+        content_type: 'product',
+        content_name: i.product_title,
+        quantity: i.quantity,
+        price: (i.final_line_price/100)
+      })),
+      value: cart.total_price/100,
+      currency: '{{ shop.currency }}'
+    };
+  }catch(e){
+    return { contents: [], value: 0, currency: '{{ shop.currency }}' };
+  }
+}
+
+async function fireInitiateCheckoutOnce(){
+  if (__ttq_ic_fired) return;
+  __ttq_ic_fired = true;
+  const payload = await getCartPayload();
+  ttq.track('InitiateCheckout', payload);
+}
+
+// Bắt mọi click dẫn tới checkout (kể cả nút ghi "CHECK OUT")
+document.addEventListener('click', function(e){
+  const el = e.target.closest('a,button,input[type="submit"]');
+  if (!el) return;
+
+  const href = (el.getAttribute('href') || '').toLowerCase();
+  const name = (el.getAttribute('name') || '').toLowerCase();
+  const text = (el.textContent || '').trim().toLowerCase();
+
+  const looksLikeCheckoutText = /check\s*out/.test(text); // "check out" (có khoảng trắng)
+  const goesToCheckout = href.includes('/checkout');
+
+  if (goesToCheckout || name === 'checkout' || looksLikeCheckoutText) {
+    fireInitiateCheckoutOnce();
+  }
+}, true);
+
+// Bắt submit form dẫn tới checkout (một số theme dùng form /cart + input name="checkout")
+document.addEventListener('submit', function(e){
+  const f = e.target;
+  if (!(f instanceof HTMLFormElement)) return;
+
+  const action = (f.action || '').toLowerCase();
+
+  if (action.includes('/checkout')) {
+    fireInitiateCheckoutOnce();
+  } else if (action.endsWith('/cart') || action.endsWith('/cart/')) {
+    const s = e.submitter;
+    const submitterName = (s && s.name || '').toLowerCase();
+    const submitterText = (s && s.textContent || '').trim().toLowerCase();
+    if (submitterName === 'checkout' || /check\s*out/.test(submitterText)) {
+      fireInitiateCheckoutOnce();
+    }
+  }
+}, true);
+</script>
 
     <body
       class="template-{{ request.page_type | handle }} {{ class_lazy }} {{ product.type }} {{  collection.title }}"
@@ -434,60 +500,7 @@ src="https://www.facebook.com/tr?id=1174033978084216&ev=PageView&noscript=1"
       {% endif %}
 
     </body>
-    <script>
-let __ttq_ic_fired = false;
 
-async function getCartPayload(){
-  try{
-    const r = await fetch('/cart.js', {credentials:'same-origin'});
-    const cart = await r.json();
-    return {
-      contents: cart.items.map(i => ({
-        content_id: String(i.variant_id),
-        content_type: 'product',
-        content_name: i.product_title,
-        quantity: i.quantity,
-        price: (i.final_line_price/100)
-      })),
-      value: cart.total_price/100,
-      currency: '{{ shop.currency }}'
-    };
-  }catch(e){
-    return { contents: [], value: 0, currency: '{{ shop.currency }}' };
-  }
-}
-
-async function fireInitiateCheckoutGlobal(){
-  if (__ttq_ic_fired) return; __ttq_ic_fired = true;
-  const payload = await getCartPayload();
-  ttq.track('InitiateCheckout', payload);
-}
-
-// Bắt click/submit dẫn đến checkout ở mọi nơi
-document.addEventListener('click', function(e){
-  const el = e.target.closest('a,button,input[type="submit"]');
-  if (!el) return;
-  const href = el.getAttribute('href') || '';
-  const name = el.getAttribute('name') || '';
-  if (href.includes('/checkout') || name === 'checkout') {
-    fireInitiateCheckoutGlobal();
-  }
-}, true);
-
-document.addEventListener('submit', function(e){
-  const f = e.target;
-  if (!(f instanceof HTMLFormElement)) return;
-  if (f.action.includes('/checkout')) {
-    fireInitiateCheckoutGlobal();
-  } else if (f.action.endsWith('/cart') || f.action.endsWith('/cart/')) {
-    // form /cart + input name="checkout"
-    const s = e.submitter;
-    if (s && (s.name === 'checkout' || (s.value||'').toLowerCase().includes('checkout'))) {
-      fireInitiateCheckoutGlobal();
-    }
-  }
-}, true);
-</script>
   </html>
 
 {% else %}
