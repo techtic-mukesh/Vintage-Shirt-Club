@@ -118,6 +118,13 @@ t4sp-theme t4s-wrapper__{{ settings.general_layout }}{% if settings.animations_r
 {% assign pagespeed_template_suffix_liquid = template.suffix | append: ".liquid" %}
 {% assign pagespeed_page_type = template.name | replace: template_suffix_liquid, "" %}
 {{ content_for_header }}
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NBQB6LCV');</script>
+<!-- End Google Tag Manager -->
 {%- comment -%}END OF FlashSpeed. {%- endcomment -%}
       {%- render 'head_assets', t_name: t_name, isRTL: isRTL -%}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.1/css/swiper.min.css">
@@ -392,6 +399,10 @@ document.addEventListener('submit', function(e){
 </script>
 
     <body
+      <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NBQB6LCV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
       class="template-{{ request.page_type | handle }} {{ class_lazy }} {{ product.type }} {{  collection.title }}"
       {% if body_img != blank %}
         data-bgset="{{ body_img | image_url: width: 1 }}" data-optimumx="2" data-sizes="auto"
