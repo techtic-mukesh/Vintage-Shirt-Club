@@ -275,24 +275,21 @@ t4sp-theme t4s-wrapper__{{ settings.general_layout }}{% if settings.animations_r
                 const progressFreeShipping = document.getElementById('progress-free-shipping');
                 const progressMessageFreeShipping = document.getElementById('progress-message-free-shipping');
 
-                if (!progressMessageFreeShipping) return;
 
                 if (total >= 100) {
                   progressBarFreeShipping.style.display = 'none';
-                  progressMessageFreeShipping.style.display = 'none';
+                  progressMessageFreeShipping.style ? progressMessageFreeShipping.style.display = 'none' : {};
                 } else if (total >= 50) {
                   const remainingFreeShipping = 100 - total;
                   const percentageFreeShipping = ((100 - remainingFreeShipping) / 100) * 100;
 
                   progressBarFreeShipping.style.display = 'block';
                   progressFreeShipping.style.width = percentageFreeShipping + '%';
-                  progressMessageFreeShipping.innerHTML = `Spend £${remainingFreeShipping.toFixed(
-                    2
-                  )} more to get a FREE NEXT day shipping`;
-                  progressMessageFreeShipping.style.display = 'block';
+                  progressMessageFreeShipping.style ? progressMessageFreeShipping.innerHTML = `Spend £${remainingFreeShipping.toFixed(2)} more to get a FREE NEXT day shipping` : {};
+                  progressMessageFreeShipping.style ? progressMessageFreeShipping.style.display = 'block' : {};
                 } else {
                   progressBarFreeShipping.style.display = 'none';
-                  progressMessageFreeShipping.style.display = 'none';
+                  progressMessageFreeShipping.style ? progressMessageFreeShipping.style.display = 'none' : {};
                 }
               })
               .catch((err) => console.error('Error fetching cart:', err));
