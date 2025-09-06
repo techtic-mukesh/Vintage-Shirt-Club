@@ -305,8 +305,8 @@ t4sp-theme t4s-wrapper__{{ settings.general_layout }}{% if settings.animations_r
         // animateMarquee
 
         const marqueeContent = document.querySelector('.marquee-content');
-        const marqueeWidth = marqueeContent.offsetWidth;
-        const parentWidth = marqueeContent.parentElement.offsetWidth;
+        const marqueeWidth = marqueeContent?.offsetWidth;
+        const parentWidth = marqueeContent?.parentElement?.offsetWidth;
 
         let start = parentWidth;
 
