@@ -315,6 +315,7 @@ t4sp-theme t4s-wrapper__{{ settings.general_layout }}{% if settings.animations_r
           if (start < -marqueeWidth) {
             start = parentWidth;
           }
+          if (!marqueeContent) return;
           marqueeContent.style.transform = `translateX(${start}px)`;
           requestAnimationFrame(animateMarquee);
         }
