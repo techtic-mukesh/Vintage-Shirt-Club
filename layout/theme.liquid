@@ -275,6 +275,8 @@ t4sp-theme t4s-wrapper__{{ settings.general_layout }}{% if settings.animations_r
                 const progressFreeShipping = document.getElementById('progress-free-shipping');
                 const progressMessageFreeShipping = document.getElementById('progress-message-free-shipping');
 
+                if (!progressMessageFreeShipping) return;
+
                 if (total >= 100) {
                   progressBarFreeShipping.style.display = 'none';
                   progressMessageFreeShipping.style.display = 'none';
