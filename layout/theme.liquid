@@ -382,7 +382,7 @@ document.addEventListener('submit', function(e){
   const action = (f.action || '').toLowerCase();
 
   if (action.includes('/checkout')) {
-    fireInitiateCheckoutOnce();
+    {% comment %} fireInitiateCheckoutOnce(); {% endcomment %}
   } else if (action.endsWith('/cart') || action.endsWith('/cart/')) {
     const s = e.submitter;
     const submitterName = (s && s.name || '').toLowerCase();
