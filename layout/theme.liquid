@@ -350,7 +350,7 @@ async function getCartPayload(){
   }
 }
 
-async function fireInitiateCheckoutOnce(){
+{% comment %} async function fireInitiateCheckoutOnce(){
   if (__ttq_ic_fired) return;
   __ttq_ic_fired = true;
   const payload = await getCartPayload();
@@ -391,7 +391,7 @@ document.addEventListener('submit', function(e){
       {% comment %} fireInitiateCheckoutOnce(); {% endcomment %}
     }
   }
-}, true);
+}, true); {% endcomment %}
 </script>
 
     <body
